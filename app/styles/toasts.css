@@ -1,0 +1,12 @@
+body > div#toast-container{
+    position: absolute;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    width: fit-content;
+}
+
+.toast.failure-toast{
+    background-color: var(--error-1);
+}

@@ -1,0 +1,37 @@
+{
+  "name": "electro-git",
+  "version": "1.0.0",
+  "description": "A GIT GUI interface based in Electron",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burwinliu/electro-git.git"
+  },
+  "keywords": [
+    "git",
+    "gui",
+    "application",
+    "linux",
+    "windows",
+    "apple"
+  ],
+  "author": "Burwin Liu",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/burwinliu/electro-git/issues"
+  },
+  "homepage": "https://github.com/burwinliu/electro-git#readme",
+  "devDependencies": {
+    "electron": "^9.1.0",
+    "electron-rebuild": "^1.11.0"
+  },
+  "dependencies": {
+    "electron-store": "^5.2.0",
+    "materialize-css": "^1.0.0-rc.2",
+    "nodegit": "^0.26.5"
+  }
+}
