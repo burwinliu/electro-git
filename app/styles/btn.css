@@ -18,3 +18,10 @@
 of the button to still show through. */
     background-color: var(--cancel-3);
 }
+
+
+.waves-effect.waves-nav .waves-ripple {
+    /* The alpha value allows the text and background color
+    of the button to still show through. */
+    background-color: var(--nav-2);
+}

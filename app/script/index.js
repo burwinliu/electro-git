@@ -6,14 +6,13 @@ const {
 
     getForm, 
     getIsFilled,
+} = require("../store/formStore")
 
+const {
     // For repo
-    setRepo,
     setRepoPath,
-
-    getRepo,
-    getRepoPath,
-} = require('../store/mainStore')
+    setAddRepoStore,
+} = require('../store/repoStore')
 
 const { dialog } = require('electron').remote
 const fs = require('fs')
@@ -91,21 +90,18 @@ const openDirectory = async () => {
     const form = getForm();
     let success = false;
     if (form.path){
-        git.Repository.open(form.path)
-        .then((repo) => {
-            setRepo(repo);
-            setRepoPath(form.path);
-            success = true;
-        }).catch((reasonForFailure) => {
-            // failure is handled here
-            onFailure(reasonForFailure + '. Open');
-            success = false;
-        });
+        await git.Repository.open(form.path)
+            .then((repo) => {
+                setRepoPath(form.path);
+                setAddRepoStore(form.path);
+                success = true;
+            }).catch((reasonForFailure) => {
+                // failure is handled here
+                onFailure(reasonForFailure + '. Open');
+                success = false;
+            });
         if(success){
-            window.location.href = "./html/landing.html"
-            return;
-        }
-        else{
+            window.location.href = "./landing.html"
             return;
         }
     }
@@ -118,15 +114,15 @@ const makeDirectory = async () =>{
         let success = false;
         await git.Repository.init(form.path, 0)
             .then((repo) => {
-                setRepo(repo);
                 setRepoPath(form.path);
+                setAddRepoStore(form.path);
                 success = true;
             }).catch((reasonForFailure) => {
                 success = false;
                 onFailure(reasonForFailure + '. Make');
             });
         if(success){
-            window.location.href = "./html/landing.html"
+            window.location.href = "./landing.html"
             return;
         }
     }

@@ -1,14 +1,15 @@
 const { app, BrowserWindow } = require('electron')
-
+const { getRepoPath } = require('./app/store/repoStore')
 
 
 function createWindow () {
   // Create the browser window.
   const window = new BrowserWindow({
-    width: 1375,
-    height: 800,
-    minWidth: 1375,
-    minHeight: 800,
+    width: 1050,
+    height: 600,
+    minWidth: 1050,
+    minHeight: 600,
+    frame: false,
     
     webPreferences: {
       nodeIntegration: true
@@ -16,12 +17,15 @@ function createWindow () {
   })
 
   // and load the index.html of the app.
-  window.loadFile('./app/html/index.html')
+  if (getRepoPath()){
+    window.loadFile("./app/html/landing.html")
+  }
+  else{
+    window.loadFile('./app/html/index.html')
+  }
 
   // Open the DevTools.
   window.webContents.openDevTools()
-
-  window.setMenuBarVisibility(null);
 }
 
 // This method will be called when Electron has finished

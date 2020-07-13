@@ -1,19 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!-- for materialize front end framework -->
-    <link rel="stylesheet" type="text/css" href="../node_modules/materialize-css/dist/css/materialize.min.css"  />
-    
-    <script type="text/javascript" src="../node_modules/materialize-css/dist/js/materialize.min.js"></script>
+    <head>
+        <!-- css imports  -->
+        <link rel="stylesheet" href="../styles/themes.css"/>
+        <link rel="stylesheet" href="../styles/constants.css"/>
 
-    
+        <link rel="stylesheet" href="../styles/page.css"/>
+        <link rel="stylesheet" href="../styles/pageSide.css"/>
 
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  </head>
-  <body>
-      <h1>
-          LANDING
-      </h1>
-  </body>
+        <link rel="stylesheet" href="../styles/btn.css"/>
+        <link rel="stylesheet" href="../styles/nav.css"/>
+        <!-- for materialize front end framework -->
+        <link rel="stylesheet" type="text/css" href="../..//node_modules/materialize-css/dist/css/materialize.min.css"  />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <script type="text/javascript" src="../../node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <nav class="landing-space">
+            <a id="nav-currentrepo">Current Repo: </a>
+            <li class="right-nav nav-link"><a  href="./index.html">Choose New Repo</a></li>
+        </nav>
+        <div class="main-wrap">
+            <ul class="sidenav sidenav-fixed" id="side-diff">
+                <li class="header">Changed Files</li>
+            </ul>
+            <main>
+                <div id="page-changes" class="page landing-space"></div>
+            </main>
+            <script src="../script/landing.js" charset="utf-8"></script>
+        
+        </div>
+    </body>
 </html>
