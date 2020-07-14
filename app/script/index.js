@@ -14,11 +14,22 @@ const {
     setAddRepoStore,
 } = require('../store/repoStore')
 
+const {
+    //For landing 
+    setLandingFile,
+} = require('../store/landingStore')
+
 const { dialog } = require('electron').remote
 const fs = require('fs')
 const { app, BrowserWindow } = require('electron')
 
 const git =  require('electron').remote.require('nodegit');
+
+const customTitlebar = require('custom-electron-titlebar');
+ 
+new customTitlebar.Titlebar({
+    backgroundColor: customTitlebar.Color.fromHex('#444')
+});
 
 //Const info thats important
 correspondingBtn = {
@@ -117,6 +128,7 @@ const makeDirectory = async () =>{
             .then((repo) => {
                 setRepoPath(form.path);
                 setAddRepoStore(form.path);
+                setLandingFile(form.path)
                 success = true;
             }).catch((reasonForFailure) => {
                 success = false;
