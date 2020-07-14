@@ -1,12 +1,12 @@
 nav.landing-space{
     background-color: var(--nav-1);
 
-    height: var(--header-offset);
-    line-height: var(--header-offset);
+    height: var(--header-height);
+    line-height: var(--header-height);
 
     display:flex;
     z-index:1;
-
+    position: fixed;
     
 }
 
@@ -39,8 +39,8 @@ ul#side-diff {
     overflow-x: hidden;
     width: var(--sidebar-offset);
     margin: 0;
-    padding-top: var(--header-offset);
-    padding-bottom: 70px;
+    top: var(--header-offset);
+    padding-bottom: 140px;
     
     z-index: 0;
 }
@@ -67,7 +67,33 @@ ul#side-diff > li{
 }
 
 li.landing-space{
+    
     padding-right: 20px;
+}
+
+li.side-click{
+    cursor: pointer;
+    transition: cubic-bezier(.08, .35, .13, 1.02) .8s;
+}
+
+li.side-click:hover{
+    background-color: var(--neutral-2);
+}
+
+li.side-click:active{
+    background-color: var(--primary-1);
+}
+
+li.side-click.selected{
+    background-color: var(--neutral-selected);
+}
+
+li>input.side-check[type="checkbox"]{
+    position: relative;
+    opacity: 1;
+    margin:auto 5px;
+    z-index: 3;
+    pointer-events: auto;
 }
 
 li>i.right{

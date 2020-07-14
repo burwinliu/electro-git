@@ -94,6 +94,7 @@ const openDirectory = async () => {
             .then((repo) => {
                 setRepoPath(form.path);
                 setAddRepoStore(form.path);
+                setLandingFile(form.path);
                 success = true;
             }).catch((reasonForFailure) => {
                 // failure is handled here

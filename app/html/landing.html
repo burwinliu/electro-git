@@ -5,6 +5,8 @@
         <link rel="stylesheet" href="../styles/themes.css"/>
         <link rel="stylesheet" href="../styles/constants.css"/>
 
+        <link rel="stylesheet" href="../styles/titlebar.css"/>
+
         <link rel="stylesheet" href="../styles/page.css"/>
         <link rel="stylesheet" href="../styles/pageSide.css"/>
 
@@ -29,10 +31,13 @@
         </nav>
         <div class="main-wrap">
             <ul class="sidenav sidenav-fixed" id="side-diff">
-                <li class="header">Changed Files</li>
+                <li class="header">
+                    <input type="checkbox" checked="checked" class="side-check">
+                    Changed Files
+                </li>
             </ul>
             <main>
-                <div id="page-changes" class="page landing-space"></div>
+                <ul id="page-changes" class="page landing-space"></ul>
             </main>
             <script src="../script/landing.js" charset="utf-8"></script>
         

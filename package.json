@@ -30,6 +30,7 @@
     "electron-rebuild": "^1.11.0"
   },
   "dependencies": {
+    "custom-electron-titlebar": "^3.2.2-hotfix62",
     "electron-store": "^5.2.0",
     "materialize-css": "^1.0.0-rc.2",
     "nodegit": "^0.26.5"

@@ -10,11 +10,13 @@ function createWindow () {
     minWidth: 1050,
     minHeight: 600,
     frame: false,
+    titleBarStyle: 'hidden',
     
     webPreferences: {
       nodeIntegration: true
     }
   })
+  
 
   // and load the index.html of the app.
   if (getRepoPath()){

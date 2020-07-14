@@ -13,6 +13,7 @@ const electroGitStore = new Store({
     }, 
     landing:{
         currentFile: null,
+        changedFiles: [],
     }
 });
 
