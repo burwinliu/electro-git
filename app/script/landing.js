@@ -123,6 +123,9 @@ const gitCommit = async () => {
 
     toCommit = []
     for(let key in idMap){
+        if(!document.getElementById(key)){
+            idMap.remove(key);
+        }
         if(document.getElementById(key+"_checked").checked){
             console.log("CHECKED ", idMap[key])
             toCommit.push(idMap[key])
