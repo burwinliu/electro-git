@@ -29,13 +29,25 @@
             <a id="nav-currentrepo">Current Repo: </a>
             <li class="right-nav nav-link"><a  href="./index.html">Choose New Repo</a></li>
         </nav>
+        
         <div class="main-wrap">
-            <ul class="sidenav sidenav-fixed" id="side-diff">
-                <li class="header">
-                    <input type="checkbox" checked="checked" class="side-check">
-                    Changed Files
-                </li>
-            </ul>
+            <div class="sidenav sidenav-fixed" id="side-diff">
+                <ul id="side-diff-content-top">
+                    <li class="header">
+                        <input type="checkbox" checked="checked" class="side-check">
+                        Changed Files
+                    </li>
+                </ul>
+                
+            </div>
+            <div id="side-footer">
+                
+                <textarea id="footer-commitmsg" placeholder="Commit Message"></textarea>
+                <div id="side-footer-buttons">
+                    <a class="waves-effect waves-neutral btn btn-neutral" onclick="gitCommit()">Commit</a>
+                    <a class="waves-effect waves-light btn btn-neutral disabled" onclick="gitPush()">Push</a>
+                </div>
+            </div>
             <main>
                 <ul id="page-changes" class="page landing-space"></ul>
             </main>

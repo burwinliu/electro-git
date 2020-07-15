@@ -1,5 +1,6 @@
 :root{
     --primary-1: #29883a;
+
     --sub-1: #174d21;
     
 
@@ -8,6 +9,9 @@
     --neutral-2:#e3ffee;
 
     --neutral-selected:#b3e7eb;
+
+    --neutral-raised-1:#c0f8fd;
+    --neutral-raised-2:#ebf9fa;
 
     --cancel-1: #4d555086;
     --cancel-2: #525a55;

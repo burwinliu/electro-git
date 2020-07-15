@@ -1,17 +1,16 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const { getRepoPath } = require('./app/store/repoStore')
 
+let window;
 
 function createWindow () {
   // Create the browser window.
-  const window = new BrowserWindow({
+  window = new BrowserWindow({
     width: 1050,
     height: 600,
     minWidth: 1050,
     minHeight: 600,
-    frame: false,
-    titleBarStyle: 'hidden',
-    
+
     webPreferences: {
       nodeIntegration: true
     }
@@ -54,3 +53,65 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+template = [
+  {
+    label: 'Developer',
+    submenu:[
+      {
+        label:'Show Dev Menu',
+        click() { 
+          console.log('item 1 clicked')
+          window.webContents.openDevTools()
+        }
+      },
+    ]
+    
+  },
+  {
+    // TODO look into making dialogs for electron (with browser window maybe?)
+    label: 'File',
+    submenu:[
+      {
+        label:'Create New Repository',
+        click() { 
+          return;
+        }
+      },
+      {
+        label:'Add Repository',
+        click() { 
+          return;
+        }
+      },
+      {
+        label:'Clone Repository',
+        click() { 
+          return
+        }
+      },
+    ]
+    
+  },
+  {
+    label: 'Git Settings',
+    submenu:[
+      {
+        label:'Set User Settings',
+        click() { 
+          window.webContents.openDevTools()
+        }
+      },
+      {
+        label:'Set Repository Settings',
+        click() { 
+          window.webContents.openDevTools()
+        }
+      },
+    ]
+    
+  },
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)

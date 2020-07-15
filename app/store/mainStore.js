@@ -14,6 +14,10 @@ const electroGitStore = new Store({
     landing:{
         currentFile: null,
         changedFiles: [],
+    },
+    user:{
+        userName: '',
+        userEmail: '',
     }
 });
 

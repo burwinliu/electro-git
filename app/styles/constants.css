@@ -1,7 +1,9 @@
 :root{
     --header-height: 44px;
-    --header-offset: 74px;
+    --header-offset: 44px;
     
     --sidebar-offset: 300px;
     --sidebar-eleheight: 27px;
+
+    --sidebar-footer-height: 150px;
 }

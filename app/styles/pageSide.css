@@ -14,14 +14,19 @@ body {
 }
 
 main{
-    padding-left: var(--sidebar-offset);
-    padding-top: var(--header-height);
-    width: 100%;
-    overflow-x: hidden
+    /* padding-left: var(--sidebar-offset);
+    padding-top: var(--header-height); */
+    /* width: 100%; */
+    overflow-x: hidden;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: calc(100vw - var(--sidebar-offset));
+    height: calc(100vh - var(--header-offset));
 }
 
-.break-li{
-    word-wrap: break-word
+.break-text{
+    white-space: pre-wrap;
 }
 
 .page{
@@ -30,7 +35,11 @@ main{
     display: flex;
 }
 
+.pre-wrap{
+    margin:0 5px;
+}
+
 #page-changes{
-    margin:0 10px;
-    padding-top: 10px;
+    margin:0 0;
+    padding: 0 0;
 }

@@ -11,18 +11,16 @@ const setLandingRemoveFiles = (fileId) => {
     landing.changedFiles.remove(fileId);
     electroGitStore.set('landing', landing)
 }
-
+const setLandingFilePath = (path) => {
+    let newLanding = getLanding()
+    newLanding.currentFile = path
+    electroGitStore.set('landing', newLanding)
+}
 const setLandingReset = () => {
     landing = {
         currentFile: null,
         changedFiles: {},
     }
-    electroGitStore.set('landing', landing)
-}
-
-const setLandingFile = (filePath) => {
-    let landing = getLanding();
-    landing.currentFile = filePath;
     electroGitStore.set('landing', landing)
 }
 
@@ -34,11 +32,12 @@ const getLandingFileDiff = (fildId) => {
     return landing.changedFiles[fildId];
 }
 const getLandingFilePath = () => {
-    let landing = getLanding();
-    return landing.currentFile;
+    return getLanding().currentFile
 }
-
 const getLanding = () => {
+    if(!electroGitStore.get('landing')){
+        setLandingReset();
+    }
     return electroGitStore.get('landing');
 }
 
@@ -46,7 +45,7 @@ const getLanding = () => {
 exports.setLandingAddFiles = setLandingAddFiles
 exports.setLandingRemoveFiles = setLandingRemoveFiles
 exports.setLandingReset = setLandingReset
-exports.setLandingFile = setLandingFile
+exports.setLandingFilePath = setLandingFilePath
 
 exports.getLandingFileList = getLandingFileList
 exports.getLandingFileDiff = getLandingFileDiff

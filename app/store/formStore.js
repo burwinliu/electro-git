@@ -1,13 +1,13 @@
 const {electroGitStore} = require('./mainStore')
 
 const setRequiresUrl = (new_state) =>{
-    newForm = electroGitStore.get('form');
+    newForm = getForm();
     newForm.requiresURL = new_state;
     electroGitStore.set('form', newForm);
 };
 
 const setFormPath = (input) => {
-    newForm = electroGitStore.get('form');
+    newForm = getForm();
     if(input.path){
         newForm.path = input.path;
         electroGitStore.set('form', newForm);
@@ -19,11 +19,14 @@ const setFormPath = (input) => {
 };
 
 const getForm = () => {
+    if (!electroGitStore.get('form')){
+        clearForm()
+    }
     return electroGitStore.get('form');
 };
 
 const getIsFilled = () => {
-    form = electroGitStore.get('form');
+    form = getForm();
     if (form.requiresURL){
         return (form.url && form.path)
     }

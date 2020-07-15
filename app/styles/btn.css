@@ -4,6 +4,11 @@
     background-color: var(--primary-1);
 }
 
+.btn.btn-neutral{
+    color: black;
+    background-color: var(--neutral-raised-1);
+}
+
 .btn.btn-cancel{
     background-color: var(--cancel-1);
 }
