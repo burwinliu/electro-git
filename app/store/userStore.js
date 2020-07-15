@@ -2,8 +2,9 @@ const { electroGitStore } = require("./mainStore");
 
 const setResetUserObj = () => {
     let userStore = {
-        userName: '',
-        userEmail: '',
+        userName: null,
+        userEmail: null,
+        remoteUrl: null,
     };  
     electroGitStore.set('user', userStore)
 }
@@ -20,16 +21,26 @@ const setUserEmail = (email) => {
     electroGitStore.set('user', userObj)
 }
 
-const getUserName = (name) => {
+const setRemoteUrl = (url) => {
+    let userObj = getUserObj()
+    userObj.remoteUrl = url
+    electroGitStore.set('user', userObj)
+}
+
+const getUserName = () => {
     let userObj = getUserObj()
     return userObj.userName
 }
 
-const getUserEmail = (email) => {
+const getUserEmail = () => {
     let userObj = getUserObj()
     return userObj.userEmail;
 }
 
+const getRemoteUrl = () => {
+    let userObj = getUserObj()
+    return userObj.remoteUrl
+}
 
 const getUserObj = () => {
     if(!electroGitStore.get('user')){
@@ -38,9 +49,13 @@ const getUserObj = () => {
     return electroGitStore.get('user');
 }
 
+
+
 exports.setUserName = setUserName
 exports.setUserEmail = setUserEmail
+exports.setRemoteUrl = setRemoteUrl
 
 exports.getUserName = getUserName
 exports.getUserEmail = getUserEmail
 exports.getUserObj = getUserObj
+exports.getRemoteUrl = getRemoteUrl

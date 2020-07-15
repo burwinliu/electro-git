@@ -3,6 +3,7 @@ const{
     getRepoPath,
 } = require('../store/repoStore')
 const {
+    setLandingReset,
     setLandingAddFiles,
     getLandingFileList,
     getLandingFileDiff,
@@ -17,7 +18,7 @@ const {
 } = require('../store/userStore')
 
 // const git = require('nodegit');
-const{ renderStatusLi, renderGitDiffInfo, renderId, renderDiffBody, helperGitAddCommit} = require('../script/helperGitFunctions')
+const{ renderStatusLi, renderGitDiffInfo, renderId, renderDiffBody, helperGitAddCommit, helperGitPush} = require('../script/helperGitFunctions')
 
 const git =  require('electron').remote.require('nodegit');
 const fs = require('fs')
@@ -37,13 +38,11 @@ const initialize = async () =>{
     let repo = await git.Repository.open(String(getRepoPath()));
     let branch = await repo.getCurrentBranch();
 
-    console.log("STUCK")
 
     itemHeader.innerHTML = "Branch: " + branch.shorthand() + ", Path: " + getRepoPath();
     
     renderGitInfo();
     renderCurrentDiff();
-    console.log("PASSES")
 }
 
 const onUpdate = async (event, file) => {
@@ -131,12 +130,20 @@ const gitCommit = async () => {
             toCommit.push(idMap[key])
         }
     }
-    helperGitAddCommit(toCommit, repo)
+    helperGitAddCommit(toCommit, repo, document.getElementById("footer-commitmsg").value);
+    setLandingReset();
+    renderGitInfo();
+    
+    document.getElementById("page-changes").innerHTML = "";
 }
 
-const gitPush = () => {
-    for(let key in idMap){
-        console.log(key, idMap[key])
-    }
+const gitPush = async () => {
+    let repo = await git.Repository.open(String(getRepoPath()));
+    helperGitPush(repo).then((result) => {
+        if(!result){
+            // FAILS HERE AND PROMPT WITH POPUP
+            console.log(result)
+        }
+    })
 }
 

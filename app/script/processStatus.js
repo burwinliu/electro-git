@@ -1,10 +1,10 @@
 const git =  require('electron').remote.require('nodegit');
-const { getUserName, getUserEmail, getRemoteUrl, setRemoteUrl } = require('../store/userStore')
-const fs = require('fs')
+
+var path = require("path");
 
 const renderStatusLi = (statusFile) => {
     newLi = document.createElement('li');
-    newLi.innerHTML = '<input type="checkbox" id="'+ renderId(statusFile.path()) +'_checked" checked="checked" class="side-check">'+statusFile.path();
+    newLi.innerHTML = '<input type="checkbox" checked="checked" class="side-check">'+statusFile.path();
     newLi.id = renderId(statusFile.path())
     newLi.classList.add("landing-space");
     newLi.classList.add("side-click");
@@ -24,28 +24,16 @@ const renderStatusLi = (statusFile) => {
     else if (statusFile.isIgnored()) { 
         newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right modify">visibility_off</i>`
     }
-    else if (statusFile.isDeleted()){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right modify">clear</i>`
-    }
     return newLi;
 }
 
 const renderDiffBody = (item, fileId, info) => {
     for(let x in info){
         newLi = document.createElement('li');
-        newPre = document.createElement('pre')
-        newCode = document.createElement('code')
-        newSpan = document.createElement('span')
-        newPre.classList.add("pre-wrap")
-
-        newSpan.classList.add("break-text")
-
-        newSpan.textContent  = info[x];
+        newLi.classList.add("break-li")
+        newLi.textContent  = info[x];
         newLi.id = fileId + x
-        newLi.appendChild(newSpan)
-        newCode.appendChild(newLi)
-        newPre.appendChild(newCode)
-        item.appendChild(newPre)
+        item.appendChild(newLi)
     }
     
 }
@@ -57,10 +45,7 @@ const renderId = (file) => {
 
 const renderGitDiffInfo = async (repo) => {
     let result = {};
-    let diffOpt = {
-        flags: git.Diff.OPTION.SHOW_UNTRACKED_CONTENT | git.Diff.OPTION.RECURSE_UNTRACKED_DIRS
-    };
-    await git.Diff.indexToWorkdir(repo, null, diffOpt).then((diff) => {
+    await git.Diff.indexToWorkdir(repo).then((diff) => {
         return diff.toBuf(1);
     }).then((temp)=>{
         let splitDiff = temp.split("\n");
@@ -72,27 +57,21 @@ const renderGitDiffInfo = async (repo) => {
         for(let x in splitDiff){
             let match = headerReg.exec(splitDiff[x])
             if(match && p == -1){
-                p = x;
-                storeNames[0] = match[1];
+                p = x
+                storeNames[0] = match[1]
             }
             else if(match && p != -1){
                 result[storeNames[0]] = splitDiff.slice(p, x)
                 storeNames[0] = match[1]
                 p = x
             }
-            
         }
         result[storeNames[0]] = splitDiff.slice(p, splitDiff.length)
     })
     return result;
 }
 
-const renderAuthor = () => {
-    let result = git.Signature.now(getUserName(), getUserEmail());
-    return result
-}
-
-const getStagedChanges = async (repo) => {
+async function getStagedChanges(repo) {
     const diff = await git.Diff.indexToWorkdir(repo, null, {
         flags: git.Diff.OPTION.INCLUDE_UNTRACKED |
                git.Diff.OPTION.RECURSE_UNTRACKED_DIRS
@@ -122,46 +101,9 @@ const getStagedChanges = async (repo) => {
     })
 }
 
-const helperGitAddCommit = async (fileNames, repo, msg) => {
-    let index = await repo.refreshIndex()
-    for( let x in fileNames){
-        
-        if(fs.existsSync(fileNames[x])){
-            console.log("added", fileNames[x])
-            await index.addByPath(fileNames[x]);
-        }
-        
-    }
-    await index.write();
-    let oid = await index.writeTree();
-    let head = await git.Reference.nameToId(repo, "HEAD");
-    let parent = await repo.getCommit(head);
-    await repo.createCommit("HEAD", renderAuthor(), renderAuthor(), msg, oid, [parent])
-}
-
-const helperGitPush = async (repo) => {
-    let result = true
-    if(getRemoteUrl()){
-        console.log("success?")
-    }
-    else{
-        await repo.getRemotes().then((remotes) =>{
-            if(remotes.length >= 1){
-                setRemoteUrl(remotes[0].url())
-            }
-            else{
-                result = false
-            }
-        })
-        return result
-    }
-}
 
 exports.renderStatusLi = renderStatusLi;
 exports.renderDiffBody = renderDiffBody;
 
 exports.renderGitDiffInfo = renderGitDiffInfo;
 exports.renderId = renderId;
-
-exports.helperGitAddCommit = helperGitAddCommit;
-exports.helperGitPush = helperGitPush;
