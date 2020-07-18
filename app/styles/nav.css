@@ -110,14 +110,7 @@ li>i.right{
     margin-left: auto;
 }
 
-li>i.new{
-    color: var(--new-1);
-}
 
-
-li>i.modify{
-    color: var(--change-1);
-}
 
 /* For footer (of commit/push menu) */
 #side-footer{

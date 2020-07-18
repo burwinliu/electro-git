@@ -1,10 +1,10 @@
 :root{
+    /* Overall Theming */
     --primary-1: #29883a;
 
     --sub-1: #174d21;
-    
 
-
+    /* For nav and btns */
     --neutral-1:#d4f0df;
     --neutral-2:#e3ffee;
 
@@ -19,10 +19,23 @@
 
     --error-1: #1a0106;
 
-    --new-1: #16471f;
-    
-    --change-1: #817f0a;
-
     --nav-1:#323632;
     --nav-2:#464b46;
+
+    /* For git */
+    --new-1: #999999;
+    
+    --ignored-1: #999999;
+
+    --modified-1: #1c641c;
+
+    --added-1: #49a349;
+
+    --deleted-1: #8f0000;
+
+    --renamed-1: #817f0a;
+
+    --copied-1: #000069;
+
+    --unmerged-1: #b1b13b;
 }

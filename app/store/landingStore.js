@@ -1,14 +1,23 @@
 const {electroGitStore} = require('./mainStore')
 
-const setLandingAddFiles = ( fileId, value ) => {
+const setLandingAddFileDiff = ( fileId, value ) => {
     let landing = getLanding();
     landing.changedFiles[fileId] =  value;
     electroGitStore.set('landing', landing)
 }
-
-const setLandingRemoveFiles = (fileId) => {
+const setLandingRemoveFileDiff = (fileId) => {
     let landing = getLanding();
     landing.changedFiles.remove(fileId);
+    electroGitStore.set('landing', landing)
+}
+const setLandingAddFileSummary = (fileId, value) =>{
+    let landing = getLanding();
+    landing.summaryFile[fileId] =  value;
+    electroGitStore.set('landing', landing)
+}
+const setLandingRemoveFileSummary = (fileId, value) =>{
+    let landing = getLanding();
+    landing.summaryFile.remove(fileId);
     electroGitStore.set('landing', landing)
 }
 const setLandingFilePath = (path) => {
@@ -20,6 +29,7 @@ const setLandingReset = () => {
     landing = {
         currentFile: null,
         changedFiles: {},
+        summaryFile: {},
     }
     electroGitStore.set('landing', landing)
 }
@@ -30,6 +40,10 @@ const getLandingFileList = () => {
 const getLandingFileDiff = (fildId) => {
     let landing = getLanding();
     return landing.changedFiles[fildId];
+}
+const getLandingFileStatus = (fildId) => {
+    let landing = getLanding();
+    return landing.summaryFile[fildId];
 }
 const getLandingFilePath = () => {
     return getLanding().currentFile
@@ -42,12 +56,15 @@ const getLanding = () => {
 }
 
 //Landing page information block
-exports.setLandingAddFiles = setLandingAddFiles
-exports.setLandingRemoveFiles = setLandingRemoveFiles
+exports.setLandingAddFileDiff = setLandingAddFileDiff
+exports.setLandingRemoveFileDiff = setLandingRemoveFileDiff
 exports.setLandingReset = setLandingReset
 exports.setLandingFilePath = setLandingFilePath
+exports.setLandingAddFileSummary = setLandingAddFileSummary
+exports.setLandingRemoveFileSummary = setLandingRemoveFileSummary
 
 exports.getLandingFileList = getLandingFileList
 exports.getLandingFileDiff = getLandingFileDiff
 exports.getLandingFilePath = getLandingFilePath
+exports.getLandingFileStatus = getLandingFileStatus
 exports.getLanding = getLanding

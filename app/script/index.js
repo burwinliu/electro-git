@@ -1,8 +1,11 @@
+// ~/app/script/index.js
+
+//Imports
 const {
     // For forms
     setRequiresUrl, 
     setFormPath, 
-    clearForm,
+    setResetForm,
 
     getForm, 
     getIsFilled
@@ -14,11 +17,14 @@ const {
     setAddRepoStore
 } = require('../store/repoStore')
 
+const {
+    helperGitClone,
+    helperGitOpen,
+    helperGitInit 
+} = require('../script/helperGitFunctions')
+
 const { dialog } = require('electron').remote
 const fs = require('fs')
-const { app, BrowserWindow } = require('electron')
-
-const git =  require('electron').remote.require('nodegit');
 
 //Const info thats important
 correspondingBtn = {
@@ -36,7 +42,7 @@ function isValidURL(string) {
 
 
 
-// For response to actions
+// For response to the opening of the directory button on main form, will open a directory select window and respond in kinda
 const selectDirectory = (toSet) => {
     dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] })
         .then((result) => {
@@ -45,10 +51,7 @@ const selectDirectory = (toSet) => {
             }
             else{
                 document.getElementById(toSet).value = result.filePaths[0];
-                toAdd = {
-                    path:result.filePaths[0],
-                }
-                setFormPath(toAdd);
+                setFormPath({path:result.filePaths[0],});
                 if(getIsFilled()){
                     document.getElementById(correspondingBtn[toSet]).classList.remove("disabled");
                 }
@@ -57,11 +60,9 @@ const selectDirectory = (toSet) => {
     );
 };
 
+// For response to change in input box, checking if it is has file path and is filled
 const checkChange = (instance) =>{
-    toAdd = {
-        path: document.getElementById(instance).value
-    };
-    setFormPath(toAdd);
+    setFormPath({path: document.getElementById(instance).value});
     if(getIsFilled()){
         document.getElementById(correspondingBtn[instance]).classList.remove("disabled")
     }
@@ -70,6 +71,7 @@ const checkChange = (instance) =>{
     }
 }
 
+// For response to change in input box, checking if it is a valid url and is filled
 const checkURLChange = (instance) => {
     if(isValidURL(document.getElementById(instance).value)){
         toAdd = {
@@ -88,48 +90,59 @@ const checkURLChange = (instance) => {
 //Response to Open, Make and Clone
 const openDirectory = async () => {
     const form = getForm();
-    let success = false;
+
     if (form.path){
-        await git.Repository.open(form.path)
-            .then((repo) => {
-                setRepoPath(form.path);
-                setAddRepoStore(form.path);
-                success = true;
-            }).catch((reasonForFailure) => {
-                // failure is handled here
-                onFailure(reasonForFailure + '. Open');
-                success = false;
-            });
-        if(success){
+        try{
+            let repo = await helperGitOpen(form.path)
+            setRepoPath(form.path);
+
             window.location.href = "./landing.html"
-            return;
+            return
         }
+        catch(err) {
+            console.log(err);
+        }        
     }
     onFailure('Open');
 }
 
 const makeDirectory = async () =>{
     const form = getForm();
+
     if (form.path){
-        let success = false;
-        await git.Repository.init(form.path, 0)
-            .then((repo) => {
-                setRepoPath(form.path);
-                setAddRepoStore(form.path);
-                success = true;
-            }).catch((reasonForFailure) => {
-                success = false;
-                onFailure(reasonForFailure + '. Make');
-            });
-        if(success){
+        try{
+            let repo = await helperGitOpen(form.path)
+            helperGitInit(form.path);
+            setRepoPath(form.path);
+
             window.location.href = "./landing.html"
-            return;
+            return
+        }
+        catch(err){
+            console.log(err)
         }
     }
-    onFailure('Make');
+    onFailure('Open');
 }
 
-const cloneDirectory = () =>{
+const cloneDirectory = async () =>{
+    const form = getForm();
+    let check = true;
+    
+    if (form.requiresURL && form.url){
+        try{
+            let repo = helperGitOpen(form.path)
+            helperGitClone(repo, form.url, form.path);
+            setRepoPath(form.path);
+
+            window.location.href = "./landing.html"
+            return
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+    onFailure('Clone');
 }
 
 const onFailure = (msg) => {
@@ -144,6 +157,7 @@ const setFormType = (instance) =>{
     setRequiresUrl(instance.id == 'modal-form-clonerepo');
 };
 
+//Initialize the HTNL
 document.addEventListener(
     'DOMContentLoaded', 
     function() {

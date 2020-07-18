@@ -18,9 +18,18 @@ const setFormPath = (input) => {
     }
 };
 
+const setResetForm = () => {
+    form = {
+        requiresURL: false,
+        path: null,
+        url: null,
+    }
+    electroGitStore.set('form', form);
+}
+
 const getForm = () => {
     if (!electroGitStore.get('form')){
-        clearForm()
+        setResetForm()
     }
     return electroGitStore.get('form');
 };
@@ -33,20 +42,12 @@ const getIsFilled = () => {
     return (form.path)
 }
 
-const clearForm = () => {
-    form = {
-        requiresURL: false,
-        path: null,
-        url: null,
-    }
-    electroGitStore.set('form', form);
-}
+
 
 //Form information block
 exports.setRequiresUrl = setRequiresUrl;
 exports.setFormPath = setFormPath;
-
-exports.clearForm = clearForm;
+exports.setResetForm = setResetForm;
 
 exports.getForm = getForm;
 exports.getIsFilled = getIsFilled;

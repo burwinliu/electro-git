@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, Menu} = require('electron')
 const { getRepoPath } = require('./app/store/repoStore')
 
 let window;
