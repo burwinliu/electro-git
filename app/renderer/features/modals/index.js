@@ -1,0 +1,1 @@
+export {modalFromDirectory as ModalComponentDirectory} from './Modals'

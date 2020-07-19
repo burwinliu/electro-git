@@ -1,6 +1,8 @@
 # electro-git
 A GIT GUI interface based in Electron
 
+
+
 # Todo
 Allow watch for new commits ( need to modify my parsing of git diff? )
 
@@ -19,3 +21,8 @@ define configurations --take snapshot names (tag a group of files) anbd be able 
 create snap shots, difference between snapshot, see file and see difference between files
 Difference between files -- qs structure of file? 
 See meta data about check in times and different between files (compare 2 files history
+
+# Dependencies
+
+Used this boiler plate to set up the application: https://github.com/electron-react-boilerplate
+
