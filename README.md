@@ -24,5 +24,5 @@ See meta data about check in times and different between files (compare 2 files 
 
 # Dependencies
 
-Used this boiler plate to set up the application: https://github.com/electron-react-boilerplate
+Used this boiler plate to set up the application: https://github.com/jschr/electron-react-redux-boilerplate
 
