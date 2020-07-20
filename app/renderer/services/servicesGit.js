@@ -15,11 +15,11 @@
 
 // For git functionality
 import 'fs'
-import { simpleGit } from 'simple-git'
+import simpleGit, {SimpleGit} from 'simple-git';
 
 // Render functions: Render information into HTML DOM objects for input
 
-const renderGitStatusMenuItem = (statusFile) => {
+export const renderGitStatusMenuItem = (statusFile) => {
     /*
     @param statusFile [type: object]
         Structure = {
@@ -64,7 +64,7 @@ const renderGitStatusMenuItem = (statusFile) => {
     return newLi;
 }
 
-const renderGitDiffBody = (fileId, info) => {
+export const renderGitDiffBody = (fileId, info) => {
     console.log(fileId, info);
 
     let result = document.createElement('div');
@@ -95,12 +95,12 @@ const renderGitDiffBody = (fileId, info) => {
     return result
 }
 
-const renderId = (file) => {
+export const renderId = (file) => {
     file = file.replace(/\W/g, '_');
     return file
 }
 
-const renderGitDiffInfo = (text) => {
+export const renderGitDiffInfo = (text) => {
     /* 
         @param text [type string]
         @return [type object]
@@ -192,23 +192,23 @@ const renderGitDiffInfo = (text) => {
     return result;
 }
 
-const renderAuthor = () => {
+export const renderAuthor = () => {
     // TODO update
     let result = git.Signature.now(getUserName(), getUserEmail());
     return result
 }
 
 //Helper Functions: Perform actions given information to furfill a request
-const helperGitInit = async (path) => {
+export const helperGitInit = async (path) => {
     let resultingRepo = await simpleGit(path).init()
     return resultingRepo;
 }
 
-const helperGitOpen = (path) => {
+export const helperGitOpen = (path) => {
     return simpleGit(path);
 }
 
-const helperGitAddCommit = async (repo, fileNames, msg) => {
+export const helperGitAddCommit = async (repo, fileNames, msg) => {
     let index = await repo.refreshIndex()
     for( let x in fileNames){
         // todo transition to files and directories seperated
@@ -227,11 +227,11 @@ const helperGitAddCommit = async (repo, fileNames, msg) => {
     await repo.createCommit("HEAD", renderAuthor(), renderAuthor(), msg, oid, [parent])
 }
 
-const helperGitPush = async (repo, remote, branch) => {
+export const helperGitPush = async (repo, remote, branch) => {
     await repo.push(remote, branch)
 }
 
-const helperGitDiff = async (repo, hashA, hashB) => {
+export const helperGitDiff = async (repo, hashA, hashB) => {
     let options;
     if(hashA && hashB){
         options = [
@@ -243,7 +243,7 @@ const helperGitDiff = async (repo, hashA, hashB) => {
     return repo.diff()
 }
 
-const helperGitStatus = async (repo, fileName) => {
+export const helperGitStatus = async (repo, fileName) => {
     /*  @param repo [type simpleGit object]
         @param fileName [[Optional] type string]: A relative file path to have its status returned
         @return [type [FileStatusSummary] object]
@@ -265,34 +265,10 @@ const helperGitStatus = async (repo, fileName) => {
     return files.files
 }
 
-const helperGitBranch = async (repo) => {
+export const helperGitBranch = async (repo) => {
     return await repo.branch();
 }
 
-const helperGitClone = async (repoURL, localPath) => {
+export const helperGitClone = async (repoURL, localPath) => {
     return await simpleGit.clone(repoURL, localPath)
 }
-
-
-
-
-// Exports
-exports.renderGitDiffBody = renderGitDiffBody;
-exports.renderGitStatusMenuItem = renderGitStatusMenuItem;
-
-exports.renderGitDiffInfo = renderGitDiffInfo;
-exports.renderId = renderId;
-
-
-exports.helperGitInit = helperGitInit
-exports.helperGitOpen = helperGitOpen
-
-exports.helperGitDiff = helperGitDiff;
-exports.helperGitStatus = helperGitStatus
-
-exports.helperGitAddCommit = helperGitAddCommit;
-exports.helperGitPush = helperGitPush;
-
-exports.helperGitBranch = helperGitBranch
-exports.helperGitClone = helperGitClone;
-

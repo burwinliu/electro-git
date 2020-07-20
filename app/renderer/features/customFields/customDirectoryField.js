@@ -2,7 +2,7 @@ import React from 'react';
 
 import {Button} from '@material-ui/core'
 
-import {FieldWrapper, FieldButton, FieldInput} from './fieldStyle'
+import {FieldWrapper, FieldButton, FieldInput} from './FieldStyle'
 
 import {ipcRenderer} from 'electron';
 
@@ -14,7 +14,10 @@ export const CustomDirectoryField = (props) => {
     }
 
     ipcRenderer.on("selectDirectory", (e, files) => {
-        props.handleDirectoryChange(files.filePaths[0])
+        let filePath = files.filePaths[0]
+        if (!files.cancelled){
+            props.handleDirectory(filePath)
+        }
     });
     
     return(

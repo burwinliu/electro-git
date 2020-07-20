@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import {Button, ButtonGroup} from "@material-ui/core"
 import { GitHub } from '@material-ui/icons';
 
+// STYLES
 import {
     LobbyContent,
     LobbyIcon,
@@ -12,12 +14,35 @@ import {
     LobbyButton
 } from './LobbyStyle.js'
 
+// COMPONENTS
+// Modals (Forms/Dialogs)
 import {
     ModalFormDirectory,
     ModalFormDirectoryAndUrl
 } from '../modals'
+// Toasts (Popup messages)
+import{
+    ErrorToast
+} from '../toasts/Toasts'
 
-export const LobbyPage = () => {
+// GIT HELPER
+import {
+    helperGitOpen,
+    helperGitInit
+} from '../../services/servicesGit'
+
+//REDUX
+import {
+    repoSetPath
+} from '../../store/ducks/repo'
+
+//ROUTER
+import {
+    useHistory,
+    useLocation
+} from "react-router-dom"
+
+export const LobbyPage = (props) => {
     const [openOpen, setOpenOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
     const [openClone, setOpenClone] = useState(false);
@@ -25,6 +50,11 @@ export const LobbyPage = () => {
     const [dir, setDir] = useState("")
     const [url, setUrl] = useState("")
 
+    const [errMsg, setErrMsg] = useState("FAILED")
+    const [errOpen, setErrOpen] = useState(false)
+
+    const hist = useHistory()
+    const loc = useLocation()
 
     const handleClickOpenOpen = () => {
         setOpenOpen(true);
@@ -32,8 +62,26 @@ export const LobbyPage = () => {
     const handleCloseOpen = () => {
         setOpenOpen(false);
     }; 
-    const handleConfirmOpen = () => {
-        setOpenOpen(false);
+    const handleConfirmOpen = async () => {
+        if (dir){
+            try{
+                await helperGitOpen(dir)
+                store.dispatch(repoSetPath(dir))
+                setOpenOpen(false);
+                hist.push('/main')
+                console.log(hist, loc.pathName)
+                return
+            }
+            catch(err){
+                console.log(err)
+
+                setErrMsg("Open Failed --Directory provided was unable to be opened")
+                setErrOpen(true)
+                return
+            }
+        }
+        setErrMsg("Open Failed -- No directory provided")
+        setErrOpen(true)
     }; 
 
     //Create Events
@@ -43,8 +91,26 @@ export const LobbyPage = () => {
     const handleCloseCreate = () => {
         setOpenCreate(false);
     }; 
-    const handleConfirmCreate = () => {
-        setOpenOpen(false);
+    const handleConfirmCreate = async () => {
+        if (dir){
+            try{
+                await helperGitOpen(dir)
+                await helperGitInit(form.path);
+                store.dispatch(repoSetPath(dir))
+                setOpenCreate(false);
+                hist.push('/main')
+                return
+            }
+            catch(err){
+                console.log(err)
+
+                setErrMsg("Open Failed --Directory provided was unable to be opened")
+                setErrOpen(true)
+                return
+            }
+        }
+        setErrMsg("Open Failed -- No directory provided")
+        setErrOpen(true)
     }; 
     
     // Clone Events
@@ -61,8 +127,15 @@ export const LobbyPage = () => {
     const changeDir = (input) => {
         setDir(input)
     }
+    const changeDirEvent = (evt) => {
+        setDir(evt.target.value)
+    }
     const changeUrl = (input) => {
         setUrl(input)
+    }
+
+    const handleErrClose = () => {
+        setErrOpen(false)
     }
 
     return (
@@ -83,6 +156,8 @@ export const LobbyPage = () => {
                     Clone (Copy) a repository
                 </Button>
             </ButtonGroup>
+
+            {/* Modal Forms */}
             <ModalFormDirectory 
                 title="Open Repository" 
                 confirmText = "Open"
@@ -91,7 +166,8 @@ export const LobbyPage = () => {
                 
                 handleClose={handleCloseOpen}
                 handleConfirm={handleConfirmOpen}
-                handleDirectoryChange={changeDir}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
             />
             <ModalFormDirectory     
                 title="Create Repository" 
@@ -101,7 +177,8 @@ export const LobbyPage = () => {
 
                 handleClose={handleCloseCreate}
                 handleConfirm={handleConfirmCreate}
-                handleDirectoryChange={changeDir}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
             />
             <ModalFormDirectoryAndUrl 
                 title="Clone Repository"
@@ -112,8 +189,15 @@ export const LobbyPage = () => {
 
                 handleClose={handleCloseClone}
                 handleConfirm={handleConfirmClone}
-                handleDirectoryChange={changeDir}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
                 handleUrlChange={changeUrl}
+            />
+
+            <ErrorToast
+                open={errOpen}
+                handleClose={handleErrClose}
+                message={errMsg}
             />
         </div>
     )

@@ -8,6 +8,7 @@ export const FieldButton = {
 }
 
 export const FieldInput = {
-    width: "400px"
+    width: "400px",
+    padding: "2px"
 }
 

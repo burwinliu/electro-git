@@ -2,8 +2,8 @@ import React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle  } from '@material-ui/core';
 import { Button } from '@material-ui/core'
 
-import {CustomDirectoryField} from '../customFields'
-import { ModalPosition, ModalInputWrapper, ModalInputElement } from './modalStyles'
+import {CustomDirectoryField} from '../CustomFields'
+import { ModalPosition, ModalInputWrapper, ModalInputElement } from './ModalStyles'
 
 export const ModalFormDirectory = (props) => {
     /*
@@ -13,7 +13,11 @@ export const ModalFormDirectory = (props) => {
         <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
             <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
             <DialogContent>
-                <CustomDirectoryField directory={props.directory} handleDirectoryChange={props.handleDirectoryChange}/>
+                <CustomDirectoryField 
+                    directory={props.directory} 
+                    handleDirectoryChange={props.handleDirectoryChange}
+                    handleDirectory={props.handleDirectory}
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.handleClose} color="primary">
@@ -35,7 +39,11 @@ export const ModalFormDirectoryAndUrl = (props) => {
         <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
             <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
             <DialogContent style={ModalInputWrapper}>
-                <CustomDirectoryField style={ModalInputElement} directory={props.directory} handleDirectoryChange={props.handleDirectoryChange}/>
+                <CustomDirectoryField 
+                    directory={props.directory} 
+                    handleDirectoryChange={props.handleDirectoryChange}
+                    handleDirectory={props.handleDirectory}
+                />
                 <input style={ModalInputElement} value={props.url} onChange={props.handleUrlChange}/>
             </DialogContent>
             <DialogActions>

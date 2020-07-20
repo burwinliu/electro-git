@@ -5,8 +5,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
+  Link
 } from "react-router-dom";
+import {createBrowserHistory} from "history"
 
 import configureStore from './store/store';
 
@@ -15,12 +16,15 @@ import {MainPage} from './features/main'
 
 
 const store = configureStore();
+const history = createBrowserHistory();
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    
+    <Router history={history}>
+      <Link to="/main">TEST</Link>
       <Switch>
-        <Route path="/" component={LobbyPage} />
+        <Route exact path="" component={LobbyPage} />
         <Route path="/main" component={MainPage} />
       </Switch>
     </Router>

@@ -1,8 +1,8 @@
 const SET_USERNAME = "repo/SET_USERNAME"
 const SET_EMAIL = "repo/SET_EMAIL"
 
-export const userReducer = (state = {}, actions = {}) => {
-  switch(actions.type){
+export const userReducer = (state = {}, action = {}) => {
+  switch(action.type){
     case SET_USERNAME:
       return { ...state, username: action.payload };
     case SET_EMAIL:

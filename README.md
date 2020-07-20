@@ -7,6 +7,8 @@ Primary: #3f51b5
 
 
 # Todo
+Design better color scheme, background (gradiant with focus on the middle -- lighting or something on those lines), expand to more space and responsive to size of window. Finally, use more colors 
+
 Allow watch for new commits ( need to modify my parsing of git diff? )
 
 Form for authentication -- paths to ssh keys and all that 

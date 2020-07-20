@@ -9,8 +9,8 @@ const SET_DIFFRECORD = 'REPO_SET_DIFFRECORD'
 const UPDATE_DIFFRECORD = 'REPO_UPDATE_DIFFRECORD'
 const CLEAR_DIFFRECORD = 'REPO_CLEAR_DIFFRECORD'
 
-export const stageReducer = (state = {}, actions = {}) => {
-  switch(actions.type){
+export const stageReducer = (state = {}, action = {}) => {
+  switch(action.type){
     case ADD_STATUSRECORD:
       return { ...state, username: action.payload };
     case SET_STATUSRECORD:
