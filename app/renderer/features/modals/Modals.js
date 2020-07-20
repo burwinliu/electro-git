@@ -1,31 +1,49 @@
 import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
+import { Dialog, DialogActions, DialogContent, DialogTitle  } from '@material-ui/core';
+import { Button } from '@material-ui/core'
 
-export const modalForm = (props) => {
-    console.log(props)
+import {CustomDirectoryField} from '../customFields'
+import { ModalPosition, ModalInputWrapper, ModalInputElement } from './modalStyles'
+
+export const ModalFormDirectory = (props) => {
+    /*
+        Expects props with title, opn, handleCancel, handleConfirm, confirmText, directory, handleDirectoryChange
+    */
     return (
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
             <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    To subscribe to this website, please enter your email address here. We will send updates
-                    occasionally.
-                </DialogContentText>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Email Address"
-                    type="email"
-                    fullWidth
-                />
+                <CustomDirectoryField directory={props.directory} handleDirectoryChange={props.handleDirectoryChange}/>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={props.handleClose} color="primary">
                     Cancel
                 </Button>
-                <Button onClick={handleClose} color="primary">
-                    Subscribe
+                <Button onClick={props.handleConfirm} color="primary">
+                    {props.confirmText}
+                </Button>
+            </DialogActions>
+      </Dialog>
+    )
+}
+
+export const ModalFormDirectoryAndUrl = (props) => {
+    /*
+        Expects props with title, open, handleClose, handleConfirm, confirmText, directory, handleDirectoryChange, url, handleUrlChange
+    */
+    return (
+        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
+            <DialogTitle id="form-dialog-title">{props.title}</DialogTitle>
+            <DialogContent style={ModalInputWrapper}>
+                <CustomDirectoryField style={ModalInputElement} directory={props.directory} handleDirectoryChange={props.handleDirectoryChange}/>
+                <input style={ModalInputElement} value={props.url} onChange={props.handleUrlChange}/>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={props.handleConfirm} color="primary">
+                    {props.confirmText}
                 </Button>
             </DialogActions>
       </Dialog>

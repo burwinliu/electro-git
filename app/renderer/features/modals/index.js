@@ -1,1 +1,2 @@
-export {modalFromDirectory as ModalComponentDirectory} from './Modals'
+export {ModalFormDirectory as ModalFormDirectory} from './Modals'
+export {ModalFormDirectoryAndUrl as ModalFormDirectoryAndUrl} from './Modals'

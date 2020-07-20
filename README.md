@@ -1,6 +1,9 @@
 # electro-git
 A GIT GUI interface based in Electron
 
+# Pallete
+Background: #f0f2ff
+Primary: #3f51b5
 
 
 # Todo

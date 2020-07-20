@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, crashReporter, BrowserWindow, Menu } from 'electron';
+import { app, crashReporter, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -27,7 +27,7 @@ app.on('ready', async () => {
     width: 1000,
     height: 800,
     minWidth: 640,
-    minHeight: 480,
+    minHeight: 600,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -84,4 +84,13 @@ app.on('ready', async () => {
       ]).popup(mainWindow);
     });
   }
+});
+
+//hold the array of directory paths selected by user
+ipcMain.on('selectDirectory', async function(e, args) {
+    const dir = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openDirectory']
+    });
+    e.reply('selectDirectory', dir)
+
 });

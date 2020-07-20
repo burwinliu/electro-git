@@ -1,0 +1,23 @@
+body{
+    min-height: 100vh;
+
+    max-height: 100%;
+    max-width:100%;
+    display: flex;
+
+    margin: 0;
+    background-color: #f0f2ff;
+}
+
+div{
+    display: flex;
+}
+
+#Root{
+    width: 100%;
+}
+
+/* FOR DIALOG */
+div.MuiDialog-root > div.MuiDialog-container{
+    margin:auto;
+}
