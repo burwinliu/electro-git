@@ -14,7 +14,7 @@ export const CustomDirectoryField = (props) => {
     }
 
     ipcRenderer.on("selectDirectory", (e, files) => {
-        let filePath = files.filePaths[0]
+        const filePath = files.filePaths[0]
         if (!files.cancelled){
             props.handleDirectory(filePath)
         }

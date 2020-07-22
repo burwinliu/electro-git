@@ -1,3 +1,5 @@
+import {colors} from "../../styles/palette"
+
 export const LobbyContent = {
     flexDirection: "column",
     margin: "auto",
@@ -16,12 +18,12 @@ export const LobbyTop = {
 }
 
 export const LobbyTitle = {
-    color: "#3f51b5"
+    color: colors.primary
 }
 
 export const LobbyIcon = {
     fontSize: "10rem",
-    color: "#3f51b5",
+    color: colors.primary,
 }
 
 
@@ -29,7 +31,7 @@ export const LobbyIcon = {
 export const LobbyButton = {
     margin: "0 0 10px 0",
     border: "solid 1px #3f51b5",
-    color: "#3f51b5"
+    color: colors.primary
 }
 
 

@@ -87,7 +87,7 @@ app.on('ready', async () => {
 });
 
 //hold the array of directory paths selected by user
-ipcMain.on('selectDirectory', async function(e, args) {
+ipcMain.on('selectDirectory', async function(e) {
     const dir = await dialog.showOpenDialog(mainWindow, {
         properties: ['openDirectory']
     });

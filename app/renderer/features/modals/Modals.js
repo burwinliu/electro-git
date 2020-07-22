@@ -3,7 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle  } from '@material-ui
 import { Button } from '@material-ui/core'
 
 import {CustomDirectoryField} from '../CustomFields'
-import { ModalPosition, ModalInputWrapper, ModalInputElement } from './ModalStyles'
+import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 
 export const ModalFormDirectory = (props) => {
     /*

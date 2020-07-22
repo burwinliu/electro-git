@@ -6,7 +6,7 @@ body{
     display: flex;
 
     margin: 0;
-    background-color: #f0f2ff;
+    background-color: #fffef8;
 }
 
 div{
@@ -17,7 +17,33 @@ div{
     width: 100%;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px #c5c5c5; 
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px #a2a8c7; 
+}
+
 /* FOR DIALOG */
 div.MuiDialog-root > div.MuiDialog-container{
     margin:auto;
 }
+
+/* FOR TEXT OF SIDEBAR */
+div.MuiListItemText-root > span{
+    width: 100%;
+    word-break: break-word;
+}
+/* test{
+    background: #f0f2ff;
+    
+    outline: #c3c5cf;
+    primary: #3f51b5;
+} */

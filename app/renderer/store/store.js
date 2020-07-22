@@ -1,14 +1,29 @@
 // ~/renderer/store/store.js
 
-import { compose, createStore, combineReducers } from 'redux'
+import { createStore, combineReducers } from 'redux'
 
-import {repo, stage, user} from './ducks'
+import {appstore, repo, stage, user} from './ducks'
+
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const rootReducer = combineReducers({
+  appstore,
+  repo,
+  stage,
+  user,
+})
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 
-export default function configureStore(initialState) {
-  return createStore(combineReducers({
-    repo,
-    stage,
-    user,
-  }), initialState);
+export default function configureStore() {
+  const store = createStore(persistedReducer)
+  const persistor = persistStore(store)
+  return { store, persistor }
 }

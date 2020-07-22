@@ -7,7 +7,8 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import {createBrowserHistory} from "history"
+
+import { PersistGate } from 'redux-persist/integration/react'
 
 import configureStore from './store/store';
 
@@ -15,19 +16,19 @@ import {LobbyPage} from './features/lobby'
 import {MainPage} from './features/main'
 
 
-const store = configureStore();
-const history = createBrowserHistory();
+const {store, persistor} = configureStore();
+
 
 ReactDOM.render(
   <Provider store={store}>
-    
-    <Router history={history}>
-      <Link to="/main">TEST</Link>
-      <Switch>
-        <Route exact path="" component={LobbyPage} />
-        <Route path="/main" component={MainPage} />
-      </Switch>
-    </Router>
+    <PersistGate loading={null} persistor={persistor}>
+      <Router>
+        <Switch>
+          <Route exact path="/main" component={MainPage} />
+          <Route path="/" component={LobbyPage} />
+        </Switch>
+      </Router>
+    </PersistGate>
   </Provider>,
   document.getElementById('Root')
 );

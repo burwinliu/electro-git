@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import {Button, ButtonGroup} from "@material-ui/core"
 import { GitHub } from '@material-ui/icons';
@@ -23,26 +24,22 @@ import {
 // Toasts (Popup messages)
 import{
     ErrorToast
-} from '../toasts/Toasts'
+} from '../toasts'
 
 // GIT HELPER
 import {
     helperGitOpen,
-    helperGitInit
-} from '../../services/servicesGit'
+    helperGitInit,
+    helperGitClone
+} from '../../services'
 
 //REDUX
 import {
-    repoSetPath
-} from '../../store/ducks/repo'
+    repoSetPath,
+    repoSetUrl
+} from '../../store/ducks'
 
-//ROUTER
-import {
-    useHistory,
-    useLocation
-} from "react-router-dom"
-
-export const LobbyPage = (props) => {
+export const LobbyPage = () => {
     const [openOpen, setOpenOpen] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
     const [openClone, setOpenClone] = useState(false);
@@ -53,8 +50,16 @@ export const LobbyPage = (props) => {
     const [errMsg, setErrMsg] = useState("FAILED")
     const [errOpen, setErrOpen] = useState(false)
 
-    const hist = useHistory()
-    const loc = useLocation()
+    //REDUX HOOKS
+    const dirPath = useSelector(state => state.repo.path);
+    const dispatch = useDispatch();
+
+    //ROUTER HOOKS
+    const history = useHistory();
+
+    if(dirPath !== ""){
+        history.push('/main')
+    }
 
     const handleClickOpenOpen = () => {
         setOpenOpen(true);
@@ -65,17 +70,16 @@ export const LobbyPage = (props) => {
     const handleConfirmOpen = async () => {
         if (dir){
             try{
-                await helperGitOpen(dir)
-                store.dispatch(repoSetPath(dir))
+                helperGitOpen(dir)
+                dispatch(repoSetPath(dir))
                 setOpenOpen(false);
-                hist.push('/main')
-                console.log(hist, loc.pathName)
+                history.push('/main')
                 return
             }
             catch(err){
                 console.log(err)
 
-                setErrMsg("Open Failed --Directory provided was unable to be opened")
+                setErrMsg("Open Failed -- Directory provided was unable to be opened")
                 setErrOpen(true)
                 return
             }
@@ -94,11 +98,11 @@ export const LobbyPage = (props) => {
     const handleConfirmCreate = async () => {
         if (dir){
             try{
-                await helperGitOpen(dir)
-                await helperGitInit(form.path);
-                store.dispatch(repoSetPath(dir))
+                helperGitOpen(dir)
+                await helperGitInit(dir);
+                dispatch(repoSetPath(dir))
                 setOpenCreate(false);
-                hist.push('/main')
+                history.push('/main')
                 return
             }
             catch(err){
@@ -121,7 +125,21 @@ export const LobbyPage = (props) => {
         setOpenClone(false);
     }; 
     const handleConfirmClone = () => {
-        setOpenOpen(false);
+        if (dir && url){
+            try{
+                const repo = helperGitOpen(dir)
+                helperGitClone(repo, url, dir);
+                dispatch(repoSetPath(dir))
+                dispatch(repoSetUrl(dir))
+
+                setOpenClone(false);
+                history.push('/main')
+                return
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
     }; 
 
     const changeDir = (input) => {
@@ -202,5 +220,3 @@ export const LobbyPage = (props) => {
         </div>
     )
 }
-
-export default LobbyPage; 

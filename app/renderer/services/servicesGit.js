@@ -1,21 +1,9 @@
 // ~/app/script/helperGitFunctions.js
 
 // Imports
-
-// State Storage
-// import { 
-//     getUserName,
-//     getUserEmail, 
-//     getRemoteUrl, 
-//     getRemoteName, 
-//     getBranchName, 
-//     setRemoteUrl, 
-//     setRemoteName 
-// } from 
-
 // For git functionality
 import 'fs'
-import simpleGit, {SimpleGit} from 'simple-git';
+import simpleGit from 'simple-git';
 
 // Render functions: Render information into HTML DOM objects for input
 
@@ -134,7 +122,7 @@ export const renderGitDiffInfo = (text) => {
     let chunkLine = /([ +\-])(.*)/
 
     let p = 0
-    isHeader = false
+
     while(p < splitDiff.length && headerReg.exec(splitDiff[p])){
         let current = {
             fileA: null,
@@ -167,7 +155,7 @@ export const renderGitDiffInfo = (text) => {
             if (!chunkHeader){
                 console.log(splitDiff[p])
             }
-            headerInfo = {
+            let headerInfo = {
                 fromLine: chunkHeader[1],
                 fromLineLength: chunkHeader[2],
                 toLine: chunkHeader[3],
@@ -232,6 +220,11 @@ export const helperGitPush = async (repo, remote, branch) => {
 }
 
 export const helperGitDiff = async (repo, hashA, hashB) => {
+    /*
+        @return [type string]
+
+        returns string of git diff return object
+    */
     let options;
     if(hashA && hashB){
         options = [
@@ -239,6 +232,9 @@ export const helperGitDiff = async (repo, hashA, hashB) => {
             hashB
         ]
         return repo.diff(options)
+    }
+    else if(hashA){
+        return
     }
     return repo.diff()
 }
