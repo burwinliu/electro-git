@@ -1,1 +1,0 @@
-export {MainPage as MainPage } from './Main'
