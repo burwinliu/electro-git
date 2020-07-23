@@ -1,0 +1,11 @@
+make sure tacking -- not straight line, changing directions all the time (inefficient)
+	Be incremental, and slowly grow on what has been built (stable ground)
+
+show if you are up to date
+	Show up to date
+		How to tell version of the file you are currently on (tagging) --> dist database, (number of commits away?) -->
+			compare git diff between the two version based on tagging
+		number of commits away from server
+
+todo -- link on hover to each element. ensure boxes stay the same regardless of width of other table. shadow bottom of table. add item feature. 
+taggin feature

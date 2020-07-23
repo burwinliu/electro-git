@@ -59,10 +59,10 @@ export const Body = (props) => {
                                 
                                 <table style={BodyContentTable}> 
                                     <colgroup>
-                                        <col width="60"/>
-                                        <col/>
-                                        <col width="60"/>
-                                        <col/>
+                                        <col width="5%"/>
+                                        <col width="45%"/>
+                                        <col width="5%"/>
+                                        <col width="45%"/>
                                     </colgroup>
                                     <tbody>
                                         <tr>
