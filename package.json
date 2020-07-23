@@ -1,21 +1,19 @@
 {
-  "name": "electron-react-webpack-boilerplate",
-  "version": "1.12.1",
-  "description": "Minimal Electron, React, PostCSS and Webpack boilerplate to help you get started with building your next app.",
+  "name": "electron-git",
+  "version": "0.0.0",
+  "description": "GIT GUI interface",
   "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate.git"
+    "url": "https://github.com/burwinliu/electro-git"
   },
   "homepage": "",
-  "bugs": {
-    "url": "https://github.com/alexdevero/electron-react-webpack-boilerplate/issues"
-  },
+  "bugs": "",
   "author": {
-    "name": "Alex Devero",
-    "email": "deveroalex@gmail.com",
-    "url": "https://github.com/alexdevero"
+    "name": "Burwin Liu",
+    "email": "burwinliu1@gmail.com",
+    "url": "https://github.com/burwinliu"
   },
   "keywords": [
     "app",
