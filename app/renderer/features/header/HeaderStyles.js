@@ -7,10 +7,11 @@ export const HeaderWrap = {
     
     flexDirection: "row",
     flexGrow: "1",
+    justifyContent: "space-between",
 
     borderBottom: "solid " + colors.outline + " 1px",
 
-    backgroundColor: colors.background,
+    backgroundColor: colors.backgroundHeader,
 
     listStyleType: "none",
     fontFamily: "Roboto, Helvetica, Arial, sans-serif"    
@@ -24,8 +25,9 @@ export const HeaderItem = {
 
 export const HeaderSidebar = {
     width: "300px",
-    boxSizing: "border-box"
-
+    minWidth: "300px",
+    boxSizing: "border-box",
+    flexDirection: "column"
 }
 
 export const HeaderMenuSubText = {

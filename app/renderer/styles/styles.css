@@ -11,6 +11,7 @@ body{
 
 div{
     display: flex;
+    list-style-type: none;
 }
 
 #Root{
@@ -41,9 +42,19 @@ div.MuiListItemText-root > span{
     width: 100%;
     word-break: break-word;
 }
-/* test{
-    background: #f0f2ff;
-    
-    outline: #c3c5cf;
-    primary: #3f51b5;
-} */
+
+
+/* FOR TABLE ROWS IN MAIN BODY, change to be on mouseover instead.*/
+.hoverTableRow{
+    transition: all .3s ease;
+}
+
+.red.hoverTableRow:hover {
+    background-color: #ffb8bf !important;
+}
+.green.hoverTableRow:hover {
+    background-color: #aed4af !important;
+}
+.grey.hoverTableRow:hover {
+    background-color: #dddddd !important;
+}

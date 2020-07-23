@@ -1,5 +1,4 @@
 import {colors} from "../../styles/palette"
-import {headerHeight} from "../../styles/constants"
 
 export const SidebarWrap = {
     maxWidth: "300px",
@@ -8,9 +7,9 @@ export const SidebarWrap = {
 
     overflowY: "auto",
     overflowX: "hidden",
-    maxHeight: "100vh",
 
-    boxShadow: "0.3em 0.3em 1em rgba(0,0,0,0.3)"
+    borderRight: "solid " + colors.outline + " 1px",
+    justifyContent: "space-between"
 }
 
 export const SidebarStyle = {
@@ -19,18 +18,26 @@ export const SidebarStyle = {
     overflowY: "auto"
 }
 
-export const SidebarMenuHeader = {
-    maxHeight: headerHeight,
-    padding: "8px 16px",
-    flexDirection: "column",
-    flexGrow: "1",
-
-    borderBottom: "solid " + colors.outline + " 1px",
-
+export const SidebarCommitMenu = {
+    minHeight: "200px",
     backgroundColor: colors.background,
+    padding: "6px",
 
-    listStyleType: "none",
-    fontFamily: "Roboto, Helvetica, Arial, sans-serif"
+    flexDirection: "column",
+    justifyContent: "space-around",
+
+    borderWidth: "0",
+    borderTop: "solid " + colors.outline + " 1px",
+}
+
+export const SidebarCommitText = {
+    width: "100%",
+    
+}
+
+export const SidebarCommitButtonGroups = {
+    width: "100%",
+    justifyContent: "space-around",
 }
 
 export const SidebarMenuItems = {
@@ -48,9 +55,4 @@ export const SidebarMenuIcons = {
 
 export const SidebarCheckbox = {
     color: colors.primary
-}
-
-export const SidebarText = {
-    whiteSpace: "initial",
-    maxWidth: "100%",
 }

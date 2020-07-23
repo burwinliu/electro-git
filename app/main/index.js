@@ -1,4 +1,4 @@
-import path from 'path';
+import * as path from 'path';
 import { app, crashReporter, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
 
 const isDevelopment = process.env.NODE_ENV === 'development';

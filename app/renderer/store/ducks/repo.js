@@ -1,5 +1,3 @@
-import {watch} from 'fs'
-
 //actions
 const SET_PATH = "repo/SET_PATH"
 const SET_URL = "repo/SET_URL"
@@ -21,8 +19,6 @@ export const repoReducer = (state = initState, action = {}) => {
   }
 }
 
-//action creators
-let fsWait = false;
 export const repoSetPath = (path) => {
   return { type: SET_PATH, payload: path }
 }

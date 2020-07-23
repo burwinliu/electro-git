@@ -6,86 +6,79 @@ import 'fs'
 import simpleGit from 'simple-git';
 
 // Render functions: Render information into HTML DOM objects for input
-
-export const renderGitStatusMenuItem = (statusFile) => {
-    /*
-    @param statusFile [type: object]
-        Structure = {
-            path: str   // path to file
-            working_dir: char // the current directory's status, char corresponding to the official git status notation (see https://git-scm.com/docs/git-status,
-                about half way down as of 2020)
-            index: char // the index's status (or branch maybe?) that has been commited
-        }
-    @return [type: string]: a DOM element (li), containing the path from the file object, an icon corresponding to the status of the git status result
-
-    Will render out a statusFile into a clickable menu item for a sidebar (or anything, but see the possible classes -- can customize according to whatever the notation is)
-    */
-    let newLi = document.createElement('li');
-    newLi.innerHTML = '<input type="checkbox" id="'+ renderId(statusFile.path) +'_checked" checked="checked" class="side-check">'+statusFile.path;
-    newLi.id = renderId(statusFile.path)
-    newLi.classList.add("landing-space");
-    newLi.classList.add("side-click");
-    if (statusFile.working_dir == '?'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right new" title="Not Tracked">sync_disabled</i>`
-    }
-    else if (statusFile.working_dir == '!'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right ignored" title="Ignored">remove</i>`
-    }
-    else if (statusFile.working_dir == 'M'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right modified" title="Modified">sync</i>`
-    }
-    else if (statusFile.working_dir == 'A'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right added" title="Added">add</i>` 
-    }
-    else if (statusFile.working_dir == 'D'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right deleted" title="Deleted">delete</i>` 
-    }
-    else if (statusFile.working_dir == 'R') { 
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right renamed" title="Renamed">assignment_return</i>` 
-    }
-    else if (statusFile.working_dir == 'C') { 
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right copied" title="Copied">content_copy</i>` 
-    }
-    else if (statusFile.working_dir == 'U'){
-        newLi.innerHTML = newLi.innerHTML + `<i class="material-icons right updated-unmerged" title="Updated but unmerged">merge_type</i>`
-    }
-    return newLi;
-}
-
-export const renderGitDiffBody = (fileId, info) => {
-    console.log(fileId, info);
-
-    let result = document.createElement('div');
-
-    let header = document.createElement('div');
-
-    header.classList.add()
-    for(let x in info.chunks){
-        console.log(info.chunks[x])
-
-        newLi = document.createElement('li');
-        newPre = document.createElement('pre')
-        newCode = document.createElement('code')
-        newSpan = document.createElement('span')
-
-        newPre.classList.add("landing-space")
-
-        newSpan.classList.add("break-text")
-
-        newSpan.textContent  = info.chunks[x];
-        newLi.id = fileId + x
-        newLi.appendChild(newSpan)
-        newCode.appendChild(newLi)
-        newPre.appendChild(newCode)
-        result.appendChild(newPre)
-    }
-
-    return result
-}
-
 export const renderId = (file) => {
     file = file.replace(/\W/g, '_');
     return file
+}
+
+export const renderGitChunk = (chunk) => {
+    // Add "-" to file A, "+" to file B until " " is encountered, then wait for the catch up. Repeat.
+    let chunkText = chunk.text
+    let pFrom = Number(chunk.header.fromLine)
+    let pTo = Number(chunk.header.toLine)
+
+    let pA = 0
+    let pB = 0
+
+    const res = []
+
+    for (const i in chunkText){
+        if(chunkText[i].type === "-"){
+            if(pA >= res.length){
+                res.push({
+                    aSign: "-",
+                    aNumber: pFrom,
+                    aText: chunkText[i].body,
+                    bSign: " ",
+                    bNumber: null,
+                    bText: ""
+                })
+            }
+            else{
+                res[pA].aNumber = pFrom
+                res[pA].aText = chunkText[i].body
+                res[pA].aSign = "-"
+            }
+            pA += 1
+            pFrom += 1
+        }
+        else if(chunkText[i].type === "+"){
+            if(pB >= res.length){
+                res.push({
+                    aSign: " ",
+                    aNumber: null,
+                    aText: "",
+                    bSign: "+",
+                    bNumber: pTo,
+                    bText: chunkText[i].body
+                })
+            }
+            else{
+                res[pB].bNumber = pTo
+                res[pB].bText = chunkText[i].body
+                res[pB].bSign = "+"
+            }
+            pB += 1
+            pTo += 1
+        }
+        else{
+            res.push({
+                aSign: " ",
+                aNumber: pFrom,
+                aText: chunkText[i].body,
+                aSign: " ",
+                bNumber: pTo,
+                bText: chunkText[i].body
+            })
+            
+            pA = res.length
+            pB = pA
+
+            pTo += 1
+            pFrom += 1
+        }
+    }
+    return res
 }
 
 export const renderGitDiffInfo = (text) => {
@@ -151,7 +144,9 @@ export const renderGitDiffInfo = (text) => {
                 },
                 text: [],
             }
+            
             let chunkHeader = chunkHead.exec(splitDiff[p])
+            
             if (!chunkHeader){
                 console.log(splitDiff[p])
             }
@@ -161,7 +156,7 @@ export const renderGitDiffInfo = (text) => {
                 toLine: chunkHeader[3],
                 toLineLength: chunkHeader[4],
             }
-            chunk.head = headerInfo
+            chunk.header = headerInfo
             p++ 
             while(p < splitDiff.length && chunkLine.exec(splitDiff[p]) && !headerReg.exec(splitDiff[p]) && !chunkHead.exec(splitDiff[p])){
                 let newChunkLine = chunkLine.exec(splitDiff[p])
@@ -197,26 +192,12 @@ export const helperGitOpen = (path) => {
 }
 
 export const helperGitAddCommit = async (repo, fileNames, msg) => {
-    let index = await repo.refreshIndex()
-    for( let x in fileNames){
-        // todo transition to files and directories seperated
-        if(fs.existsSync(fileNames[x])){
-            await index.addByPath(fileNames[x]);
-        }
-        else{
-            await index.removeByPath(fileNames[x]);
-        }
-        
-    }
-    await index.write();
-    let oid = await index.writeTree();
-    let head = await git.Reference.nameToId(repo, "HEAD");
-    let parent = await repo.getCommit(head);
-    await repo.createCommit("HEAD", renderAuthor(), renderAuthor(), msg, oid, [parent])
+    await repo.add(fileNames)
+    await repo.commit(msg, fileNames)
 }
 
-export const helperGitPush = async (repo, remote, branch) => {
-    await repo.push(remote, branch)
+export const helperGitPush = async (repo) => {
+    await repo.push()
 }
 
 export const helperGitDiff = async (repo, hashA, hashB) => {

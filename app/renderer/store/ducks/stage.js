@@ -15,9 +15,11 @@ const initState = {
 }
 
 export const stageReducer = (state = initState, action = {}) => {
+  const newStatus = state.status
+  const newDiff = state.diff
+  
   switch(action.type){
     case SET_STATUSRECORD:
-      let newStatus = state.status
       newStatus[action.payload.id] = action.payload.value
       return { ...state, status: newStatus };
     case SET_STATUSRECORDOBJ:
@@ -27,7 +29,6 @@ export const stageReducer = (state = initState, action = {}) => {
       return { ...state, status: {} };
       
     case SET_DIFFRECORD:
-      let newDiff = state.diff
       newDiff[action.payload.id] = action.payload.value
       return { ...state, diff: newDiff };
     case SET_DIFFRECORDOBJ:
