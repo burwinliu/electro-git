@@ -28,7 +28,6 @@ export const App = () => {
           </Switch>
         </Router>
       </PersistGate>
-    </Provider>,
-    document.getElementById('Root')
+    </Provider>
   )
 }

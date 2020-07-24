@@ -1,0 +1,47 @@
+body{
+    min-height: 100vh;
+
+    max-height: 100%;
+    max-width:100%;
+    display: flex;
+
+    margin: 0;
+    background-color: #fffef8;
+
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+div{
+    display: flex;
+    list-style-type: none;
+}
+
+#root{
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px #c5c5c5; 
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    box-shadow: inset 0 0 6px #a2a8c7; 
+}
+
+/* FOR DIALOG */
+div.MuiDialog-root > div.MuiDialog-container{
+    margin:auto;
+}
+
+/* FOR TEXT OF SIDEBAR */
+div.MuiListItemText-root > span{
+    width: 100%;
+    word-break: break-word;
+}
