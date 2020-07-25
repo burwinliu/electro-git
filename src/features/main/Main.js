@@ -8,10 +8,6 @@ import {Header} from "../header"
 import {Sidebar} from '../sidebar'
 import {Body} from '../mainbody'
 
-// Toasts (Popup messages)
-import{
-    ErrorToast
-} from '../toasts'
 
 //Styles
 import {MainWrapper, MainContent} from './MainStyle'
@@ -21,12 +17,16 @@ import {
     stageSetStatusObj,
     stageSetDiffObj,
     stageReset,
+    repoReset,
+    appstoreReset,
+    keyReset
 } from '../../store/ducks'
 
 //Service helpers
 import {
     helperGitOpen, helperGitStatus, helperGitDiff,
-    renderGitDiffInfo
+    renderGitDiffInfo,
+    generateSshGit,
 } from "../../services"
 
 import * as path from 'path';
@@ -35,75 +35,83 @@ export const MainPage = (props) => {
     const dirPath = useSelector(state => state.repo.path);
     const dispatch = useDispatch()
 
-    const [errMsg, setErrMsg] = useState("FAILED")
-    const [errOpen, setErrOpen] = useState(false)
-
     const [diffMode, setDiffMode] = useState(true)
+
+    const [loaded, setLoaded] = useState(true)
     
     //ROUTER HOOKS
     const history = useHistory();
 
-    
-
     useEffect(()=>{
-        if(dirPath === ""){
+        generateSshGit("TEST", "TEST");
+        if(dirPath === "" || dirPath===undefined){
             history.push('/')
         }
+        
         const init = async () => {
-            const gitObject = helperGitOpen(dirPath)
-            const statusObj = await helperGitStatus(gitObject)
-            
-            const statusDiff = await helperGitDiff(gitObject)
-            const rendDiff = renderGitDiffInfo(statusDiff)
-                        
-            let storeStatus = {}
-            let storeDiff = {}
+            if(loaded){
+                const gitObject = helperGitOpen(dirPath)
 
-            for (let index in statusObj){
-                storeStatus[statusObj[index].path] = statusObj[index]
+                const statusObj = await helperGitStatus(gitObject)
+                const diffObj = await helperGitDiff(gitObject)
+                const rendDiff = renderGitDiffInfo(diffObj)
+                console.log(dirPath, "PATH RENDERED", statusObj, diffObj)
+                let storeStatus = {}
+                let storeDiff = {}
+
+                for (let index in statusObj){
+                    storeStatus[statusObj[index].path] = statusObj[index]
+                }
+
+                for (let index in rendDiff){
+                    storeDiff[index] = rendDiff[index]
+                }
+
+                dispatch(stageReset());
+                dispatch(stageSetStatusObj(storeStatus))
+                dispatch(stageSetDiffObj(storeDiff))
             }
-
-            for (let index in rendDiff){
-                storeDiff[index] = rendDiff[index]
-            }
-
-            dispatch(stageReset());
-            dispatch(stageSetStatusObj(storeStatus))
-            dispatch(stageSetDiffObj(storeDiff))
         }
 
         init();
         try{
-            watch(dirPath, { recursive: true, delay: 300 }, async (evt, name) => {
-                const splitPath = name.split(path.sep)
-                for (const i in splitPath){
-                    if(splitPath[i] === '.git') return
+            const gitObject = helperGitOpen(dirPath)
+            console.log(dirPath)
+            gitObject.checkIsRepo().then((isRepo) => {
+                console.log(isRepo)
+                if (isRepo && dirPath !== "" && loaded){
+                    console.log("WILL WATCH", dirPath)
+                    watch(dirPath, { recursive: true, delay: 300 }, async (evt, name) => {
+                        const splitPath = name.split(path.sep)
+                        for (const i in splitPath){
+                            if(splitPath[i] === '.git') return
+                        }
+                        //TODO make sure any git folder or gitignored folder is ignored
+                        if(evt === "update"){
+                            await init();
+                        }
+                        else if(evt == "remove"){
+                            await init();
+                        }
+                        
+                    });
                 }
-                //TODO make sure any git folder or gitignored folder is ignored
-                if(evt === "update"){
-                    await init();
-                }
-                else if(evt == "remove"){
-                    await init();
-                }
-                
-            });
+            })
+            
         }
         catch(err){
             console.log("FAILED DUE TO ", err);
-
-            setErrMsg(err)
-            setErrOpen(true)
+            dispatch(repoReset())
+            history.push('/')
             return
         }
         return () => {
             dispatch(stageReset());
+            dispatch(appstoreReset()) 
+            setLoaded(false)
         }
     }, [dirPath, dispatch])
 
-    const handleErrClose = () => {
-        setErrOpen(false)
-    }
     const handleRefresh = () => {
         const gitObject = helperGitOpen(dirPath)
         dispatch(stageReset());
@@ -125,6 +133,7 @@ export const MainPage = (props) => {
             dispatch(stageSetDiffObj(storeDiff))
         })
     }
+
     const handleModeSwitch = () => {
         setDiffMode(!diffMode)
     }
@@ -135,11 +144,6 @@ export const MainPage = (props) => {
             <div style={MainContent}>
                 <Sidebar refresh={handleRefresh}/>
                 <Body refresh={handleRefresh} mode={diffMode}/>
-                <ErrorToast
-                    open={errOpen}
-                    handleClose={handleErrClose}
-                    message={errMsg}
-                />
             </div>
         </div>
     )

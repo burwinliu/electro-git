@@ -1,7 +1,7 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, dialog  } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -30,11 +30,13 @@ if (process.platform === 'win32') {
 
 function createWindow() {
   // Create the browser window.
+  const display = screen.getPrimaryDisplay()
+  const maxiSize = display.workAreaSize
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
-    minWidth: 640,
-    minHeight: 600,
+    width: maxiSize.width,
+    height: maxiSize.height,
+    minWidth: maxiSize.width * .6,
+    minHeight: maxiSize.height * .6,
     show: false,
     webPreferences: {
       nodeIntegration: true,
@@ -105,6 +107,8 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+//zoom stuff
 
 //hold the array of directory paths selected by user
 ipcMain.on('selectDirectory', async function(e) {

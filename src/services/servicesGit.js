@@ -5,10 +5,10 @@
 import 'fs'
 import simpleGit from 'simple-git';
 
-// Render functions: Render information into better, understandable information to be rendered
+// Render functions: Render information into better, understandable information to be loaded
 export const renderGitChunkTwoFileFormat = (chunk) => {
     /*
-    @param chunk [type Object] -> Chunk that has been rendered by method renderGitDiffInfo (see below) which represents a single git chunk
+    @param chunk [type Object] -> Chunk that has been loaded by method renderGitDiffInfo (see below) which represents a single git chunk
         structure = {
             header: { ->  '@@ -frontLine,frontLineLength +toLine,toLineLength @@' parsed
                 fromLine: int,
@@ -140,7 +140,6 @@ export const renderGitDiffInfo = (text) => {
     let chunkLine = /([ +\-\\])(.*)/
 
     let p = 0
-    console.log(text)
     while(p < splitDiff.length && headerReg.exec(splitDiff[p])){
         let current = {
             fileA: null,
@@ -152,13 +151,13 @@ export const renderGitDiffInfo = (text) => {
 
         current.fileA = header[1]
         current.fileB = header[2]
+        p++
 
         // Set up the header and record the information
-        while(p < splitDiff.length && !chunkHead.exec(splitDiff[p])){
+        while(p < splitDiff.length && !chunkHead.exec(splitDiff[p]) && !headerReg.exec(splitDiff[p])){
             current.meta.push(splitDiff[p])
             p++
         }
-
         while(p < splitDiff.length && chunkHead.exec(splitDiff[p]) && !headerReg.exec(splitDiff[p])){
             let chunk = {
                 header: {
@@ -198,8 +197,7 @@ export const renderGitDiffInfo = (text) => {
                 }
                 chunk.text.push(chunkLineInput)
                 p++
-            }
-            console.log(chunk)
+            } 
             current.chunks.push(chunk)
         }
         result[current.fileB] = current
@@ -207,11 +205,11 @@ export const renderGitDiffInfo = (text) => {
     return result;
 }
 
-export const renderAuthor = () => {
-    // TODO update
-    let result = git.Signature.now(getUserName(), getUserEmail());
-    return result
+export const renderGitEnvSshCmd = (sshPath) => {
+    return "ssh -i" + sshPath + "-o IdentitiesOnly=yes";
 }
+
+
 
 //Helper Functions: Perform actions given information to furfill a request
 export const helperGitInit = async (path) => {
@@ -221,6 +219,17 @@ export const helperGitInit = async (path) => {
 
 export const helperGitOpen = (path) => {
     return simpleGit(path);
+}
+
+export const helperGitConfig = (repo, name, email) => {
+    const commandName = ['config', 'user.name', name]
+    const configMail = [ 'config', 'user.email', email]
+    repo.raw(commandName, (err) => {
+        console.log(err)
+    })
+    repo.raw(configMail, (err) => {
+        console.log(err)
+    })
 }
 
 export const helperGitAdd = async (repo, fileNames) => {
@@ -243,6 +252,7 @@ export const helperGitDiff = async (repo, hashA, hashB) => {
         returns string of git diff return object
     */
     let options;
+    let diff;
     if(hashA && hashB){
         options = [
             hashA,
@@ -250,7 +260,13 @@ export const helperGitDiff = async (repo, hashA, hashB) => {
         ]
         return repo.diff(options)
     }
-    return repo.diff(["HEAD"])
+    try{
+        diff = await repo.diff(["HEAD"])
+    }
+    catch(err){
+        diff = await repo.diff(["--cached"])
+    }
+    return diff
 }
 
 export const helperGitStatus = async (repo, fileName) => {

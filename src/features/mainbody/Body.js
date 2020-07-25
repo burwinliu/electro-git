@@ -22,6 +22,7 @@ export const Body = (props) => {
     const file = useSelector(state => state.appstore.currentDiff);
     const dir = useSelector(state => state.repo.path)
     const fileDiff = useSelector(state => state.stage.diff);
+    const fileStatus = useSelector(state => state.stage.status);
 
     const [fileA, setFileA] = useState("")
     const [fileB, setFileB] = useState("")
@@ -97,7 +98,7 @@ export const Body = (props) => {
                         
                         let fromLine = currentChunk.header.fromLine
                         let toLine = currentChunk.header.toLine
-                        let rendered = renderGitChunkTwoFileFormat(currentChunk);
+                        let loaded = renderGitChunkTwoFileFormat(currentChunk);
 
                         return(
                             <div key={index} style={BodyContent}>
@@ -120,8 +121,8 @@ export const Body = (props) => {
                                         </tr>
                                         {renderFunctionHeaderRow(currentChunk.header.functionContext)}
                                         {
-                                            Object.keys(rendered).map(textIndex => {
-                                                const currentLine = rendered[textIndex]
+                                            Object.keys(loaded).map(textIndex => {
+                                                const currentLine = loaded[textIndex]
 
                                                 let colorA = "white"
                                                 let colorB = "white"

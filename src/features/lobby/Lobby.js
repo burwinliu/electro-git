@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -30,13 +30,20 @@ import{
 import {
     helperGitOpen,
     helperGitInit,
-    helperGitClone
+    helperGitClone,
+    helperGitStatus,
+    helperGitDiff,
+    renderGitDiffInfo
 } from '../../services'
 
 //REDUX
 import {
     repoSetPath,
-    repoSetUrl
+    repoSetUrl,
+    stageSetDiffObj,
+    stageSetStatusObj,
+    stageReset,
+    appstoreReset
 } from '../../store/ducks'
 
 export const LobbyPage = () => {
@@ -50,6 +57,8 @@ export const LobbyPage = () => {
     const [errMsg, setErrMsg] = useState("FAILED")
     const [errOpen, setErrOpen] = useState(false)
 
+    const [loaded, setLoaded] = useState(true)
+
     //REDUX HOOKS
     const dirPath = useSelector(state => state.repo.path);
     const dispatch = useDispatch();
@@ -57,23 +66,45 @@ export const LobbyPage = () => {
     //ROUTER HOOKS
     const history = useHistory();
 
-    if(dirPath !== ""){
-        history.push('/main')
-    }
+    useEffect(()=>{
+        if(dirPath !== "" && dirPath !== undefined){
+            history.push('/main')
+        }
+        return ()=>{
+            setLoaded(false)
+        }
+    }, [])
 
     const handleClickOpenOpen = () => {
-        setOpenOpen(true);
+        if(loaded){
+            setOpenOpen(true);
+        }
+        
     };
     const handleCloseOpen = () => {
-        setOpenOpen(false);
+        if(loaded){
+            setOpenOpen(false);
+        }
     }; 
     const handleConfirmOpen = async () => {
         if (dir){
             try{
-                helperGitOpen(dir)
-                dispatch(repoSetPath(dir))
-                setOpenOpen(false);
-                history.push('/main')
+                const gitObj = helperGitOpen(dir)
+                if(await gitObj.checkIsRepo()){
+                    console.log(gitObj, dir)
+                    const rootDir = await gitObj.revparse({'--show-toplevel': null })
+                    if(loaded){
+                        console.log(rootDir)
+                        dispatch(repoSetPath(rootDir))
+                        await handleRefresh()
+                        history.push('/main')
+                    }
+                }
+                else{
+                    setErrMsg("Open Failed -- Directory provided is not a repo. Did you mean to init?")
+                    setErrOpen(true)
+                }
+                
                 return
             }
             catch(err){
@@ -90,10 +121,16 @@ export const LobbyPage = () => {
 
     //Create Events
     const handleClickOpenCreate = () => {
-        setOpenCreate(true);
+        if(loaded){
+            setOpenCreate(true);
+        }
+       
     };
     const handleCloseCreate = () => {
-        setOpenCreate(false);
+        if(loaded){
+            setOpenCreate(false);
+        }
+        
     }; 
     const handleConfirmCreate = async () => {
         if (dir){
@@ -101,14 +138,14 @@ export const LobbyPage = () => {
                 helperGitOpen(dir)
                 await helperGitInit(dir);
                 dispatch(repoSetPath(dir))
-                setOpenCreate(false);
+                await handleRefresh()
                 history.push('/main')
                 return
             }
             catch(err){
                 console.log(err)
 
-                setErrMsg("Open Failed --Directory provided was unable to be opened")
+                setErrMsg("Open Failed -- Directory provided was unable to be Created")
                 setErrOpen(true)
                 return
             }
@@ -119,20 +156,26 @@ export const LobbyPage = () => {
     
     // Clone Events
     const handleClickOpenClone = () => {
-        setOpenClone(true);
+        if(loaded){
+            setOpenClone(true);
+        }
+        
     };
     const handleCloseClone = () => {
-        setOpenClone(false);
+        if(loaded){
+            setOpenClone(false);
+        }
     }; 
-    const handleConfirmClone = () => {
+    const handleConfirmClone = async () => {
         if (dir && url){
             try{
+                
                 const repo = helperGitOpen(dir)
                 helperGitClone(repo, url, dir);
                 dispatch(repoSetPath(dir))
                 dispatch(repoSetUrl(dir))
-
-                setOpenClone(false);
+                await handleRefresh()
+                
                 history.push('/main')
                 return
             }
@@ -142,18 +185,50 @@ export const LobbyPage = () => {
         }
     }; 
 
-    const changeDir = (input) => {
-        setDir(input)
-    }
-    const changeDirEvent = (evt) => {
-        setDir(evt.target.value)
-    }
-    const changeUrl = (input) => {
-        setUrl(input)
+    const handleErrClose = () => {
+        if(loaded){
+            setErrOpen(false)
+        }
     }
 
-    const handleErrClose = () => {
-        setErrOpen(false)
+    const changeDir = (input) => {
+        if(loaded){
+            setDir(input)
+        }
+    }
+    const changeDirEvent = (evt) => {
+        if(loaded){
+            setDir(evt.target.value)
+        }
+    }
+    const changeUrl = (input) => {
+        if(loaded){
+            setUrl(input)
+        }
+    }
+
+    
+
+    const handleRefresh = () => {
+        const gitObject = helperGitOpen(dirPath)
+        dispatch(stageReset());
+
+        helperGitStatus(gitObject).then((statusObj) =>{
+            let storeStatus = {}
+            for (let index in statusObj){
+                storeStatus[statusObj[index].path] = statusObj[index]
+            }
+            dispatch(stageSetStatusObj(storeStatus))
+        })
+        
+        helperGitDiff(gitObject).then((statusDiff)=>{
+            const rendDiff = renderGitDiffInfo(statusDiff)
+            let storeDiff = {}
+            for (let index in rendDiff){
+                storeDiff[index] = rendDiff[index]
+            }
+            dispatch(stageSetDiffObj(storeDiff))
+        })
     }
 
     return (
@@ -180,7 +255,7 @@ export const LobbyPage = () => {
                 title="Open Repository" 
                 confirmText = "Open"
                 open={openOpen} 
-                directory={dir}
+                directory={dir||""}
                 
                 handleClose={handleCloseOpen}
                 handleConfirm={handleConfirmOpen}
@@ -191,7 +266,7 @@ export const LobbyPage = () => {
                 title="Create Repository" 
                 confirmText="Create"
                 open={openCreate} 
-                directory={dir}
+                directory={dir||""}
 
                 handleClose={handleCloseCreate}
                 handleConfirm={handleConfirmCreate}
@@ -202,7 +277,7 @@ export const LobbyPage = () => {
                 title="Clone Repository"
                 confirmText="Clone" 
                 open={openClone}
-                directory={dir}
+                directory={dir||""}
                 url={url}
 
                 handleClose={handleCloseClone}

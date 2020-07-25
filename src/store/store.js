@@ -2,7 +2,7 @@
 
 import { createStore, combineReducers } from 'redux'
 
-import {appstore, repo, stage, user} from './ducks'
+import {appstore, key, repo, stage, user} from './ducks'
 
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
@@ -14,6 +14,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   appstore,
+  key,
   repo,
   stage,
   user,

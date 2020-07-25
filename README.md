@@ -7,20 +7,21 @@ Primary: #3f51b5
 
 
 # Todo
+disassociate githelper objects with programming, make serviceGit full interface for EVERYTHING, wrapping it all in (provide paths, not objects, to execute)
+
 Design better color scheme, background (gradiant with focus on the middle -- lighting or something on those lines), expand to more space and responsive to size of window. Finally, use more colors 
 
-Allow watch for new commits ( need to modify my parsing of git diff? )
-
 Form for authentication -- paths to ssh keys and all that 
-
-Figure out a way to move away from remote (potential issues?) -- When the time comes. As of right now, a decent work around is via remote.require() to get nodegit packages  
-
-Add fs.watch support for linux (only on mac and windows right now as we use fs.watch recursive options)
 
 Make so updates only render diif of files specifically, not all files at once to save on efficiency
 
 # Notes
-git commit and push
+TODO :authentication for clone, set up of repo etc.
+
+setup diffefrent tables in body depending on status (undefined file, nothing to render, etc.)
+
+Have a rerender timing (so spamming wont cause sudden hiccups) -- implement isloading sequnce and black out table until *loading is finished*. Implement reload inside the body as well!
+
 
 define configurations --take snapshot names (tag a group of files) anbd be able to retrieve files that are broken
 create snap shots, difference between snapshot, see file and see difference between files

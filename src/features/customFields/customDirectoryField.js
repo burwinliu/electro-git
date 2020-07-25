@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {Button} from '@material-ui/core'
 
@@ -12,13 +12,19 @@ export const CustomDirectoryField = (props) => {
     const getDirectory = () => {
         ipcRenderer.send('selectDirectory');
     }
-
-    ipcRenderer.on("selectDirectory", (e, files) => {
-        const filePath = files.filePaths[0]
-        if (!files.cancelled){
-            props.handleDirectory(filePath)
+    useEffect(()=>{
+        const renderFunc = (e, files) => {
+            const filePath = files.filePaths[0]
+            if (!files.cancelled){
+                props.handleDirectory(filePath)
+            }
         }
-    });
+        ipcRenderer.on("selectDirectory", renderFunc);
+        return () => {
+            ipcRenderer.removeListener("selectDirectory", renderFunc)
+        }
+    })
+    
     
     return(
         <div style={FieldWrapper}>
