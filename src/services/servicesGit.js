@@ -106,6 +106,78 @@ export const renderGitChunkTwoFileFormat = (chunk) => {
     return res
 }
 
+export const renderGitChunkCompressed = (chunk) => {
+    /*
+    @param chunk [type Object] -> Chunk that has been loaded by method renderGitDiffInfo (see below) which represents a single git chunk
+        structure = {
+            header: { ->  '@@ -frontLine,frontLineLength +toLine,toLineLength @@' parsed
+                fromLine: int,
+                fromLineLength: int,
+                toLine: int,
+                toLineLength: int,
+            },
+            text: [{
+                type: string,
+                body: string
+            }, ... ], -> body of each chunk
+        }
+    @return [type [object]]
+        structure = [{
+            aSign: string,
+            aNumber: Number,
+            bSign: string,
+            bNumber: Number,
+            text: string
+        }]
+
+    Renders a git chunk into a one file format (compressed) by adding into the 
+
+    */
+   let chunkText = chunk.text
+    let pFrom = Number(chunk.header.fromLine)
+    let pTo = Number(chunk.header.toLine)
+
+    const res = []
+
+    for (const i in chunkText){
+        if(chunkText[i].type === "-"){
+            res.push({
+                aSign: "-",
+                aNumber: pFrom,
+                bSign: "",
+                bNumber: null,
+                text: chunkText[i].body,
+            })
+            pFrom += 1
+        }
+        else if(chunkText[i].type === "+"){
+            res.push({
+                aSign: "",
+                aNumber: null,
+                bSign: "+",
+                bNumber: pTo,
+                text: chunkText[i].body
+            })
+            pTo += 1
+        }
+        else if(chunkText[i].type === "\\"){
+            continue
+        }
+        else{
+            res.push({
+                aSign: " ",
+                aNumber: pFrom,
+                aSign: " ",
+                bNumber: pTo,
+                text: chunkText[i].body
+            })
+            pTo += 1
+            pFrom += 1
+        }
+    }
+    return res
+}
+
 export const renderGitDiffInfo = (text) => {
     /* 
         @param text [type string]
@@ -241,8 +313,9 @@ export const helperGitAddCommit = async (repo, fileNames, msg) => {
     await repo.commit(msg, fileNames)
 }
 
-export const helperGitPush = async (repo) => {
-    await repo.push()
+export const helperGitPush = (path) => {
+    const repo = helperGitOpen(path)
+    return repo.push()
 }
 
 export const helperGitDiff = async (repo, hashA, hashB) => {

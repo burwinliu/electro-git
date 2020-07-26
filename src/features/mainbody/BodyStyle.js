@@ -26,7 +26,7 @@ export const BodyHeaderItem = {
     borderStyle: "solid",
     borderColor: colors.outline,
     alignItems: "center",
-    padding : "0 8px",
+    padding : "8px",
     boxSizing: "border-box",
     maxWidth: "calc(calc(100vw - 300px)/2)"
 }
@@ -53,14 +53,32 @@ export const BodyContentTable = {
     borderSpacing: "0",
     borderStyle: "solid",
     borderColor: colors.outline,
-    borderWidth: "1px",
+    borderWidth: "2px",
 }
-export const BodyContentTableHeader = {
-    padding: "0 6px"
+export const BodyHeaderFileFont = {
+    fontWeight: "normal",
+    marginBlockStart: "0.5rem",
+    marginBlockEnd: "0.5rem"
+}
+export const BodyHeaderSubFont={
+    color: colors.blueSub, 
+}
+export const BodyContentTableHeaderSub={
+    backgroundColor: colors.offWhite,
+}
+export const BodyContentTableHeaderMain={
+    backgroundColor: colors.offWhite
+}
+export const BodyContentTableHeaderContent = {
+    padding: "0 20px",
+    
 }
 export const BodyContentRowHeader = {
     flexDirection: "row",
     justifyContent: "space-evenly"
+}
+export const BodyContentCode = {
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
 }
 
 export const BodyContentTableAnimate = {
@@ -69,19 +87,13 @@ export const BodyContentTableAnimate = {
             boxSizing:"border-box",
             borderStyle: "solid",
             borderColor: "transparent",
-            borderWidth: "1px 0"
+            borderWidth: "2px 0"
         },
         "&:hover > td":{
             borderStyle: "solid",
-            borderColor: colors.outlineTableRow,
-            borderWidth: "1px 0",
+            borderColor: colors.outlineDark,
+            borderWidth: "2px 0",
         },
-        "&:hover > .red":{
-            backgroundColor: colors.redLightHover
-        },
-        "&:hover > .green":{
-            backgroundColor: colors.greenLightHover
-        },
-    },
+    }
 
 }

@@ -32,8 +32,10 @@ import {colors} from "../../styles/palette"
 
 import {
     helperGitOpen,
-    helperGitAddCommit
+    helperGitAddCommit,
+    helperGitPush
 } from "../../services"
+import { GitError } from 'simple-git';
 
 export const Sidebar = (props) => {
     const filePath = useSelector(state => state.repo.path);
@@ -45,6 +47,9 @@ export const Sidebar = (props) => {
     const [commitMsg, setCommitMsg] = useState('');
 
     const [focused, setFocused] = useState("")
+
+    const [errMsg, setErrMsg] = useState("ERROR")
+    const [errToast, setErrToast] = useState("false")
 
     useEffect(() => {
         let temp = {}
@@ -90,8 +95,17 @@ export const Sidebar = (props) => {
     }
 
     const handlePush = (evt) => {
-        const gitObj = helperGitOpen(filePath)
-        helperGitPush(gitObj)
+        helperGitPush(filePath).catch((err) => {
+            if (err instanceof GitError){
+                console.log("CAUGHT")
+                setErrMsg(" This Repository does not have a push destination configured. ")
+                setErrToast(true)
+                throw err
+            }
+            else{
+                throw err
+            }
+        })
     }
 
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import {Button, ButtonGroup} from "@material-ui/core"
+import {Button, ButtonGroup, Snackbar} from "@material-ui/core"
 import { GitHub } from '@material-ui/icons';
 
 // STYLES
@@ -21,10 +21,6 @@ import {
     ModalFormDirectory,
     ModalFormDirectoryAndUrl
 } from '../modals'
-// Toasts (Popup messages)
-import{
-    ErrorToast
-} from '../toasts'
 
 // GIT HELPER
 import {
@@ -287,10 +283,12 @@ export const LobbyPage = () => {
                 handleUrlChange={changeUrl}
             />
 
-            <ErrorToast
+            <Snackbar
                 open={errOpen}
-                handleClose={handleErrClose}
+                onClose={handleErrClose}
                 message={errMsg}
+                autoHideDuration={6000}
+                severity="error"
             />
         </div>
     )

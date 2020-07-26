@@ -43,7 +43,6 @@ export const MainPage = (props) => {
     const history = useHistory();
 
     useEffect(()=>{
-        generateSshGit("TEST", "TEST");
         if(dirPath === "" || dirPath===undefined){
             history.push('/')
         }
@@ -55,7 +54,6 @@ export const MainPage = (props) => {
                 const statusObj = await helperGitStatus(gitObject)
                 const diffObj = await helperGitDiff(gitObject)
                 const rendDiff = renderGitDiffInfo(diffObj)
-                console.log(dirPath, "PATH RENDERED", statusObj, diffObj)
                 let storeStatus = {}
                 let storeDiff = {}
 

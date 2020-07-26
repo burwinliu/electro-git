@@ -19,7 +19,7 @@ export const SidebarStyle = {
 }
 
 export const SidebarCommitMenu = {
-    minHeight: "200px",
+    minHeight: "250px",
     backgroundColor: colors.background,
     padding: "6px",
 
