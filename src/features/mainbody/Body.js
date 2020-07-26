@@ -32,8 +32,6 @@ export const Body = (props) => {
         setFileB(b)
     }
 
-    
-
     const trackCurrentFile = async () => {
         const gitObject = helperGitOpen(dir)
         await helperGitAdd(gitObject, [file]);
@@ -41,35 +39,6 @@ export const Body = (props) => {
         if (fileDiff !== undefined && fileDiff[file] !== undefined){
             setFiles(fileDiff[file].fileA, fileDiff[file].fileB)
         }
-    }
-
-    
-
-    const renderHeader = () => {
-        if(!fileTracked){
-            return(
-                <div style={BodyHeaderWrap}> 
-                    <div style={{...BodyHeaderItem, borderWidth: "0"}}>
-                        File {file} is not being tracked
-                    </div>
-                </div>
-            )
-        }
-        if (props.mode){
-            return(
-                <div style={BodyHeaderWrap}>
-                    <div style={{...BodyHeaderItem, width: "50%", borderWidth: "0 1px 0 0"}}>
-                        {fileA} (Past File)
-                    </div>
-                    <div style={{...BodyHeaderItem, width: "50%", borderWidth: "0"}}>
-                        {fileB} (Current File)
-                    </div>
-                </div>
-            )
-        }
-        return (
-            <div>{fileA}, {fileB} (WITH SIDE BY SIDE)</div>
-        )
     }
 
     const renderContent = () => {
