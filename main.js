@@ -1,7 +1,7 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog, screen, ipcRenderer } = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -33,11 +33,12 @@ function createWindow() {
   const display = screen.getPrimaryDisplay()
   const maxiSize = display.workAreaSize
   mainWindow = new BrowserWindow({
-    width: maxiSize.width,
-    height: maxiSize.height,
+    width: maxiSize.width*.8,
+    height: maxiSize.height*.8,
     minWidth: maxiSize.width * .6,
     minHeight: maxiSize.height * .6,
     show: false,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -62,7 +63,7 @@ function createWindow() {
   }
 
   mainWindow.loadURL(indexPath)
-
+  mainWindow.setResizable(true)
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
@@ -75,6 +76,14 @@ function createWindow() {
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
+  })
+
+  mainWindow.on('maximize', function() {
+    mainWindow.webContents.send("isMaximize", true)
+  })
+
+  mainWindow.on('unmaximize', function() {
+    mainWindow.webContents.send("isMaximize", false)
   })
 
   // Emitted when the window is closed.
@@ -110,7 +119,26 @@ app.on('activate', () => {
 
 //zoom stuff
 
-//hold the array of directory paths selected by user
+
+// Menu Controls for the windowcontrols (in menu items)
+ipcMain.on('closeWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.close()
+  }
+});
+
+ipcMain.on('toggleMaxWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+  }
+});
+
+ipcMain.on('minWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.minimize()
+  }
+});
+//hold the array of directory paths selected by user (for opening a dialog)
 ipcMain.on('selectDirectory', async function(e) {
   const dir = await dialog.showOpenDialog(mainWindow, {
       properties: ['openDirectory']
