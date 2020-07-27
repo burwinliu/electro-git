@@ -19,6 +19,11 @@ export const SidebarStyle = {
     overflowY: "auto"
 }
 
+export const SidebarHistButtons = {
+    flexDirection: "row",
+    flexGrow: "1",
+}
+
 export const SidebarCommitMenu = {
     minHeight: "200px",
     backgroundColor: colors.background,

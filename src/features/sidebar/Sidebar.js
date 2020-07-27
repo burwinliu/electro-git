@@ -13,16 +13,16 @@ import {
     FormControl, FormHelperText, InputLabel, Input
 } from '@material-ui/core';
 
-import AddIcon from '@material-ui/icons/Add'
-import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory';
-import ClearIcon from '@material-ui/icons/Clear';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-import DeviceUnknownIcon from '@material-ui/icons/DeviceUnknown';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
-import MergeTypeIcon from '@material-ui/icons/MergeType';
-
-import { Label } from '@material-ui/icons';
+import { 
+    Add as AddIcon, 
+    ChangeHistory as ChangeHistoryIcon, 
+    Clear as ClearIcon,
+    DeleteOutlineOutlined as DeleteOutlineOutlinedIcon,
+    DeviceUnknown as DeviceUnknownIcon,
+    EditOutlined as EditOutlinedIcon,
+    FileCopyOutlined as FileCopyOutlinedIcon,
+    MergeType as MergeTypeIcon
+ } from '@material-ui/icons';
 
 import {
     appstoreSetCurrentDiff,
@@ -31,6 +31,7 @@ import {
 //styles
 import {
     SidebarWrap, SidebarStyle, 
+    SidebarHistButtons,
     SidebarMenuItems, SidebarMenuIcons, SidebarCheckbox,
     SidebarCommitMenu, SidebarCommitText, SidebarCommitSubText, SidebarCommitButtonGroups
 } from './SidebarStyle'
@@ -48,7 +49,7 @@ import {
 import { GitError } from 'simple-git';
 
 
-export const Sidebar = (props) => {
+export const SidebarChanges = (props) => {
     const filePath = useSelector(state => state.repo.path);
     const fileStatus = useSelector(state => state.stage.status);
 
@@ -64,9 +65,14 @@ export const Sidebar = (props) => {
     const [tagText, setTagText] = useState("")
     const [tagMessage, setTagMessage] = useState("")
 
+    const [loaded, setLoaded] = useState(true)
+
+    useEffect( () => {
+        props.refresh()
+    }, [filePath])
     
     useEffect(() => {
-        // Set up the 
+        // Set up the file status
         let temp = {}
         for ( let i in fileStatus) {
             temp[i] = true
@@ -74,6 +80,13 @@ export const Sidebar = (props) => {
 
         setChecked(temp)
     }, [fileStatus])
+
+    useEffect(() => {
+        // Prevent memory leak
+        return () => {
+            setLoaded(false)
+        }
+    }, [])
 
     const handleIconClick = (id) => {
         dispatch(appstoreSetCurrentDiff(id))
@@ -99,7 +112,6 @@ export const Sidebar = (props) => {
                 toCommit.push(i)
             }
         }
-        console.log(commitMsg, "THIS IS MSG")
         await helperGitAddCommit(filePath, toCommit ,commitMsg)
         setCommitMsg("")
         props.refresh()
@@ -110,20 +122,26 @@ export const Sidebar = (props) => {
     }
 
     const handlePush = (evt) => {
+        console.log("PUSHING")
         helperGitPush(filePath)
             .then((response) => {
-                console.log(response)
-                setToastMsg("Push to " + response.repo + "successful.")
-                setToast(true)
-            })
-            .catch((err) => {
-                if (err instanceof GitError){
-                    console.log("CAUGHT")
-                    setToastMsg(" This Repository does not have a push destination configured. ")
+                if(loaded){
+                    console.log(response)
+                    setToastMsg("Push to " + response.repo + " successful.")
                     setToast(true)
                 }
-                else{
-                    throw err
+                
+            })
+            .catch((err) => {
+                if(loaded){
+                    if (err instanceof GitError){
+                        console.log("CAUGHT")
+                        setToastMsg(" This Repository does not have a push destination configured. ")
+                        setToast(true)
+                    }
+                    else{
+                        throw err
+                    }
                 }
             })
     }
@@ -160,6 +178,7 @@ export const Sidebar = (props) => {
     let statusIcon = null
     
     if(fileStatus !== undefined){
+        console.log(filePath, "FILE PATH");
         toRender = fileStatus
     }
 
@@ -312,6 +331,7 @@ export const Sidebar = (props) => {
                             multiline rows={5}
                             style={{padding: "0", margin: "0"}}
                             onChange={handleCommitMsg}
+                            value={commitMsg}
                         />
                     </FormControl>
                 </div>
@@ -337,6 +357,33 @@ export const Sidebar = (props) => {
                 handleConfirm={handleTagConfirm}
             />
             
+        </div>
+    )
+}
+
+export const SidebarHistory = (props) => {
+    return ( 
+        <div style={SidebarWrap}>
+            <p>testing</p>
+        </div>
+    )
+}
+
+export const Sidebar = (props) => {
+    const handleHist = () => {
+        props.setHist(true)
+    }
+
+    const handleChange = () => {
+        props.setHist(false)
+    }
+    return (
+        <div style={{flexDirection: "column"}}>
+            <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
+                <Button style={{...SidebarHistButtons}} onClick={handleChange}>Changes</Button>
+                <Button style={{...SidebarHistButtons}} onClick={handleHist}>History</Button>
+            </ButtonGroup>
+            {props.histControl ? <SidebarHistory refresh={props.refresh}/> : <SidebarChanges refresh={props.refresh}/> }
         </div>
     )
 }

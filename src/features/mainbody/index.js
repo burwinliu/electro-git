@@ -1,1 +1,1 @@
-export {Body as Body} from "./Body"
+export * from "./Body"

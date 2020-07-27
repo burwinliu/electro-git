@@ -3,11 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import { 
-    Button, ButtonGroup,
-    Collapse, List, ListItem, ListItemText,
-    Menu,MenuItem,
+    Button, ButtonGroup, Icon,
+    Collapse, List, ListItem, ListItemText, ListItemIcon, Divider,
     withStyles,
+    ClickAwayListener,
 } from '@material-ui/core';
+
+import {
+    ArrowDropDown as ArrowDropDownIcon,
+    ArrowDropUp as ArrowDropUpIcon,
+    Settings as SettingsIcon
+} from '@material-ui/icons';
 
 import * as path from 'path';
 
@@ -38,8 +44,9 @@ export const Header = (props) => {
             alignItems: "start",
         },
         label: {
-            flexDirection: "column",
+            flexDirection: "row",
             minWidth: "268px",
+            justifyContent: "space-between"
         },
     }))(Button);
 
@@ -63,26 +70,50 @@ export const Header = (props) => {
         history.push('/main')
     }
 
-    const handleRepoToggle = (event) => {
-        setRepoNav(!repoNav);
+    const handleRepoOpen = (evt) => {
+        setRepoNav(true);
     };
+    const handleRepoClose = (evt) => {
+        setRepoNav(false)
+    }
 
     return (
         <div style={HeaderWrap}>
             <div>
-                <div style={{flexDirection: "column", height: "fit-content"}}>
-                    <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleRepoToggle}>
-                        <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
-                        <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
-                    </HeaderButton>
-                    <SidebarDropdown in={repoNav}>
-                        <List style={{...HeaderRepoSidebarDropdown}}>
-                            <ListItem button>
-                                <p>Repo Settings</p>
-                            </ListItem>
-                        </List>
-                    </SidebarDropdown>
-                </div>
+                <ClickAwayListener onClickAway={handleRepoClose}>
+                    <div style={{flexDirection: "column", height: "fit-content"}}>
+                        {repoNav? 
+                            <HeaderButton style={{...HeaderItem, ...HeaderSidebar, backgroundColor: colors.background, borderWidth: "0 1px 0 0"}} onClick={handleRepoClose}>
+                                <div style={{flexDirection:  "column"}}>
+                                    <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
+                                    <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
+                                </div>
+                                <ArrowDropUpIcon fontSize="large"/>
+                            </HeaderButton> 
+                            :
+                            <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleRepoOpen}>
+                                <div style={{flexDirection:  "column"}}>
+                                    <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
+                                    <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
+                                </div>
+                                <ArrowDropDownIcon fontSize="large"/>
+                            </HeaderButton> 
+                        }   
+                        <SidebarDropdown in={repoNav}>
+                            <List style={{...HeaderRepoSidebarDropdown}}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <SettingsIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Repository Settings" />
+                                </ListItem>
+                                <Divider />
+                            </List>
+                        </SidebarDropdown>
+                        
+                    
+                    </div>
+                </ClickAwayListener>
                     
                 <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.refresh}>
                     Fetch and Refresh

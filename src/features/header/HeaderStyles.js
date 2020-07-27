@@ -28,7 +28,7 @@ export const HeaderSidebar = {
     width: "300px",
     minWidth: "300px",
     boxSizing: "border-box",
-    flexDirection: "column"
+    flexDirection: "row"
 }
 
 export const HeaderRepoSidebarDropdownWrapper = { 

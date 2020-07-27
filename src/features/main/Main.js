@@ -35,7 +35,8 @@ export const MainPage = (props) => {
     const dirPath = useSelector(state => state.repo.path);
     const dispatch = useDispatch()
 
-    const [diffMode, setDiffMode] = useState(true)
+    const [diffMode, setDiffMode] = useState(true) // For main tables, if they should be side by side render or compressed
+    const [historyMode, setHistoryMode] = useState(false) // For body -- show history or show the difference of this commit 
 
     const [loaded, setLoaded] = useState(true)
     
@@ -111,10 +112,10 @@ export const MainPage = (props) => {
     }, [dirPath, dispatch])
 
     const handleRefresh = () => {
-        const gitObject = helperGitOpen(dirPath)
         dispatch(stageReset());
 
-        helperGitStatus(gitObject).then((statusObj) =>{
+        helperGitStatus(dirPath).then((statusObj) =>{
+            console.log
             let storeStatus = {}
             for (let index in statusObj){
                 storeStatus[statusObj[index].path] = statusObj[index]
@@ -122,7 +123,7 @@ export const MainPage = (props) => {
             dispatch(stageSetStatusObj(storeStatus))
         })
         
-        helperGitDiff(gitObject).then((statusDiff)=>{
+        helperGitDiff(dirPath).then((statusDiff)=>{
             const rendDiff = renderGitDiffInfo(statusDiff)
             let storeDiff = {}
             for (let index in rendDiff){
@@ -140,8 +141,8 @@ export const MainPage = (props) => {
         <div style={MainWrapper}>
             <Header refresh={handleRefresh} handleModeSwitch={handleModeSwitch}/>
             <div style={MainContent}>
-                <Sidebar refresh={handleRefresh}/>
-                <Body refresh={handleRefresh} mode={diffMode}/>
+                <Sidebar refresh={handleRefresh} histControl={historyMode} setHist={setHistoryMode}/>
+                <Body refresh={handleRefresh} histControl={historyMode} mode={diffMode}/>
             </div>
         </div>
     )

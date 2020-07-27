@@ -18,15 +18,12 @@ Make so updates only render diif of files specifically, not all files at once to
 # Notes
 TODO :authentication for clone, set up of repo etc.
 
-setup diffefrent tables in body depending on status (undefined file, nothing to render, etc.)
-
 Have a rerender timing (so spamming wont cause sudden hiccups) -- implement isloading sequnce and black out table until *loading is finished*. Implement reload inside the body as well!
-
 
 define configurations --take snapshot names (tag a group of files) anbd be able to retrieve files that are broken
 create snap shots, difference between snapshot, see file and see difference between files
 Difference between files -- qs structure of file? 
-See meta data about check in times and different between files (compare 2 files history
+See meta data about check in times and different between files (compare 2 files history)
 
 # Dependencies
 
