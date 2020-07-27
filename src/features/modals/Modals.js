@@ -60,7 +60,7 @@ export const ModalFormDirectoryAndUrl = (props) => {
 
 export const ModalFormTag = (props) => {
     return (
-        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
+        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'sm'}>
             <DialogTitle id="form-dialog-title">Add Tag</DialogTitle>
             <DialogContent style={ModalInputWrapper}>
                 <DialogContentText id="alert-dialog-description">

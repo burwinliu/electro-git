@@ -1,5 +1,5 @@
-import { headerHeight } from "../../styles/constants"
 import {colors} from "../../styles/palette"
+import {headerHeight, menuHeight} from "../../styles/constants"
 
 export const HeaderWrap = {
     height: headerHeight,
@@ -20,7 +20,8 @@ export const HeaderWrap = {
 export const HeaderItem = {
     padding: "8px 16px",
     border: "solid " + colors.outline,
-    borderWidth: "0"
+    borderWidth: "0",
+    height: "53px"
 }
 
 export const HeaderSidebar = {
@@ -28,6 +29,24 @@ export const HeaderSidebar = {
     minWidth: "300px",
     boxSizing: "border-box",
     flexDirection: "column"
+}
+
+export const HeaderRepoSidebarDropdownWrapper = { 
+    width: "300px", 
+
+    backgroundColor: colors.backgroundColor
+}
+
+export const HeaderRepoSidebarDropdown ={
+    flexDirection: "column",
+
+    height: "calc(100vh - " + headerHeight + " - " + menuHeight + " - 1px)", // 1px for border on top
+
+    padding: "0",
+    zIndex: "1",
+    backgroundColor: colors.backgroundColor,
+    boxSizing: "border-box",
+    width: "100%"
 }
 
 export const HeaderMenuSubText = {

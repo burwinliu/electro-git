@@ -317,6 +317,7 @@ export const helperGitAdd = async (path, fileNames) => {
 }
 
 export const helperGitAddCommit = async (path, fileNames, msg) => {
+    console.log(msg, "COMMIT MSG")
     const repo = helperGitOpen(path)
     await repo.add(fileNames)
     await repo.commit(msg, fileNames)

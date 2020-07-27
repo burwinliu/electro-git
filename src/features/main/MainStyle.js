@@ -1,4 +1,4 @@
-import { headerHeight } from "../../styles/constants"
+import { headerHeight, menuHeight} from "../../styles/constants"
 
 
 export const MainWrapper = {
@@ -10,5 +10,5 @@ export const MainContent = {
     flexDirection: "row",
     flexGrow: "1",
 
-    height: "calc(100vh - " + headerHeight + " - 1px)"
+    height: "calc(100vh - " + headerHeight + " - " + menuHeight + " - 3px)" // 3 px -- 2 for border top of body to create draggable, and 1px for border
 }

@@ -1,6 +1,10 @@
 import {colors} from "../../styles/palette"
 
-//WRAPPER
+//WRAPPERS
+export const BodyAreaWrap = {
+    flexDirection: "row",
+    flexGrow: "1",
+}
 export const BodyWrap = {
     flexDirection: "column",
     flexGrow: "1",
@@ -9,33 +13,9 @@ export const BodyWrap = {
     maxHeight: "100vh"
 }
 
-// HEADER
-export const BodyHeaderWrap = {
-    flexDirection: "row",
-    flexGrow: "1",
-
-    backgroundColor: colors.background,
-
-    borderBottom: "solid " + colors.outline + " 1px",
-
-    maxHeight: "30px",    
-    minHieght: "30px",
-}
-
-export const BodyHeaderItem = {
-    borderStyle: "solid",
-    borderColor: colors.outline,
-    alignItems: "center",
-    padding : "8px",
-    boxSizing: "border-box",
-    maxWidth: "calc(calc(100vw - 300px)/2)"
-}
-
 // BODY
 export const BodyContent = {
     flexDirection: "column",
-
-    maxWidth: "calc(100vw - 300px)"
 }
 
 export const BodyUntracked = {

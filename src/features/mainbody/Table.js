@@ -5,7 +5,6 @@ import {colors} from "../../styles/palette"
 
 import {
     BodyWrap, 
-    BodyHeaderWrap, BodyHeaderItem, 
     BodyContent, 
     BodyUntracked, BodyUntrackedButton,
     BodyContentTable, BodyContentTableHeaderMain, BodyContentTableHeaderSub, BodyContentTableHeaderContent, BodyHeaderFileFont, BodyHeaderSubFont,

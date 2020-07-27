@@ -2,8 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useSelector } from "react-redux";
 
 import {
-    BodyWrap, 
-    BodyHeaderWrap, BodyHeaderItem
+    BodyAreaWrap, 
 } from './BodyStyle'
 
 import {
@@ -81,7 +80,7 @@ export const Body = (props) => {
     
 
     return (
-        <div style={BodyWrap}>
+        <div style={BodyAreaWrap}>
             {renderContent()}
         </div>
     )

@@ -2,6 +2,7 @@ import {colors} from "../../styles/palette"
 
 export const SidebarWrap = {
     maxWidth: "300px",
+    minWidth: "300px",
     flexDirection: "column",
     flexGrow: "1",
 

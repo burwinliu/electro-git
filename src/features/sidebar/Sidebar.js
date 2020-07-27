@@ -99,21 +99,33 @@ export const Sidebar = (props) => {
                 toCommit.push(i)
             }
         }
+        console.log(commitMsg, "THIS IS MSG")
         await helperGitAddCommit(filePath, toCommit ,commitMsg)
-        props.handleRefresh()
+        setCommitMsg("")
+        props.refresh()
+    }
+
+    const handleCommitMsg = (evt) => {
+        setCommitMsg(evt.target.value)
     }
 
     const handlePush = (evt) => {
-        helperGitPush(filePath).catch((err) => {
-            if (err instanceof GitError){
-                console.log("CAUGHT")
-                setToastMsg(" This Repository does not have a push destination configured. ")
+        helperGitPush(filePath)
+            .then((response) => {
+                console.log(response)
+                setToastMsg("Push to " + response.repo + "successful.")
                 setToast(true)
-            }
-            else{
-                throw err
-            }
-        })
+            })
+            .catch((err) => {
+                if (err instanceof GitError){
+                    console.log("CAUGHT")
+                    setToastMsg(" This Repository does not have a push destination configured. ")
+                    setToast(true)
+                }
+                else{
+                    throw err
+                }
+            })
     }
 
     const handleToastClose = () => {
@@ -299,7 +311,7 @@ export const Sidebar = (props) => {
                             id="commit-input" 
                             multiline rows={5}
                             style={{padding: "0", margin: "0"}}
-                            onChange={setCommitMsg}
+                            onChange={handleCommitMsg}
                         />
                     </FormControl>
                 </div>
@@ -324,6 +336,7 @@ export const Sidebar = (props) => {
                 handleClose={handleTagClose}
                 handleConfirm={handleTagConfirm}
             />
+            
         </div>
     )
 }
