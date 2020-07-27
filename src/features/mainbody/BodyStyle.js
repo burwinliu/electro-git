@@ -95,5 +95,4 @@ export const BodyContentTableAnimate = {
             borderWidth: "2px 0",
         },
     }
-
 }

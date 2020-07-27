@@ -284,16 +284,23 @@ export const renderGitEnvSshCmd = (sshPath) => {
 
 
 //Helper Functions: Perform actions given information to furfill a request
-export const helperGitInit = async (path) => {
-    let resultingRepo = await simpleGit(path).init()
-    return resultingRepo;
-}
+
 
 export const helperGitOpen = (path) => {
     return simpleGit(path);
 }
 
-export const helperGitConfig = (repo, name, email) => {
+export const helperGitInit = async (path) => {
+    let resultingRepo = await simpleGit(path).init()
+    return resultingRepo;
+}
+
+export const helperGitClone = async (repoURL, localPath) => {
+    return await simpleGit.clone(repoURL, localPath)
+}
+
+export const helperGitConfig = (path, name, email) => {
+    const repo = helperGitOpen(path)
     const commandName = ['config', 'user.name', name]
     const configMail = [ 'config', 'user.email', email]
     repo.raw(commandName, (err) => {
@@ -304,13 +311,20 @@ export const helperGitConfig = (repo, name, email) => {
     })
 }
 
-export const helperGitAdd = async (repo, fileNames) => {
+export const helperGitAdd = async (path, fileNames) => {
+    const repo = helperGitOpen(path)
     repo.add(fileNames)
 }
 
-export const helperGitAddCommit = async (repo, fileNames, msg) => {
+export const helperGitAddCommit = async (path, fileNames, msg) => {
+    const repo = helperGitOpen(path)
     await repo.add(fileNames)
     await repo.commit(msg, fileNames)
+}
+
+export const helperGitTag = async (path, tagTitle, msg) => {
+    const repo = helperGitOpen(path)
+    repo.addAnnotatedTag(tagTitle, msg)
 }
 
 export const helperGitPush = (path) => {
@@ -318,7 +332,12 @@ export const helperGitPush = (path) => {
     return repo.push()
 }
 
-export const helperGitDiff = async (repo, hashA, hashB) => {
+export const helperGitPushTag = (path) => {
+    const repo = helperGitOpen(path)
+    return repo.pushTags()
+}
+
+export const helperGitDiff = async (path, hashA, hashB) => {
     /*
         @return [type string]
 
@@ -326,6 +345,8 @@ export const helperGitDiff = async (repo, hashA, hashB) => {
     */
     let options;
     let diff;
+    const repo = helperGitOpen(path)
+
     if(hashA && hashB){
         options = [
             hashA,
@@ -342,8 +363,8 @@ export const helperGitDiff = async (repo, hashA, hashB) => {
     return diff
 }
 
-export const helperGitStatus = async (repo, fileName) => {
-    /*  @param repo [type simpleGit object]
+export const helperGitStatus = async (path, fileName) => {
+    /*  @param path [string]
         @param fileName [[Optional] type string]: A relative file path to have its status returned
         @return [type [FileStatusSummary] object]
             Structure [{
@@ -354,7 +375,9 @@ export const helperGitStatus = async (repo, fileName) => {
 
         Return the files that have been changed since the last commit and their corresponding status in a 
     */
-    let files   
+    let files  
+    const repo = helperGitOpen(path)
+
     if(fileName){
         files = await repo.status([fileName])
     }
@@ -364,10 +387,9 @@ export const helperGitStatus = async (repo, fileName) => {
     return files.files
 }
 
-export const helperGitBranch = async (repo) => {
+export const helperGitBranch = async (path) => {
+    const repo = helperGitOpen(path)
     return await repo.branch();
 }
 
-export const helperGitClone = async (repoURL, localPath) => {
-    return await simpleGit.clone(repoURL, localPath)
-}
+

@@ -209,7 +209,7 @@ export const LobbyPage = () => {
         const gitObject = helperGitOpen(dirPath)
         dispatch(stageReset());
 
-        helperGitStatus(gitObject).then((statusObj) =>{
+        helperGitStatus(dirPath).then((statusObj) =>{
             let storeStatus = {}
             for (let index in statusObj){
                 storeStatus[statusObj[index].path] = statusObj[index]
@@ -217,7 +217,7 @@ export const LobbyPage = () => {
             dispatch(stageSetStatusObj(storeStatus))
         })
         
-        helperGitDiff(gitObject).then((statusDiff)=>{
+        helperGitDiff(dirPath).then((statusDiff)=>{
             const rendDiff = renderGitDiffInfo(statusDiff)
             let storeDiff = {}
             for (let index in rendDiff){

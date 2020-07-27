@@ -14,8 +14,6 @@ import {
 
 import {
     renderGitChunkTwoFileFormat, 
-    helperGitOpen,
-    helperGitAdd,
     renderGitChunkCompressed
 } from "../../services"
 
@@ -284,6 +282,14 @@ export const GitDiffCompressed = (props) =>{
                     </div>
                 )
             })}
+        </div>
+    )
+}
+
+export const GitDiffUndefined = (props) => {
+    return(
+        <div style={BodyUntracked}>
+            <h1>Currently no file has been selected.</h1>
         </div>
     )
 }

@@ -4,7 +4,8 @@ import { useHistory } from "react-router-dom";
 
 import { 
     Button, ButtonGroup,
-    withStyles
+    Menu,MenuItem,
+    withStyles,
 } from '@material-ui/core';
 
 import * as path from 'path';
@@ -26,6 +27,10 @@ export const Header = (props) => {
 
     //ROUTER HOOKS
     const history = useHistory();
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+
 
     const HeaderButton = withStyles((theme) => ({
         root:{
@@ -49,10 +54,18 @@ export const Header = (props) => {
         history.push('/main')
     }
 
+    const handleOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <div style={HeaderWrap}>
             <ButtonGroup>
-                <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}}>
+                <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleOpen}>
                     <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
                     <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
                 </HeaderButton>
@@ -66,6 +79,18 @@ export const Header = (props) => {
             <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
                 Choose new Repo (For development)
             </Button>
+
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu>
         </div>
     )
 }

@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
+//Components
+import { ModalFormTag } from "../modals"
 import {
     Button, ButtonGroup,
-    TextField,
+    TextField, IconButton, 
     List, ListItem, ListItemText, ListItemIcon,
-    Checkbox
+    Checkbox,
+    Menu, MenuItem,
+    Snackbar,
+    FormControl, FormHelperText, InputLabel, Input
 } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add'
@@ -17,6 +22,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
 import MergeTypeIcon from '@material-ui/icons/MergeType';
 
+import { Label } from '@material-ui/icons';
+
 import {
     appstoreSetCurrentDiff,
 } from '../../store/ducks'
@@ -25,17 +32,21 @@ import {
 import {
     SidebarWrap, SidebarStyle, 
     SidebarMenuItems, SidebarMenuIcons, SidebarCheckbox,
-    SidebarCommitMenu, SidebarCommitText, SidebarCommitButtonGroups
+    SidebarCommitMenu, SidebarCommitText, SidebarCommitSubText, SidebarCommitButtonGroups
 } from './SidebarStyle'
 
 import {colors} from "../../styles/palette"
 
+// Helpers/Services
 import {
     helperGitOpen,
+    helperGitTag,
     helperGitAddCommit,
-    helperGitPush
+    helperGitPush,
+    helperGitPushTag,
 } from "../../services"
 import { GitError } from 'simple-git';
+
 
 export const Sidebar = (props) => {
     const filePath = useSelector(state => state.repo.path);
@@ -46,12 +57,16 @@ export const Sidebar = (props) => {
     const [checkRecord, setChecked] = useState({});
     const [commitMsg, setCommitMsg] = useState('');
 
-    const [focused, setFocused] = useState("")
+    const [toastMsg, setToastMsg] = useState("ERROR")
+    const [toast, setToast] = useState(false)
 
-    const [errMsg, setErrMsg] = useState("ERROR")
-    const [errToast, setErrToast] = useState("false")
+    const [modalTagOpen, setModalTagOpen] = useState(false)
+    const [tagText, setTagText] = useState("")
+    const [tagMessage, setTagMessage] = useState("")
 
+    
     useEffect(() => {
+        // Set up the 
         let temp = {}
         for ( let i in fileStatus) {
             temp[i] = true
@@ -60,12 +75,11 @@ export const Sidebar = (props) => {
         setChecked(temp)
     }, [fileStatus])
 
-    const handleClick = (id, evt) => {
+    const handleIconClick = (id) => {
         dispatch(appstoreSetCurrentDiff(id))
-        setFocused(id)
     }
 
-    const setRecord = (value) => {
+    const handleRecord = (value) => {
         const temp = checkRecord
         temp[value] = true
         setChecked(temp)
@@ -76,21 +90,16 @@ export const Sidebar = (props) => {
         temp[evt.target.id] = !temp[evt.target.id]
         setChecked(temp)
     }
-    
-    const handleCommitMsg = (evt) => {
-        setCommitMsg(evt.target.value)
-    }
 
     const handleCommit = async (evt) => {
         const toCommit = []
-        const gitObj = helperGitOpen(filePath)
 
         for(const i in checkRecord){
             if(checkRecord[i]){
                 toCommit.push(i)
             }
         }
-        await helperGitAddCommit(gitObj, toCommit ,commitMsg)
+        await helperGitAddCommit(filePath, toCommit ,commitMsg)
         props.handleRefresh()
     }
 
@@ -98,9 +107,8 @@ export const Sidebar = (props) => {
         helperGitPush(filePath).catch((err) => {
             if (err instanceof GitError){
                 console.log("CAUGHT")
-                setErrMsg(" This Repository does not have a push destination configured. ")
-                setErrToast(true)
-                throw err
+                setToastMsg(" This Repository does not have a push destination configured. ")
+                setToast(true)
             }
             else{
                 throw err
@@ -108,7 +116,34 @@ export const Sidebar = (props) => {
         })
     }
 
+    const handleToastClose = () => {
+        setToast(false)
+    }
 
+    const tagChange = (evt) => {
+        setTagText(evt.target.value)
+    }
+
+    const tagMessageChange = (evt) => {
+        setTagMessage(evt.target.value)
+    }
+
+    const handleTagOpen = () => {
+        setModalTagOpen(true)
+    }
+
+    const handleTagClose = () => {
+        setModalTagOpen(false)
+    }
+
+    const handleTagConfirm = () => {
+        helperGitTag(filePath, tagText, tagMessage).then((obj) => {
+            console.log(obj)
+        })
+        setModalTagOpen(false)
+    }
+    
+    // Local items to make sure rendering goes well, and we aren't rendering null things. statusIcon is just an icon to be set and changed for inner rendering of the component
     let toRender = {}
     let statusIcon = null
     
@@ -116,14 +151,13 @@ export const Sidebar = (props) => {
         toRender = fileStatus
     }
 
-    
-
     return (
         <div style={SidebarWrap}>
+            
             <List component="nav" aria-label="secondary mailbox folders" style={SidebarStyle}>
                 {Object.keys(toRender).map((value) => {
                     if(checkRecord[value] === undefined){
-                        setRecord(value)
+                        handleRecord(value)
                     }
 
                     switch(fileStatus[value].working_dir){
@@ -222,7 +256,7 @@ export const Sidebar = (props) => {
                             break
                     }
                     return (
-                        <ListItem key={value} button onClick={(evt) => handleClick(value, evt)} style={SidebarMenuItems}>
+                        <ListItem key={value} button onClick={(evt) => handleIconClick(value)} style={SidebarMenuItems}>
                             <ListItemIcon style={SidebarMenuIcons}>
                                 <Checkbox
                                     edge="start"
@@ -239,20 +273,57 @@ export const Sidebar = (props) => {
                     );
                 })}
             </List>
-            <div style={SidebarCommitMenu}>
-                <TextField
-                    style={SidebarCommitText}
-                    label="Commit Message"
-                    multiline
-                    rows={5}
-                    value={commitMsg}
-                    onChange={handleCommitMsg}
-                />
+            <div style={{...SidebarCommitMenu}} >
+                <div style={{flexDirection: "column", margin: "0 10px"}}>
+                    <div 
+                        htmlFor="commit-input" 
+                        style={{display: "inline-flex", flexDirection: "row", justifyContent: "space-between", flexGrow: "1"}}
+                    >
+                        <div style={{...SidebarCommitSubText, marginTop: "auto", marginBottom: "auto"}}>
+                            Commit Message
+                        </div>
+                        <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                            onClick={handleTagOpen}
+                            style={{padding: "5px"}}
+                            title="Add a Tag"
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                    <FormControl>
+                        
+                        <Input 
+                            id="commit-input" 
+                            multiline rows={5}
+                            style={{padding: "0", margin: "0"}}
+                            onChange={setCommitMsg}
+                        />
+                    </FormControl>
+                </div>
+                
                 <ButtonGroup style={SidebarCommitButtonGroups} disableElevation variant="contained" color="primary">
                     <Button onClick={handleCommit} variant="outlined">Commit</Button>
                     <Button onClick={handlePush} variant="outlined">Push</Button>
                 </ButtonGroup>
             </div>
+            <Snackbar
+                open={toast}
+                onClose={handleToastClose}
+                message={toastMsg}
+                autoHideDuration={6000}
+            />
+            <ModalFormTag
+                open={modalTagOpen}
+                tag={tagText}
+                message={tagMessage}
+                handleTagChange={tagChange}
+                handleMessageChange={tagMessageChange}
+                handleClose={handleTagClose}
+                handleConfirm={handleTagConfirm}
+            />
         </div>
     )
 }

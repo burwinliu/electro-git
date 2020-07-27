@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import {Button} from '@material-ui/core'
+import {Button, TextField } from '@material-ui/core'
 
 import {FieldWrapper, FieldButton, FieldInput} from './FieldStyle'
 
@@ -28,7 +28,7 @@ export const CustomDirectoryField = (props) => {
     
     return(
         <div style={FieldWrapper}>
-            <input 
+            <TextField 
                 id="input-createrepo-directory-text"  // react to some directory change here
                 type="text"
                 value={props.directory} 

@@ -14,7 +14,8 @@ import {
 import { 
     GitDiffSideBySide, 
     GitDiffCompressed,
-     GitDiffUntracked
+     GitDiffUntracked,
+     GitDiffUndefined
 } from './Table';
 
 export const Body = (props) => {
@@ -33,8 +34,7 @@ export const Body = (props) => {
     }
 
     const trackCurrentFile = async () => {
-        const gitObject = helperGitOpen(dir)
-        await helperGitAdd(gitObject, [file]);
+        await helperGitAdd(dir, [file]);
         await props.refresh()
         if (fileDiff !== undefined && fileDiff[file] !== undefined){
             setFiles(fileDiff[file].fileA, fileDiff[file].fileB)
@@ -56,9 +56,15 @@ export const Body = (props) => {
             }
             
         }
-        else{
+        else if(fileStatus !== undefined && fileStatus[file]){
             return (
                 <GitDiffUntracked handle={trackCurrentFile}/>
+            )
+        }
+        else{
+            console.log("RESET ITEMS")
+            return(
+                <GitDiffUndefined/>
             )
         }
     }

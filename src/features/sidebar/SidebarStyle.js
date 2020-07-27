@@ -19,7 +19,7 @@ export const SidebarStyle = {
 }
 
 export const SidebarCommitMenu = {
-    minHeight: "250px",
+    minHeight: "200px",
     backgroundColor: colors.background,
     padding: "6px",
 
@@ -28,6 +28,13 @@ export const SidebarCommitMenu = {
 
     borderWidth: "0",
     borderTop: "solid " + colors.outline + " 1px",
+}
+
+export const SidebarCommitSubText = {
+    color: "rgba(0, 0, 0, 0.54)",
+    fontSize: "0.75rem",
+    fontFamily: "Roboto, Helvetica, Arial, sans-serif",
+    lineHeight: "1.66"
 }
 
 export const SidebarCommitText = {
