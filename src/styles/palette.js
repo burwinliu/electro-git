@@ -1,6 +1,8 @@
 export const colors = {
     background: "#f0f2ff",
     backgroundHeader: "#f8f9ff",
+
+    menu: "#b3c6d4",
     
     primary: "#3f51b5",
     subtext: "#0000008a",
@@ -24,7 +26,7 @@ export const colors = {
     green: "#4caf50",
     greenLightHover: "#8ae48c",
     greenLight: "#c8e6c9",
-    greenLightSub: '#c8fbc8',
+    greenLightSub: '#e9ffe9',
     yellow: "#ffc107",
     yellowLight: "#fff9c4",
     grey: "#9e9e9e",
