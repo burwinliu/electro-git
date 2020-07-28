@@ -18,7 +18,7 @@
     "redux",
     "react-router"
   ],
-  "author": "Thales Piassi",
+  "author": "Burwin Liu",
   "license": "MIT",
   "config": {
     "forge": {
@@ -66,13 +66,14 @@
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.50",
+    "@electron-forge/cli": "^6.0.0-beta.52",
     "@electron-forge/maker-deb": "6.0.0-beta.50",
     "@electron-forge/maker-rpm": "6.0.0-beta.50",
     "@electron-forge/maker-squirrel": "6.0.0-beta.50",
     "@electron-forge/maker-zip": "6.0.0-beta.50",
     "@electron-forge/plugin-webpack": "6.0.0-beta.50",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "core-js": "^3.6.5",
     "css-loader": "^3.0.0",
     "electron": "8.1.1",
     "electron-devtools-installer": "^2.2.4",
@@ -86,14 +87,20 @@
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-react": "^7.8.3",
     "@babel/runtime": "^7.8.7",
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "babel-loader": "^8.0.6",
     "electron-squirrel-startup": "^1.0.0",
+    "node-rsa": "^1.1.1",
+    "node-watch": "^0.6.4",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
-    "react-router-dom": "^5.1.2",
+    "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0",
+    "simple-git": "^2.15.0"
   }
 }

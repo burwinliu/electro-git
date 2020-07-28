@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow , ipcMain, dialog, screen,} = require('electron');
 const {
   default: installExtension,
   REACT_DEVELOPER_TOOLS,
@@ -12,17 +12,24 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
+let mainWindow
+
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 600,
-    webPreferences: {
-      webSecurity: process.env.NODE_ENV !== 'development'
-    }
-  });
+  const display = screen.getPrimaryDisplay()
+  const maxiSize = display.workAreaSize
 
-  mainWindow.maximize();
+  mainWindow = new BrowserWindow({
+    width: maxiSize.width*.8,
+    height: maxiSize.height*.8,
+    minWidth: maxiSize.width * .6,
+    minHeight: maxiSize.height * .6,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  })
+
 
   installExtension(REACT_DEVELOPER_TOOLS);
   installExtension(REDUX_DEVTOOLS);
@@ -58,3 +65,32 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+
+// Menu Controls for the windowcontrols (in menu items)
+ipcMain.on('closeWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.close()
+  }
+});
+
+ipcMain.on('toggleMaxWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+  }
+});
+
+ipcMain.on('minWindow', function(e) {
+  if(mainWindow !== null){
+    mainWindow.minimize()
+  }
+});
+//hold the array of directory paths selected by user (for opening a dialog)
+ipcMain.on('selectDirectory', async function(e) {
+  const dir = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+  });
+  e.reply('selectDirectory', dir)
+
+});
+
