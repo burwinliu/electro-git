@@ -1,22 +1,27 @@
-# Electron Forge React Boilerplate
-Minimal electron and react boilerplate built on top of Electron Forge [webpack template](https://www.electronforge.io/config/plugins/webpack).
+# electro-git
+A GIT GUI interface based in Electron
 
-## Usage
 
-#### Clone repository 
-`git clone https://github.com/thalespiassi/electron-forge-react-boilerplate.git my-project-name`
+# Todo
+disassociate githelper objects with programming, make serviceGit full interface for EVERYTHING, wrapping it all in (provide paths, not objects, to execute)
 
-#### Enter project folder
-`cd my-project-name`
+Design better color scheme, background (gradiant with focus on the middle -- lighting or something on those lines), expand to more space and responsive to size of window. Finally, use more colors 
 
-#### Initialize project
-`npm install` or `yarn`
+Form for authentication -- paths to ssh keys and all that 
 
-#### Run project
-`npm run start` or `yarn start`
+Make so updates only render diif of files specifically, not all files at once to save on efficiency
 
-| Included libraries        |
-| ------------- |
-| [React Router](https://reacttraining.com/react-router/web/guides/quick-start)      | 
-| [React Redux](https://github.com/reduxjs/react-redux)      | 
-| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | 
+# Notes
+TODO :authentication for clone, set up of repo etc.
+
+Have a rerender timing (so spamming wont cause sudden hiccups) -- implement isloading sequnce and black out table until *loading is finished*. Implement reload inside the body as well!
+
+define configurations --take snapshot names (tag a group of files) anbd be able to retrieve files that are broken
+create snap shots, difference between snapshot, see file and see difference between files
+Difference between files -- qs structure of file? 
+See meta data about check in times and different between files (compare 2 files history)
+
+# Dependencies
+
+Used this boiler plate to set up the application: https://github.com/piassi/electron-forge-react-boilerplate
+
