@@ -88,7 +88,8 @@ export const ModalFormTag = (props) => {
             <DialogTitle id="form-dialog-title">Add Tag</DialogTitle>
             <DialogContent style={ModalInputWrapper}>
                 <DialogContentText id="alert-dialog-description">
-                    Here, you may tag your current commit with a tag title (which acts as the version of your current commit) and a message (to describe your tag)
+                    Here, you may tag your current commit with a tag title (which acts as the version of your current commit) 
+                    and a message (to describe your tag). NOTE: Tags "tag" the LAST commit that is already committed -- not the current changes
                 </DialogContentText>
                 <TextField style={ModalInputElement} value={tag} label="Tag Annotation" onChange={handleTag}/>
                 <TextField style={ModalInputElement} value={msg} label="Tag Message" onChange={handleMsg}/>

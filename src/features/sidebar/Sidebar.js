@@ -25,7 +25,9 @@ import {
  } from '@material-ui/icons';
 
 import {
-    appstoreSetCurrentDiff,
+    appstoreSetCurrentDiff, 
+    
+    stageSetLog,
 } from '../../store/ducks'
 
 //styles
@@ -45,6 +47,7 @@ import {
     helperGitAddCommit,
     helperGitPush,
     helperGitPushTag,
+    helperGitLog,
 } from "../../services"
 import { GitError } from 'simple-git';
 
@@ -339,10 +342,34 @@ export const SidebarChanges = (props) => {
 }
 
 export const SidebarHistory = (props) => {
+    const repoLog = useSelector(state => state.repo.path);
+    const repoHistory = useSelector(state => state.stage.log);
+
+    const dispatch = useDispatch()
+
+    console.log("IN HISTORY", repoHistory)
+
     return ( 
         <div style={SidebarWrap}>
-            <p>testing</p>
+            <List>
+                {Object.keys(repoHistory || {}).map((value) => {
+                    console.log(repoHistory)
+                    return(
+                        <SidebarHistItem toRender={repoHistory[value]} key={value}/>        
+                    )
+                    
+                })}
+            </List>
         </div>
+    )
+}
+
+const SidebarHistItem = (props) => {
+    console.log(props.toRender)
+    return (
+        <ListItem button>
+            <ListItemText style={{flexDirection: "column"}} primary={props.toRender.message} secondary={props.toRender.date}/>
+        </ListItem>
     )
 }
 

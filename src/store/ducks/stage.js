@@ -11,11 +11,16 @@ const SET_DIFFRECORD = 'stage/SET_DIFFRECORD'
 const SET_DIFFRECORDOBJ = 'stage/SET_DIFFRECORDOBJ'
 const CLEAR_DIFFRECORD = 'stage/CLEAR_DIFFRECORD'
 
+// LOG
+const SET_LOG = 'stage/SET_LOG'
+const CLEAR_LOG = 'stage/CLEAR_LOG'
+
 const RESET_STAGE = 'stage/RESET_STAGE'
 
 const initState = {
   status: {},
-  diff: {}
+  diff: {},
+  log: {},
 }
 
 export const stageReducer = (state = initState, action = {}) => {
@@ -38,6 +43,11 @@ export const stageReducer = (state = initState, action = {}) => {
       return {...state, diff: action.payload}
     case CLEAR_DIFFRECORD:
       return { ...state, diff: {} };
+
+    case SET_LOG:
+      return {...state, log: action.payload}
+    case CLEAR_LOG:
+      return {...state, log: {}}
 
     case RESET_STAGE:
       return {initState}
@@ -73,6 +83,13 @@ export const stageSetDiffObj = (diff) => {
 }
 export const stageClearDiff = () => {
   return { type: CLEAR_DIFFRECORD, payload: {} }
+}
+
+export const stageSetLog = (checked) => {
+  return {type: SET_LOG, payload: checked}
+}
+export const stageClearLog = () => {
+  return {type: CLEAR_LOG, payload: {}}
 }
 
 export const stageReset = () => {

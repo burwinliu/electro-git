@@ -19,7 +19,8 @@ import {
     stageReset,
     repoReset,
     appstoreReset,
-    keyReset
+    keyReset,
+    stageSetLog
 } from '../../store/ducks'
 
 //Service helpers
@@ -27,6 +28,7 @@ import {
     helperGitOpen, helperGitStatus, helperGitDiff,
     renderGitDiffInfo,
     generateSshGit,
+    helperGitLog,
 } from "../../services"
 
 import * as path from 'path';
@@ -50,10 +52,11 @@ export const MainPage = (props) => {
         
         const init = async () => {
             if(loaded){
-                const gitObject = helperGitOpen(dirPath)
 
-                const statusObj = await helperGitStatus(gitObject)
-                const diffObj = await helperGitDiff(gitObject)
+                const statusObj = await helperGitStatus(dirPath)
+                const diffObj = await helperGitDiff(dirPath)
+                const logObj = await helperGitLog(dirPath)
+
                 const rendDiff = renderGitDiffInfo(diffObj)
                 let storeStatus = {}
                 let storeDiff = {}
@@ -69,6 +72,7 @@ export const MainPage = (props) => {
                 dispatch(stageReset());
                 dispatch(stageSetStatusObj(storeStatus))
                 dispatch(stageSetDiffObj(storeDiff))
+                dispatch(stageSetLog(logObj.all))
             }
         }
 
@@ -130,6 +134,10 @@ export const MainPage = (props) => {
                 storeDiff[index] = rendDiff[index]
             }
             dispatch(stageSetDiffObj(storeDiff))
+        })
+
+        helperGitLog(dirPath).then((log)=>{
+            dispatch(stageSetLog(log.all))
         })
     }
 
