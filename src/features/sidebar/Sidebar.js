@@ -62,8 +62,6 @@ export const SidebarChanges = (props) => {
     const [toast, setToast] = useState(false)
 
     const [modalTagOpen, setModalTagOpen] = useState(false)
-    const [tagText, setTagText] = useState("")
-    const [tagMessage, setTagMessage] = useState("")
 
     const [loaded, setLoaded] = useState(true)
 
@@ -149,27 +147,11 @@ export const SidebarChanges = (props) => {
     const handleToastClose = () => {
         setToast(false)
     }
-
-    const tagChange = (evt) => {
-        setTagText(evt.target.value)
-    }
-
-    const tagMessageChange = (evt) => {
-        setTagMessage(evt.target.value)
-    }
-
     const handleTagOpen = () => {
         setModalTagOpen(true)
     }
 
     const handleTagClose = () => {
-        setModalTagOpen(false)
-    }
-
-    const handleTagConfirm = () => {
-        helperGitTag(filePath, tagText, tagMessage).then((obj) => {
-            console.log(obj)
-        })
         setModalTagOpen(false)
     }
     
@@ -349,12 +331,7 @@ export const SidebarChanges = (props) => {
             />
             <ModalFormTag
                 open={modalTagOpen}
-                tag={tagText}
-                message={tagMessage}
-                handleTagChange={tagChange}
-                handleMessageChange={tagMessageChange}
                 handleClose={handleTagClose}
-                handleConfirm={handleTagConfirm}
             />
             
         </div>

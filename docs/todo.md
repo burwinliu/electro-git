@@ -6,7 +6,7 @@ Form for authentication -- paths to ssh keys and all that
 Make so updates only render diif of files specifically, not all files at once to save on efficiency
 
 # Notes
-git commit and push
+Have the ability to see tags and view history and navigate it through.
 
 define configurations --take snapshot names (tag a group of files) anbd be able to retrieve files that are broken
 create snap shots, difference between snapshot, see file and see difference between files

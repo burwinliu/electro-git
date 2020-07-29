@@ -1,3 +1,5 @@
+// store/ducks/repo.js -- A reducer that holds the repository settings as it is right now --
+
 //actions
 const SET_PATH = "repo/SET_PATH"
 const SET_URL = "repo/SET_URL"
@@ -11,7 +13,7 @@ export const repoReducer = (state = initState, action = {}) => {
     case SET_PATH:
       return { ...state, path: action.payload };
     case SET_URL:
-      return { ...state, path: action.payload };
+      return { ...state, url: action.payload };
     case RESET_REPO:
       return { initState };
     default: 

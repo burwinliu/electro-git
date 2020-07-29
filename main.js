@@ -33,6 +33,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    minWidth: 1000,
+    minHeight: 700,
     show: false,
     frame: false,
     webPreferences: {
@@ -72,6 +74,14 @@ function createWindow() {
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
+  })
+
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send('isMaximize', true)
+  })
+
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send('isMaximize', false)
   })
 
   // Emitted when the window is closed.

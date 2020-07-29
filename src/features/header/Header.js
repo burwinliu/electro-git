@@ -28,6 +28,7 @@ import {
     repoSetPath,
 } from '../../store/ducks'
 import { colors } from '../../styles/palette';
+import { ModalRepoSetting } from '../modals/Modals';
 
 export const Header = (props) => {
     const dirPath = useSelector(state => state.repo.path);
@@ -37,7 +38,8 @@ export const Header = (props) => {
     const history = useHistory();
     const [repoNav, setRepoNav] = useState(false)
 
-
+    const [repoSettings, setRepoSettings] = useState(false)
+    
 
     const HeaderButton = withStyles((theme) => ({
         root:{
@@ -70,11 +72,18 @@ export const Header = (props) => {
         history.push('/main')
     }
 
-    const handleRepoOpen = (evt) => {
+    const handleRepoOpen = () => {
         setRepoNav(true);
     };
-    const handleRepoClose = (evt) => {
+    const handleRepoClose = () => {
         setRepoNav(false)
+    }
+
+    const handleRepoDialogOpen = () => {
+        setRepoSettings(true)
+    }
+    const handleRepoDialogClose = () => {
+        setRepoSettings(false)
     }
 
     return (
@@ -101,7 +110,7 @@ export const Header = (props) => {
                         }   
                         <SidebarDropdown in={repoNav}>
                             <List style={{...HeaderRepoSidebarDropdown}}>
-                                <ListItem button>
+                                <ListItem button onClick={handleRepoDialogOpen}>
                                     <ListItemIcon>
                                         <SettingsIcon />
                                     </ListItemIcon>
@@ -125,7 +134,7 @@ export const Header = (props) => {
             <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
                 Choose new Repo (For development)
             </Button>
-            
+            <ModalRepoSetting open={repoSettings} handleClose={handleRepoDialogClose}/>
         </div>
     )
 }

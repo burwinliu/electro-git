@@ -4,6 +4,8 @@ import {colors} from "../../styles/palette"
 export const BodyAreaWrap = {
     flexDirection: "row",
     flexGrow: "1",
+
+    wordBreak: "break-all",
 }
 export const BodyWrap = {
     flexDirection: "column",

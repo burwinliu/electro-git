@@ -388,6 +388,16 @@ export const helperGitStatus = async (path, fileName) => {
     return files.files
 }
 
+export const helperGitLog = (path) => {
+    const repo = helperGitOpen(path)
+    return repo.log()
+}
+
+export const helperGitRemoteName = (path) => {
+    const repo = helperGitOpen(path)
+    return repo.listRemote(['--get-url'])
+}
+
 export const helperGitBranch = async (path) => {
     const repo = helperGitOpen(path)
     return await repo.branch();

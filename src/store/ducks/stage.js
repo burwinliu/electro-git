@@ -1,3 +1,7 @@
+//store/ducks/stage -- a place to store the staging information of this current commit
+
+
+// STATUS
 const SET_STATUSRECORD = 'stage/SET_STATUSRECORD'
 const SET_STATUSRECORDOBJ = 'stage/SET_STATUSRECORDOBJ'
 const CLEAR_STATUSRECORD = 'stage/CLEAR_STATUSRECORD'
