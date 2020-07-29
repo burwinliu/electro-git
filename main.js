@@ -1,7 +1,7 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, dialog, screen, ipcRenderer } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -30,18 +30,14 @@ if (process.platform === 'win32') {
 
 function createWindow() {
   // Create the browser window.
-  const display = screen.getPrimaryDisplay()
-  const maxiSize = display.workAreaSize
   mainWindow = new BrowserWindow({
-    width: maxiSize.width*.8,
-    height: maxiSize.height*.8,
-    minWidth: maxiSize.width * .6,
-    minHeight: maxiSize.height * .6,
+    width: 1024,
+    height: 768,
     show: false,
     frame: false,
     webPreferences: {
-      nodeIntegration: true,
-    },
+      nodeIntegration: true
+    }
   })
 
   // and load the index.html of the app.
@@ -63,7 +59,7 @@ function createWindow() {
   }
 
   mainWindow.loadURL(indexPath)
-  mainWindow.setResizable(true)
+
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
@@ -76,14 +72,6 @@ function createWindow() {
         .catch(err => console.log('Error loading React DevTools: ', err))
       mainWindow.webContents.openDevTools()
     }
-  })
-
-  mainWindow.on('maximize', function() {
-    mainWindow.webContents.send("isMaximize", true)
-  })
-
-  mainWindow.on('unmaximize', function() {
-    mainWindow.webContents.send("isMaximize", false)
   })
 
   // Emitted when the window is closed.
@@ -116,9 +104,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
-//zoom stuff
-
 
 // Menu Controls for the windowcontrols (in menu items)
 ipcMain.on('closeWindow', function(e) {

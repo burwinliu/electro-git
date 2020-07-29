@@ -12,6 +12,7 @@ import configureStore from './store/store';
 
 import {MenuBar} from './features/menuBar'
 import {LobbyPage} from './features/lobby'
+
 import {MainPage} from './features/main'
 import { colors } from './styles/palette';
 

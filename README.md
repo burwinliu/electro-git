@@ -1,31 +1,73 @@
-# electro-git
-A GIT GUI interface based in Electron
+Add Redux to [alexdevero's repo](https://github.com/alexdevero/electron-react-webpack-boilerplate)
 
-# Pallete
-Background: #f0f2ff
-Primary: #3f51b5
+### Install
 
+#### Clone this repo
 
-# Todo
-disassociate githelper objects with programming, make serviceGit full interface for EVERYTHING, wrapping it all in (provide paths, not objects, to execute)
+```
+git clone https://github.com/bradtraversy/simple-electron-react.git
+```
 
-Design better color scheme, background (gradiant with focus on the middle -- lighting or something on those lines), expand to more space and responsive to size of window. Finally, use more colors 
+#### Install dependencies
 
-Form for authentication -- paths to ssh keys and all that 
+```
+npm install
+```
 
-Make so updates only render diif of files specifically, not all files at once to save on efficiency
+or
 
-# Notes
-TODO :authentication for clone, set up of repo etc.
+```
+yarn
+```
 
-Have a rerender timing (so spamming wont cause sudden hiccups) -- implement isloading sequnce and black out table until *loading is finished*. Implement reload inside the body as well!
+### Usage
 
-define configurations --take snapshot names (tag a group of files) anbd be able to retrieve files that are broken
-create snap shots, difference between snapshot, see file and see difference between files
-Difference between files -- qs structure of file? 
-See meta data about check in times and different between files (compare 2 files history)
+#### Run the app
 
-# Dependencies
+```
+npm run start
+```
 
-Used this boiler plate to set up the application: https://github.com/alexdevero/electron-react-webpack-boilerplate
+or
 
+```
+yarn start
+```
+
+#### Build the app (automatic)
+
+```
+npm run package
+```
+
+or
+
+```
+yarn package
+```
+
+#### Build the app (manual)
+
+```
+npm run build
+```
+
+or
+
+```
+yarn build
+```
+
+#### Test the app (after `npm run build` || `yarn run build`)
+
+```
+npm run prod
+```
+
+```
+yarn prod
+```
+
+### Change app title
+
+Change the app title in the **webpack.build.config.js** and the **webpack.dev.config.js** files
