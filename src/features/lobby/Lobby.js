@@ -62,8 +62,11 @@ export const LobbyPage = () => {
     //ROUTER HOOKS
     const history = useHistory();
 
+    console.log("LOBBY")
+
     useEffect(()=>{
         if(dirPath !== "" && dirPath !== undefined){
+            console.log(dirPath, "WHAT")
             history.push('/main')
         }
         return ()=>{

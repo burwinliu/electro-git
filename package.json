@@ -57,7 +57,6 @@
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
-    "redux-thunk": "^2.3.0",
     "simple-git": "^2.15.0"
   },
   "devDependencies": {

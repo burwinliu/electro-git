@@ -69,7 +69,7 @@ export const Header = (props) => {
 
     const handleReturn = () => {
         dispatch(repoSetPath(""))
-        history.push('/main')
+        history.push('/')
     }
 
     const handleRepoOpen = () => {

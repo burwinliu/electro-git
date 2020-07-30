@@ -299,6 +299,16 @@ export const helperGitClone = async (repoURL, localPath) => {
     return await simpleGit.clone(repoURL, localPath)
 }
 
+export const helperGitCheckIgnore = (repoPath, filePath) => {
+    const repo = helperGitOpen(repoPath)
+    return repo.checkIgnore(filePath)
+}
+
+export const helperGitDir = (repoPath) => {
+    const repo = helperGitOpen(repoPath)
+    return repo.revparse(['--git-dir'])
+}
+
 export const helperGitConfig = (path, name, email) => {
     const repo = helperGitOpen(path)
     const commandName = ['config', 'user.name', name]
@@ -391,6 +401,10 @@ export const helperGitStatus = async (path, fileName) => {
 export const helperGitLog = (path) => {
     const repo = helperGitOpen(path)
     return repo.log()
+}
+
+export const helperGitLogFile = (repoPath, filePath) => {
+
 }
 
 export const helperGitRemoteName = (path) => {

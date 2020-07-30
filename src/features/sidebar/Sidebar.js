@@ -15,14 +15,7 @@ import {
 
 import { 
     Add as AddIcon, 
-    ChangeHistory as ChangeHistoryIcon, 
-    Clear as ClearIcon,
-    DeleteOutlineOutlined as DeleteOutlineOutlinedIcon,
-    DeviceUnknown as DeviceUnknownIcon,
-    EditOutlined as EditOutlinedIcon,
-    FileCopyOutlined as FileCopyOutlinedIcon,
-    MergeType as MergeTypeIcon
- } from '@material-ui/icons';
+} from '@material-ui/icons'
 
 import {
     appstoreSetCurrentDiff, 
@@ -37,6 +30,10 @@ import {
     SidebarMenuItems, SidebarMenuIcons, SidebarCheckbox,
     SidebarCommitMenu, SidebarCommitText, SidebarCommitSubText, SidebarCommitButtonGroups
 } from './SidebarStyle'
+
+import {
+    getSymbol
+} from './SidebarHelper'
 
 import {colors} from "../../styles/palette"
 
@@ -175,102 +172,6 @@ export const SidebarChanges = (props) => {
                     if(checkRecord[value] === undefined){
                         handleRecord(value)
                     }
-
-                    switch(fileStatus[value].working_dir){
-                        case "!":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.grey}} title="Ignored">
-                                    <ClearIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "?":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.grey}} title="Not Tracked">
-                                    <DeviceUnknownIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "M":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.yellow}} title="Modified">
-                                    <ChangeHistoryIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "D":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.red}} title="Deleted">
-                                    <DeleteOutlineOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "R":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.yellow}} title="Renamed">
-                                    <EditOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "C":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.blue}} title="Copied">
-                                    <FileCopyOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                    }
-                    switch(fileStatus[value].index){
-                        case "!":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.grey}} title="Ignored">
-                                    <ClearIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "?":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.grey}} title="Not Tracked">
-                                    <DeviceUnknownIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "M":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.yellow}} title="Modified">
-                                    <ChangeHistoryIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "A":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.green}} title="Added">
-                                    <AddIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "D":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.red}} title="Deleted">
-                                    <DeleteOutlineOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "R":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.yellow}} title="Renamed">
-                                    <EditOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                        case "C":
-                            statusIcon = (
-                                <ListItemIcon style={{...SidebarMenuIcons, color: colors.blue}} title="Copied">
-                                    <FileCopyOutlinedIcon/>
-                                </ListItemIcon>
-                            )
-                            break
-                    }
                     return (
                         <ListItem key={value} button onClick={(evt) => handleIconClick(value)} style={SidebarMenuItems}>
                             <ListItemIcon style={SidebarMenuIcons}>
@@ -284,7 +185,7 @@ export const SidebarChanges = (props) => {
                                 />
                             </ListItemIcon>
                             <ListItemText primary={`${value}`}/>
-                            {statusIcon}
+                            {getSymbol(fileStatus[value].working_dir, fileStatus[value].index)}
                         </ListItem>
                     );
                 })}
@@ -353,7 +254,6 @@ export const SidebarHistory = (props) => {
         <div style={SidebarWrap}>
             <List>
                 {Object.keys(repoHistory || {}).map((value) => {
-                    console.log(repoHistory)
                     return(
                         <SidebarHistItem toRender={repoHistory[value]} key={value}/>        
                     )
@@ -365,7 +265,6 @@ export const SidebarHistory = (props) => {
 }
 
 const SidebarHistItem = (props) => {
-    console.log(props.toRender)
     return (
         <ListItem button>
             <ListItemText style={{flexDirection: "column"}} primary={props.toRender.message} secondary={props.toRender.date}/>

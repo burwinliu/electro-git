@@ -5,9 +5,11 @@ import { Button } from '@material-ui/core'
 import {CustomDirectoryField} from '../CustomFields'
 import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
-import { helperGitRemoteName, helperGitTag } from '../../services';
+import { helperGitRemoteName, helperGitTag, helperGitOpen } from '../../services';
 
 import {repoSetUrl} from '../../store/ducks'
+import { GitConstructError } from 'simple-git';
+import { useHistory } from 'react-router-dom';
 
 export const ModalFormDirectory = (props) => {
     /*
@@ -112,12 +114,22 @@ export const ModalRepoSetting = (props) => {
 
     const [repoField, setRepoField] = useState(repoURL)
     const dispatch = useDispatch();
+    const history = useHistory()
 
     useEffect(()=>{
-        console.log(repoPath, "SETTING")
-        helperGitRemoteName(repoPath).then((remoteURL)=> {
-            dispatch(repoSetUrl(remoteURL))
-        })
+        try{
+            helperGitOpen(repoPath)
+            helperGitRemoteName(repoPath).then((remoteURL)=> {
+                dispatch(repoSetUrl(remoteURL))
+            })
+        }
+        catch(err){
+            console.log(err)
+            if (err instanceof GitConstructError){
+                console.log("CAUGHT")
+                return
+            }
+        }
     }, [repoPath])
 
     const handleRepoChange = (evt) => {
