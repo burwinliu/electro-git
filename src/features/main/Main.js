@@ -20,7 +20,8 @@ import {
     repoReset,
     appstoreReset,
     keyReset,
-    stageSetLog
+    stageSetRepoLog,
+    stageSetFileLog
 } from '../../store/ducks'
 
 //Service helpers
@@ -30,18 +31,31 @@ import {
     generateSshGit,
     helperGitLog,
     helperGitDir,
-    helperGitCheckIgnore
+    helperGitCheckIgnore,
+    helperGitLogFile
 } from "../../services"
 
 import * as path from 'path';
-import { GitError } from 'simple-git';
+
+import {
+    CONTENT_CONTROL,
+    DIFF_CONTROL,
+    HISTORY_CONTROL
+} from "./MainHelper"
+
 
 export const MainPage = (props) => {
     const dirPath = useSelector(state => state.repo.path);
+    const diffFile = useSelector( state=> state.appstore.currentHistFile)
     const dispatch = useDispatch()
 
-    const [diffMode, setDiffMode] = useState(true) // For main tables, if they should be side by side render or compressed
-    const [historyMode, setHistoryMode] = useState(false) // For body -- show history or show the difference of this commit 
+    // Control what to be shown in content -- difference or history
+    const [contentControl, setContentControl] = useState(CONTENT_CONTROL.MAIN_DIFF_VIEW) 
+
+    // Controls how the history should be viewed
+    const [historyControl, setHistoryControl] = useState(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW)
+    //Controls how the diff should be viewed
+    const [diffControl, setDiffControl] = useState(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW)
 
     const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
@@ -141,29 +155,64 @@ export const MainPage = (props) => {
 
         helperGitLog(dirPath).then((log)=>{
             if(loaded){
-                dispatch(stageSetLog(log.all))
+                dispatch(stageSetRepoLog(log.all))
             }
         })
-    }
 
-    const handleModeSwitch = () => {
-        setDiffMode(!diffMode)
+        helperGitLogFile(dirPath, diffFile).then((log)=>{
+            if(loaded){
+                dispatch(stageSetFileLog(log.all))
+            }
+        })
     }
 
     const handleErr = (state) => {
         setError(state)
     }
 
+    const handleContentControl = (input) => {
+        setContentControl(input)
+    }
+
+    const handleHistoryControl = (input) => {
+        setHistoryControl(input)
+    }
+    
+    const handleDiffSwitch = () => {
+        if(diffControl === DIFF_CONTROL.MAIN_COMPRESSED_VIEW){
+            setDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW)
+        }
+        if(diffControl === DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW){
+            setDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW)
+        }
+    }
+
+
     return (
         <div style={MainWrapper}>
-            <Header refresh={handleRefresh} handleModeSwitch={handleModeSwitch}/>
+            <Header refresh={handleRefresh} handleDiffSwitch={handleDiffSwitch}/>
             {
                 error?
                 <div> CANNOT FIND {dirPath} </div>
                 :
                 <div style={MainContent}>
-                    <Sidebar refresh={handleRefresh} histControl={historyMode} setHist={setHistoryMode} error={error}/>
-                    <Body refresh={handleRefresh} histControl={historyMode} mode={diffMode} error={error}/>
+                    <Sidebar 
+                        refresh={handleRefresh}
+                        
+                        contentControl={contentControl}
+                        historyControl={historyControl}
+                        diffControl={diffControl}
+
+                        handleContentControl={handleContentControl}
+                        handleHistoryControl={handleHistoryControl}
+                    />
+                    <Body 
+                        refresh={handleRefresh} 
+                        
+                        contentControl={contentControl}
+                        historyControl={historyControl}
+                        diffControl={diffControl}
+                    />
                 </div>
                 
             }

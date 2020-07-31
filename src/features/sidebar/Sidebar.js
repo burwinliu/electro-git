@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
 //Components
-import { ModalFormTag } from "../modals"
+import { ModalFormTag, ModalFormFile } from "../modals"
 import {
     Button, ButtonGroup,
     TextField, IconButton, 
@@ -20,7 +20,8 @@ import {
 import {
     appstoreSetCurrentDiff, 
     
-    stageSetLog,
+    stageSetRepoLog,
+    appstoreSetCurrentHistFile,
 } from '../../store/ducks'
 
 //styles
@@ -28,14 +29,14 @@ import {
     SidebarWrap, SidebarStyle, 
     SidebarHistButtons,
     SidebarMenuItems, SidebarMenuIcons, SidebarCheckbox,
-    SidebarCommitMenu, SidebarCommitText, SidebarCommitSubText, SidebarCommitButtonGroups
+    SidebarCommitMenu, SidebarCommitText, SidebarCommitSubText, SidebarCommitButtonGroups,
+
+    SidebarHistText
 } from './SidebarStyle'
 
 import {
     getSymbol
 } from './SidebarHelper'
-
-import {colors} from "../../styles/palette"
 
 // Helpers/Services
 import {
@@ -46,6 +47,13 @@ import {
     helperGitPushTag,
     helperGitLog,
 } from "../../services"
+
+import {
+    CONTENT_CONTROL,
+    DIFF_CONTROL,
+    HISTORY_CONTROL
+} from "../main"
+
 import { GitError } from 'simple-git';
 
 
@@ -244,15 +252,88 @@ export const SidebarChanges = (props) => {
 
 export const SidebarHistory = (props) => {
     const repoLog = useSelector(state => state.repo.path);
-    const repoHistory = useSelector(state => state.stage.log);
+
+    const [openFileModal, setOpenFileModal] = useState(false)
+    const [directory, setDirectory] = useState("")
 
     const dispatch = useDispatch()
 
-    console.log("IN HISTORY", repoHistory)
+    const historyOverview = () => {
+        props.changeHist(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW)
+    }
+
+    const historyFile = () => {
+        setOpenFileModal(true)
+    }
+
+    const changeDir = (input) => {
+        setDirectory(input)
+    }
+
+    const changeDirEvent = (evt) => {
+        setDirectory(evt.target.value)
+    }
+    const handleConfirmModal = () => {
+        dispatch(appstoreSetCurrentHistFile(directory))
+        props.changeHist(HISTORY_CONTROL.MAIN_FILE_VIEW)
+        props.refresh()
+        setOpenFileModal(false)
+    }
+    const handleCloseModal = () => {
+        setOpenFileModal(false)
+    }
 
     return ( 
         <div style={SidebarWrap}>
-            <List>
+            {<SidebarRenderList hist={props.hist} />}
+            <div style={{...SidebarCommitMenu}} >
+            <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
+                <Button onClick={historyOverview}>See History Overview</Button>
+                <Button onClick={historyFile}>See History of File</Button>
+            </ButtonGroup>
+            </div>
+            <ModalFormFile 
+                open={openFileModal} 
+                directory={directory||""}
+                
+                handleClose={handleCloseModal}
+                handleConfirm={handleConfirmModal}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
+            />
+        </div>
+    )
+}
+
+const SidebarHistItem = (props) => {
+    const regexTag = /(tag: ([^\n]*?)\, )|(tag: ([^\n]*))/
+    const tagText = regexTag.exec(props.toRender.refs)
+    let tagItem;
+
+    if(tagText){
+        tagItem = (
+            <Button disabled variant="contained" style={{color: "black"}}>
+                {tagText[2]||tagText[4]}
+            </Button>
+        )
+    }
+
+    return (
+        <ListItem button onClick={()=>handleClick(props.toRender.hash)}>
+            <ListItemText style={{...SidebarHistText, flexDirection: "column"}} primary={props.toRender.message} secondary={props.toRender.date}/>
+            {tagItem}
+        </ListItem>
+    )
+}
+
+const SidebarRenderList = (props) => {
+    const repoHistory = useSelector(state => state.stage.repoLog);
+    const fileHistory = useSelector(state => state.stage.fileLog)
+
+
+    if(props.hist === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
+        return (
+            <List component="nav" style={SidebarStyle}>
                 {Object.keys(repoHistory || {}).map((value) => {
                     return(
                         <SidebarHistItem toRender={repoHistory[value]} key={value}/>        
@@ -260,25 +341,48 @@ export const SidebarHistory = (props) => {
                     
                 })}
             </List>
-        </div>
-    )
+        )
+    }
+    else if(props.hist === HISTORY_CONTROL.MAIN_FILE_VIEW){
+        return (
+            <List component="nav" style={SidebarStyle}>
+                {Object.keys(fileHistory || {}).map((value) => {
+                    return(
+                        <SidebarHistItem toRender={fileHistory[value]} key={value}/>        
+                    )
+                    
+                })}
+            </List>
+        )
+    }
+    
 }
 
-const SidebarHistItem = (props) => {
-    return (
-        <ListItem button>
-            <ListItemText style={{flexDirection: "column"}} primary={props.toRender.message} secondary={props.toRender.date}/>
-        </ListItem>
-    )
-}
 
 export const Sidebar = (props) => {
+    console.log(props.contentControl)
+
+    const renderContent = () => {
+        if(props.contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
+            return(
+                <SidebarHistory refresh={props.refresh} hist={props.historyControl} changeHist={props.handleHistoryControl}/> 
+            )
+        } 
+        else if (props.contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
+            return(
+                <SidebarChanges refresh={props.refresh}/> 
+            )
+        } 
+    }
+
     const handleHist = () => {
-        props.setHist(true)
+        props.handleContentControl(CONTENT_CONTROL.MAIN_HISTORY_VIEW)
+        console.log(props.contentControl)
     }
 
     const handleChange = () => {
-        props.setHist(false)
+        props.handleContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW)
+        console.log(props.contentControl)
     }
     return (
         <div style={{flexDirection: "column"}}>
@@ -286,7 +390,9 @@ export const Sidebar = (props) => {
                 <Button style={{...SidebarHistButtons}} onClick={handleChange}>Changes</Button>
                 <Button style={{...SidebarHistButtons}} onClick={handleHist}>History</Button>
             </ButtonGroup>
-            {props.histControl ? <SidebarHistory refresh={props.refresh}/> : <SidebarChanges refresh={props.refresh}/> }
+            {
+                renderContent()
+            }
         </div>
     )
 }

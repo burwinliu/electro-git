@@ -17,6 +17,13 @@ import {
      GitDiffUndefined
 } from './Table';
 
+import {
+    CONTENT_CONTROL,
+    DIFF_CONTROL,
+    HISTORY_CONTROL
+} from "../main"
+
+
 export const Body = (props) => {
     const file = useSelector(state => state.appstore.currentDiff);
     const dir = useSelector(state => state.repo.path)
@@ -26,6 +33,8 @@ export const Body = (props) => {
     const [fileA, setFileA] = useState("")
     const [fileB, setFileB] = useState("")
     const [fileTracked, setFileTracked] = useState(true)
+
+    
 
     const setFiles = (a, b) => {
         setFileA(a)
@@ -40,15 +49,15 @@ export const Body = (props) => {
         }
     }
 
-    const renderContent = () => {
+    const renderDiff = () => {
         if (fileDiff !== undefined && fileDiff[file] !== undefined){
             const chunks = fileDiff[file].chunks
-            if(props.mode){
+            if(props.diffControl === DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW){
                 return(
                     <GitDiffSideBySide chunks={chunks} fileA={fileA} fileB={fileB}/>
                 )
             }
-            else{
+            else if(props.diffControl === DIFF_CONTROL.MAIN_COMPRESSED_VIEW){
                 return (
                     <GitDiffCompressed chunks={chunks} fileA={fileA} fileB={fileB}/>
                 )
@@ -67,6 +76,24 @@ export const Body = (props) => {
             )
         }
     }
+
+    const renderHistory = () => {
+        return(
+            <div>
+                HISTORY HERE
+            </div>
+        )
+    }
+
+    const renderContent = () => {
+        if(props.contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
+            return renderDiff();
+        }
+        else if (props.contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
+            return renderHistory();
+        } 
+    }
+
     useEffect(() => {
         if (fileDiff !== undefined && fileDiff[file] !== undefined){
             setFiles(fileDiff[file].fileA, fileDiff[file].fileB)

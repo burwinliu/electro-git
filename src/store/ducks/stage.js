@@ -12,15 +12,19 @@ const SET_DIFFRECORDOBJ = 'stage/SET_DIFFRECORDOBJ'
 const CLEAR_DIFFRECORD = 'stage/CLEAR_DIFFRECORD'
 
 // LOG
-const SET_LOG = 'stage/SET_LOG'
-const CLEAR_LOG = 'stage/CLEAR_LOG'
+const SET_REPOLOG = 'stage/SET_REPO_LOG'
+const CLEAR_REPOLOG = 'stage/CLEAR_REPO_LOG'
+
+const SET_FILELOG = 'stage/SET_FILE_LOG'
+const CLEAR_FILELOG = 'stage/CLEAR_FILE_LOG'
 
 const RESET_STAGE = 'stage/RESET_STAGE'
 
 const initState = {
   status: {},
   diff: {},
-  log: {},
+  repoLog: {},
+  fileLog: {},
 }
 
 export const stageReducer = (state = initState, action = {}) => {
@@ -44,10 +48,15 @@ export const stageReducer = (state = initState, action = {}) => {
     case CLEAR_DIFFRECORD:
       return { ...state, diff: {} };
 
-    case SET_LOG:
-      return {...state, log: action.payload}
-    case CLEAR_LOG:
-      return {...state, log: {}}
+    case SET_REPOLOG:
+      return {...state, repoLog: action.payload}
+    case CLEAR_REPOLOG:
+      return {...state, repoLog: {}}
+
+    case SET_FILELOG:
+      return {...state, fileLog: action.payload}
+    case CLEAR_FILELOG:
+      return {...state, fileLog: {}}
 
     case RESET_STAGE:
       return {initState}
@@ -85,11 +94,18 @@ export const stageClearDiff = () => {
   return { type: CLEAR_DIFFRECORD, payload: {} }
 }
 
-export const stageSetLog = (checked) => {
-  return {type: SET_LOG, payload: checked}
+export const stageSetRepoLog = (log) => {
+  return {type: SET_REPOLOG, payload: log}
 }
-export const stageClearLog = () => {
-  return {type: CLEAR_LOG, payload: {}}
+export const stageCkearRepoLog = () => {
+  return {type: CLEAR_REPOLOG, payload: {}}
+}
+
+export const stageSetFileLog = (log) => {
+  return {type: SET_FILELOG, payload: log}
+}
+export const stageCkearFileLog = () => {
+  return {type: CLEAR_FILELOG, payload: {}}
 }
 
 export const stageReset = () => {

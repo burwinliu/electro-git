@@ -24,6 +24,10 @@ export const SidebarHistButtons = {
     flexGrow: "1",
 }
 
+export const SidebarHistText ={
+    textOverflow: "ellipsis"
+}
+
 export const SidebarCommitMenu = {
     minHeight: "200px",
     backgroundColor: colors.background,
@@ -69,3 +73,4 @@ export const SidebarMenuIcons = {
 export const SidebarCheckbox = {
     color: colors.primary
 }
+

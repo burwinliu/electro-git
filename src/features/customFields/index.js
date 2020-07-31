@@ -1,1 +1,1 @@
-export {CustomDirectoryField as CustomDirectoryField } from './CustomDirectoryField'
+export * from './CustomDirectoryField'

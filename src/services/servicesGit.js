@@ -400,11 +400,12 @@ export const helperGitStatus = async (path, fileName) => {
 
 export const helperGitLog = (path) => {
     const repo = helperGitOpen(path)
-    return repo.log()
+    return repo.log(["--decorate"])
 }
 
 export const helperGitLogFile = (repoPath, filePath) => {
-
+    const repo = helperGitOpen(repoPath)
+    return repo.log(["--decorate", "--", filePath])
 }
 
 export const helperGitRemoteName = (path) => {

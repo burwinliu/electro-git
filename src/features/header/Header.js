@@ -127,7 +127,7 @@ export const Header = (props) => {
                 <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.refresh}>
                     Fetch and Refresh
                 </Button>
-                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.handleModeSwitch}>
+                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.handleDiffSwitch}>
                     Switch Diff Render (Development Only, to change to dropdown)
                 </Button>
             </div>

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TextField } from '@material-ui/core';
+import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TextField, Input } from '@material-ui/core';
 import { Button } from '@material-ui/core'
 
-import {CustomDirectoryField} from '../CustomFields'
+import {CustomDirectoryField, CustomFileField} from '../CustomFields'
 import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
 import { helperGitRemoteName, helperGitTag, helperGitOpen } from '../../services';
@@ -160,5 +160,31 @@ export const ModalRepoSetting = (props) => {
                     </Button>
                 </DialogActions>
         </Dialog>
+    )
+}
+
+export const ModalFormFile = (props) => {
+    /*
+        Expects props with title, opn, handleCancel, handleConfirm, confirmText, directory, handleDirectoryChange
+    */
+    return (
+        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'lg'}>
+            <DialogTitle id="form-dialog-title">Select File</DialogTitle>
+            <DialogContent>
+                <CustomFileField 
+                    directory={props.directory} 
+                    handleDirectoryChange={props.handleDirectoryChange}
+                    handleDirectory={props.handleDirectory}
+                />
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={props.handleClose} color="primary">
+                    Cancel
+                </Button>
+                <Button onClick={props.handleConfirm} color="primary">
+                    Select
+                </Button>
+            </DialogActions>
+      </Dialog>
     )
 }

@@ -134,10 +134,19 @@ ipcMain.on('minWindow', function(e) {
   }
 });
 //hold the array of directory paths selected by user (for opening a dialog)
-ipcMain.on('selectDirectory', async function(e) {
+ipcMain.on('selectDirectoryCustomField', async function(e) {
   const dir = await dialog.showOpenDialog(mainWindow, {
       properties: ['openDirectory']
   });
-  e.reply('selectDirectory', dir)
+  e.reply('selectDirectoryCustomField', dir)
 
 });
+
+ipcMain.on('selectFileCustomField', async function(e) {
+  const dir = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile']
+  });
+  e.reply('selectFileCustomField', dir)
+
+});
+
