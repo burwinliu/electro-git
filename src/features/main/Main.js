@@ -17,11 +17,9 @@ import {
     stageSetStatusObj,
     stageSetDiffObj,
     stageReset,
-    repoReset,
-    appstoreReset,
-    keyReset,
     stageSetRepoLog,
-    stageSetFileLog
+    stageSetFileLog,
+    appstoreSetDiffControl
 } from '../../store/ducks'
 
 //Service helpers
@@ -41,7 +39,7 @@ import {
     CONTENT_CONTROL,
     DIFF_CONTROL,
     HISTORY_CONTROL
-} from "./MainHelper"
+} from "../../store/ducks"
 
 
 export const MainPage = (props) => {
@@ -50,12 +48,12 @@ export const MainPage = (props) => {
     const dispatch = useDispatch()
 
     // Control what to be shown in content -- difference or history
-    const [contentControl, setContentControl] = useState(CONTENT_CONTROL.MAIN_DIFF_VIEW) 
+    const contentControl = useSelector(state=>state.appstore.contentControl)
 
     // Controls how the history should be viewed
-    const [historyControl, setHistoryControl] = useState(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW)
+    const histControl = useSelector(state=>state.appstore.histControl)
     //Controls how the diff should be viewed
-    const [diffControl, setDiffControl] = useState(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW)
+    const diffControl = useSelector(state=>state.appstore.diffControl)
 
     const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
@@ -100,7 +98,6 @@ export const MainPage = (props) => {
             
         return () => {
             dispatch(stageReset());
-            dispatch(appstoreReset()) 
             setLoaded(false)
         }
     }, [dirPath])
@@ -159,6 +156,8 @@ export const MainPage = (props) => {
             }
         })
 
+        if(diffFile === "") return
+
         helperGitLogFile(dirPath, diffFile).then((log)=>{
             if(loaded){
                 dispatch(stageSetFileLog(log.all))
@@ -169,21 +168,13 @@ export const MainPage = (props) => {
     const handleErr = (state) => {
         setError(state)
     }
-
-    const handleContentControl = (input) => {
-        setContentControl(input)
-    }
-
-    const handleHistoryControl = (input) => {
-        setHistoryControl(input)
-    }
     
     const handleDiffSwitch = () => {
         if(diffControl === DIFF_CONTROL.MAIN_COMPRESSED_VIEW){
-            setDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW)
+            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW))
         }
         if(diffControl === DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW){
-            setDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW)
+            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW))
         }
     }
 
@@ -198,20 +189,9 @@ export const MainPage = (props) => {
                 <div style={MainContent}>
                     <Sidebar 
                         refresh={handleRefresh}
-                        
-                        contentControl={contentControl}
-                        historyControl={historyControl}
-                        diffControl={diffControl}
-
-                        handleContentControl={handleContentControl}
-                        handleHistoryControl={handleHistoryControl}
                     />
                     <Body 
                         refresh={handleRefresh} 
-                        
-                        contentControl={contentControl}
-                        historyControl={historyControl}
-                        diffControl={diffControl}
                     />
                 </div>
                 

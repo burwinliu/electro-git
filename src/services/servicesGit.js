@@ -277,6 +277,24 @@ export const renderGitDiffInfo = (text) => {
     return result;
 }
 
+export const renderGitStatusHist = (text) => {
+    const regexStatus = /([MADRC])[\W]([^\n\s]*)/
+    const splitDiff = text.split("\n");
+    const result = {}
+
+    for(let line in splitDiff){
+        let newItem = {}
+        const renderedLine = regexStatus.exec(splitDiff[line])
+        if(renderedLine){
+            newItem.working_dir = ""
+            newItem.index = renderedLine[1]
+            result[renderedLine[2]] = newItem
+    
+        }
+    }
+    return result
+}
+
 export const renderGitEnvSshCmd = (sshPath) => {
     return "ssh -i" + sshPath + "-o IdentitiesOnly=yes";
 }
@@ -348,23 +366,15 @@ export const helperGitPushTag = (path) => {
     return repo.pushTags()
 }
 
-export const helperGitDiff = async (path, hashA, hashB) => {
+export const helperGitDiff = async (path) => {
     /*
         @return [type string]
 
         returns string of git diff return object
     */
-    let options;
     let diff;
     const repo = helperGitOpen(path)
 
-    if(hashA && hashB){
-        options = [
-            hashA,
-            hashB
-        ]
-        return repo.diff(options)
-    }
     try{
         diff = await repo.diff(["HEAD"])
     }
@@ -372,6 +382,20 @@ export const helperGitDiff = async (path, hashA, hashB) => {
         diff = await repo.diff(["--cached"])
     }
     return diff
+}
+
+export const helperGitDiffHist = async (path, input) => {
+    const repo = helperGitOpen(path)
+    const pastHash = input + "^"
+    const hash = "" + input + ""
+    let result;
+    try{
+        result = await repo.diff([pastHash, hash])    
+    }
+    catch(err){
+        result = await repo.diff(["4b825dc642cb6eb9a060e54bf8d69288fbee4904", hash])
+    }
+    return result
 }
 
 export const helperGitStatus = async (path, fileName) => {
@@ -396,6 +420,13 @@ export const helperGitStatus = async (path, fileName) => {
         files = await repo.status();
     }
     return files.files
+}
+
+export const helperGitShowHist = async(path, commitCode) => {
+    let files  
+    const repo = helperGitOpen(path)
+
+    return await repo.show(["--name-status", commitCode])
 }
 
 export const helperGitLog = (path) => {

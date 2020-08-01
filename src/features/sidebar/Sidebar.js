@@ -22,6 +22,11 @@ import {
     
     stageSetRepoLog,
     appstoreSetCurrentHistFile,
+    appstoreSetContentControl,
+    appstoreSetHistControl,
+    stageSetFileHistDiff,
+    stageSetRepoHistDiff,
+    stageSetRepoHistStatus,
 } from '../../store/ducks'
 
 //styles
@@ -46,13 +51,17 @@ import {
     helperGitPush,
     helperGitPushTag,
     helperGitLog,
+    helperGitDiffHist,
+    renderGitDiffInfo,
+    helperGitShowHist,
+    renderGitStatusHist
 } from "../../services"
 
 import {
     CONTENT_CONTROL,
     DIFF_CONTROL,
     HISTORY_CONTROL
-} from "../main"
+} from "../../store/ducks"
 
 import { GitError } from 'simple-git';
 
@@ -95,6 +104,7 @@ export const SidebarChanges = (props) => {
     }, [])
 
     const handleIconClick = (id) => {
+        console.log(id)
         dispatch(appstoreSetCurrentDiff(id))
     }
 
@@ -163,9 +173,9 @@ export const SidebarChanges = (props) => {
         setModalTagOpen(false)
     }
     
-    // Local items to make sure rendering goes well, and we aren't rendering null things. statusIcon is just an icon to be set and changed for inner rendering of the component
+    // Local items to make sure rendering goes well, and we aren't rendering null things. statusIcon is just
+    // an icon to be set and changed for inner rendering of the component
     let toRender = {}
-    let statusIcon = null
     
     if(fileStatus !== undefined){
         console.log(filePath, "FILE PATH");
@@ -252,6 +262,7 @@ export const SidebarChanges = (props) => {
 
 export const SidebarHistory = (props) => {
     const repoLog = useSelector(state => state.repo.path);
+    const repoPath = useSelector(state=>state.repo.path)
 
     const [openFileModal, setOpenFileModal] = useState(false)
     const [directory, setDirectory] = useState("")
@@ -259,7 +270,7 @@ export const SidebarHistory = (props) => {
     const dispatch = useDispatch()
 
     const historyOverview = () => {
-        props.changeHist(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW)
+        dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW))
     }
 
     const historyFile = () => {
@@ -274,10 +285,17 @@ export const SidebarHistory = (props) => {
         setDirectory(evt.target.value)
     }
     const handleConfirmModal = () => {
-        dispatch(appstoreSetCurrentHistFile(directory))
-        props.changeHist(HISTORY_CONTROL.MAIN_FILE_VIEW)
-        props.refresh()
-        setOpenFileModal(false)
+        const dirParsed = directory.replace(/\\/g,"\/");
+        if(dirParsed.includes(repoPath)){
+            dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPath + "/", "")))
+            dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
+            props.refresh()
+            setOpenFileModal(false)
+        }
+        else{
+            console.log("VALID ITEM ONLY", repoPath, dirParsed)
+        }
+        
     }
     const handleCloseModal = () => {
         setOpenFileModal(false)
@@ -285,7 +303,7 @@ export const SidebarHistory = (props) => {
 
     return ( 
         <div style={SidebarWrap}>
-            {<SidebarRenderList hist={props.hist} />}
+            {<SidebarRenderHistList/>}
             <div style={{...SidebarCommitMenu}} >
             <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
                 <Button onClick={historyOverview}>See History Overview</Button>
@@ -308,6 +326,10 @@ export const SidebarHistory = (props) => {
 const SidebarHistItem = (props) => {
     const regexTag = /(tag: ([^\n]*?)\, )|(tag: ([^\n]*))/
     const tagText = regexTag.exec(props.toRender.refs)
+    const filePath = useSelector(state => state.repo.path);
+    const histControl = useSelector(state => state.appstore.histControl)
+    
+    const dispatch = useDispatch();
     let tagItem;
 
     if(tagText){
@@ -318,20 +340,36 @@ const SidebarHistItem = (props) => {
         )
     }
 
+    const handleClick = async (logLine) => {
+        console.log(logLine)
+        const diffHist = await helperGitDiffHist(filePath, logLine.hash)
+        const diffHistRender = renderGitDiffInfo(diffHist)
+        if(histControl === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
+            const statusHist = await helperGitShowHist(filePath, logLine.hash)
+            const renderStatusHist = renderGitStatusHist(statusHist)
+            dispatch(stageSetRepoHistDiff(diffHistRender))
+            dispatch(stageSetRepoHistStatus(renderStatusHist))
+        }
+        else if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
+            dispatch(stageSetFileHistDiff(diffHistRender))
+        }
+        console.log(diffHistRender)
+    }
+
     return (
-        <ListItem button onClick={()=>handleClick(props.toRender.hash)}>
+        <ListItem button onClick={()=>handleClick(props.toRender)}>
             <ListItemText style={{...SidebarHistText, flexDirection: "column"}} primary={props.toRender.message} secondary={props.toRender.date}/>
             {tagItem}
         </ListItem>
     )
 }
 
-const SidebarRenderList = (props) => {
+const SidebarRenderHistList = (props) => {
     const repoHistory = useSelector(state => state.stage.repoLog);
     const fileHistory = useSelector(state => state.stage.fileLog)
+    const hist = useSelector(state => state.appstore.histControl)
 
-
-    if(props.hist === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
+    if(hist === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
         return (
             <List component="nav" style={SidebarStyle}>
                 {Object.keys(repoHistory || {}).map((value) => {
@@ -343,7 +381,7 @@ const SidebarRenderList = (props) => {
             </List>
         )
     }
-    else if(props.hist === HISTORY_CONTROL.MAIN_FILE_VIEW){
+    else if(hist === HISTORY_CONTROL.MAIN_FILE_VIEW){
         return (
             <List component="nav" style={SidebarStyle}>
                 {Object.keys(fileHistory || {}).map((value) => {
@@ -360,15 +398,17 @@ const SidebarRenderList = (props) => {
 
 
 export const Sidebar = (props) => {
-    console.log(props.contentControl)
+    const contentControl = useSelector( state => state.appstore.contentControl)
+    const dispatch = useDispatch()
+
 
     const renderContent = () => {
-        if(props.contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
+        if(contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
             return(
-                <SidebarHistory refresh={props.refresh} hist={props.historyControl} changeHist={props.handleHistoryControl}/> 
+                <SidebarHistory refresh={props.refresh}/> 
             )
         } 
-        else if (props.contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
+        else if (contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
             return(
                 <SidebarChanges refresh={props.refresh}/> 
             )
@@ -376,13 +416,11 @@ export const Sidebar = (props) => {
     }
 
     const handleHist = () => {
-        props.handleContentControl(CONTENT_CONTROL.MAIN_HISTORY_VIEW)
-        console.log(props.contentControl)
+        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_HISTORY_VIEW))
     }
 
     const handleChange = () => {
-        props.handleContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW)
-        console.log(props.contentControl)
+        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
     }
     return (
         <div style={{flexDirection: "column"}}>

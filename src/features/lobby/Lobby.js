@@ -39,7 +39,6 @@ import {
     stageSetDiffObj,
     stageSetStatusObj,
     stageReset,
-    appstoreReset
 } from '../../store/ducks'
 
 export const LobbyPage = () => {
@@ -66,7 +65,6 @@ export const LobbyPage = () => {
 
     useEffect(()=>{
         if(dirPath !== "" && dirPath !== undefined){
-            console.log(dirPath, "WHAT")
             history.push('/main')
         }
         return ()=>{

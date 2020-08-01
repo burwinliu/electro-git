@@ -11,20 +11,28 @@ const SET_DIFFRECORD = 'stage/SET_DIFFRECORD'
 const SET_DIFFRECORDOBJ = 'stage/SET_DIFFRECORDOBJ'
 const CLEAR_DIFFRECORD = 'stage/CLEAR_DIFFRECORD'
 
-// LOG
-const SET_REPOLOG = 'stage/SET_REPO_LOG'
-const CLEAR_REPOLOG = 'stage/CLEAR_REPO_LOG'
+// HISTORY
+const SET_REPO_LOG = 'stage/SET_REPO_LOG'
+const CLEAR_REPO_LOG = 'stage/CLEAR_REPO_LOG'
+const SET_REPO_HIST_STATUS = 'stage/SET_REPO_STATUS'
+const SET_REPO_HIST_DIFF = 'stage/SET_REPO_DIFF'
 
-const SET_FILELOG = 'stage/SET_FILE_LOG'
-const CLEAR_FILELOG = 'stage/CLEAR_FILE_LOG'
+const SET_FILE_LOG = 'stage/SET_FILE_LOG'
+const CLEAR_FILE_LOG = 'stage/CLEAR_FILE_LOG'
+const SET_FILE_HIST_DIFF = 'stage/SET_FILE_DIFF'
 
 const RESET_STAGE = 'stage/RESET_STAGE'
 
 const initState = {
   status: {},
   diff: {},
+
   repoLog: {},
+  repoHistStatus: {},
+  repoHistDiff: {},
+
   fileLog: {},
+  fileHistDiff: {},
 }
 
 export const stageReducer = (state = initState, action = {}) => {
@@ -48,15 +56,22 @@ export const stageReducer = (state = initState, action = {}) => {
     case CLEAR_DIFFRECORD:
       return { ...state, diff: {} };
 
-    case SET_REPOLOG:
+    case SET_REPO_LOG:
       return {...state, repoLog: action.payload}
-    case CLEAR_REPOLOG:
+    case CLEAR_REPO_LOG:
       return {...state, repoLog: {}}
+    case SET_REPO_HIST_STATUS:
+      return {...state, repoHistStatus: action.payload}
+    case SET_REPO_HIST_DIFF:
+      return {...state, repoHistDiff: action.payload}
 
-    case SET_FILELOG:
+
+    case SET_FILE_LOG:
       return {...state, fileLog: action.payload}
-    case CLEAR_FILELOG:
+    case CLEAR_FILE_LOG:
       return {...state, fileLog: {}}
+    case SET_FILE_HIST_DIFF:
+      return {...state, fileHistDiff: action.payload}
 
     case RESET_STAGE:
       return {initState}
@@ -95,19 +110,29 @@ export const stageClearDiff = () => {
 }
 
 export const stageSetRepoLog = (log) => {
-  return {type: SET_REPOLOG, payload: log}
+  return {type: SET_REPO_LOG, payload: log}
 }
-export const stageCkearRepoLog = () => {
+export const stageClearRepoLog = () => {
   return {type: CLEAR_REPOLOG, payload: {}}
+}
+export const stageSetRepoHistStatus = (status) => {
+  return {type: SET_REPO_HIST_STATUS, payload: status}
+}
+export const stageSetRepoHistDiff = (diff) => {
+  return {type: SET_REPO_HIST_DIFF, payload: diff}
 }
 
 export const stageSetFileLog = (log) => {
-  return {type: SET_FILELOG, payload: log}
+  return {type: SET_FILE_LOG, payload: log}
 }
-export const stageCkearFileLog = () => {
+export const stageClearFileLog = () => {
   return {type: CLEAR_FILELOG, payload: {}}
+}
+export const stageSetFileHistDiff = (diff) => {
+  return {type: SET_FILE_HIST_DIFF, payload: diff}
 }
 
 export const stageReset = () => {
+  console.log("RESET STAGE")
   return { type: RESET_STAGE, payload: {}}
 }
