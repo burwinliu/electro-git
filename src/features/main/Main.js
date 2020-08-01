@@ -64,7 +64,7 @@ export const MainPage = (props) => {
     useEffect(()=>{
         if(error) return;
         handleRefresh().then((isErr)=>{
-            if(!dirPath || dirPath === undefined || isErr) {
+            if(!dirPath || dirPath === undefined || isErr || !loaded) {
                 setError(true)
                 return
             };

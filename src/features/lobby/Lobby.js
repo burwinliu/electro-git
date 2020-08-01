@@ -166,15 +166,16 @@ export const LobbyPage = () => {
     const handleConfirmClone = async () => {
         if (dir && url){
             try{
+                helperGitClone(dir, url).then(async (temp) => {
+                    console.log(temp, "DONE")
+                    dispatch(repoSetPath(dir))
+                    dispatch(repoSetUrl(dir))
+                    await handleRefresh()
+                    
+                    history.push('/main')
+                    return
+                });
                 
-                const repo = helperGitOpen(dir)
-                helperGitClone(repo, url, dir);
-                dispatch(repoSetPath(dir))
-                dispatch(repoSetUrl(dir))
-                await handleRefresh()
-                
-                history.push('/main')
-                return
             }
             catch(err){
                 console.log(err);
@@ -198,9 +199,9 @@ export const LobbyPage = () => {
             setDir(evt.target.value)
         }
     }
-    const changeUrl = (input) => {
+    const changeUrl = (evt) => {
         if(loaded){
-            setUrl(input)
+            setUrl(evt.target.value)
         }
     }
 

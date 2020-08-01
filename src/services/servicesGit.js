@@ -313,8 +313,8 @@ export const helperGitInit = async (path) => {
     return resultingRepo;
 }
 
-export const helperGitClone = async (repoURL, localPath) => {
-    return await simpleGit.clone(repoURL, localPath)
+export const helperGitClone = async (localPath, repoURL) => {
+    return await simpleGit().clone(repoURL, localPath)
 }
 
 export const helperGitCheckIgnore = (repoPath, filePath) => {

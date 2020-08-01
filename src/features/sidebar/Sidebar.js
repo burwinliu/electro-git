@@ -286,14 +286,15 @@ export const SidebarHistory = (props) => {
     }
     const handleConfirmModal = () => {
         const dirParsed = directory.replace(/\\/g,"\/");
-        if(dirParsed.includes(repoPath)){
-            dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPath + "/", "")))
+        const repoPathParsed = directory.replace(/\\/g,"\/");
+        if(dirParsed.includes(repoPathParsed)){
+            dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
             dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
             props.refresh()
             setOpenFileModal(false)
         }
         else{
-            console.log("VALID ITEM ONLY", repoPath, dirParsed)
+            console.log("VALID ITEM ONLY", repoPathParsed, dirParsed)
         }
         
     }
