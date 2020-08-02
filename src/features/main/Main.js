@@ -19,7 +19,9 @@ import {
     stageReset,
     stageSetRepoLog,
     stageSetFileLog,
-    appstoreSetDiffControl
+    appstoreSetDiffControl,
+    stageSetBranchList,
+    appstoreSetBranch
 } from '../../store/ducks'
 
 //Service helpers
@@ -30,7 +32,8 @@ import {
     helperGitLog,
     helperGitDir,
     helperGitCheckIgnore,
-    helperGitLogFile
+    helperGitLogFile,
+    helperGitBranchList
 } from "../../services"
 
 import * as path from 'path';
@@ -156,6 +159,13 @@ export const MainPage = (props) => {
             if(loaded){
                 dispatch(stageSetRepoLog(log.all))
             }
+        })
+
+        helperGitBranchList(dirPath).then((branchList) => {
+            if(loaded){
+                dispatch(stageSetBranchList(branchList.branches))
+                dispatch(appstoreSetBranch(branchList.current))
+            }            
         })
 
         if(diffFile === "") return

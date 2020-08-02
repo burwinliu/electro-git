@@ -12,7 +12,8 @@ import {
 import {
     ArrowDropDown as ArrowDropDownIcon,
     ArrowDropUp as ArrowDropUpIcon,
-    Settings as SettingsIcon
+    Settings as SettingsIcon,
+    MergeType as MergeTypeIcon
 } from '@material-ui/icons';
 
 import * as path from 'path';
@@ -30,13 +31,20 @@ import {
 import { colors } from '../../styles/palette';
 import { ModalRepoSetting } from '../modals/Modals';
 
+import {
+    helperGitBranchCheckout
+} from '../../services'
+
 export const Header = (props) => {
     const dirPath = useSelector(state => state.repo.path);
+    const curBranch = useSelector(state => state.appstore.branch)
+    const branchList = useSelector(state=>state.stage.branchList)
     const dispatch = useDispatch();
 
     //ROUTER HOOKS
     const history = useHistory();
     const [repoNav, setRepoNav] = useState(false)
+    const [branchNav, setBranchNav] = useState(false)
 
     const [repoSettings, setRepoSettings] = useState(false)
     
@@ -79,12 +87,31 @@ export const Header = (props) => {
         setRepoNav(false)
     }
 
+    const handleBranchOpen = () => {
+        setBranchNav(true);
+    };
+    const handleBranchClose = () => {
+        setBranchNav(false)
+    }
+
     const handleRepoDialogOpen = () => {
         setRepoSettings(true)
     }
     const handleRepoDialogClose = () => {
         setRepoSettings(false)
     }
+
+    const handleCheckoutBranch = (branchName, commit) => {
+        helperGitBranchCheckout(dirPath, branchName, commit)
+            .then((response) =>{
+                console.log(response)
+                props.refresh()
+            })
+            .catch((err) =>{
+                console.log(err)
+
+            })
+    }   
 
     return (
         <div style={HeaderWrap}>
@@ -117,6 +144,53 @@ export const Header = (props) => {
                                     <ListItemText primary="Repository Settings" />
                                 </ListItem>
                                 <Divider />
+                            </List>
+                        </SidebarDropdown>
+                        
+                    
+                    </div>
+                </ClickAwayListener>
+                <ClickAwayListener onClickAway={handleBranchClose}>
+                    <div style={{flexDirection: "column", height: "fit-content"}}>
+                        {branchNav? 
+                            <HeaderButton style={{...HeaderItem, ...HeaderSidebar, backgroundColor: colors.background, borderWidth: "0 1px 0 0"}} onClick={handleBranchClose}>
+                                <div style={{flexDirection:  "column"}}>
+                                    <div style={{...HeaderMenuSubText}}>{"Current Branch:"}</div>
+                                    <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{curBranch}</div>
+                                </div>
+                                <ArrowDropUpIcon fontSize="large"/>
+                            </HeaderButton> 
+                            :
+                            <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleBranchOpen}>
+                                <div style={{flexDirection:  "column"}}>
+                                    <div style={{...HeaderMenuSubText}}>{"Current Branch:"}</div>
+                                    <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{curBranch}</div>
+                                </div>
+                                <ArrowDropDownIcon fontSize="large"/>
+                            </HeaderButton> 
+                        }   
+                        <SidebarDropdown in={branchNav}>
+                            <List style={{...HeaderRepoSidebarDropdown}}>
+                                {
+                                    Object.keys(branchList||{}).map((key) => {
+                                        const splitStr = branchList[key].name.split("/");
+                                        if(branchList[key].current === true || splitStr[splitStr.length-1] === curBranch){
+                                            return
+                                        }
+                                        return (
+                                            <ListItem button key={key} onClick={() => handleCheckoutBranch(branchList[key].name, branchList[key].commit)}>
+                                                <ListItemIcon>
+                                                    <MergeTypeIcon/>
+                                                </ListItemIcon>
+                                                <ListItemText 
+                                                    style={{flexDirection: "column"}}
+                                                    primary={splitStr[splitStr.length-1]} 
+                                                    secondary={branchList[key].commit}
+                                                />
+                                            </ListItem>
+                                        )
+                                    })
+                                }
                             </List>
                         </SidebarDropdown>
                         

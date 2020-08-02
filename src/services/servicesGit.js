@@ -393,7 +393,8 @@ export const helperGitDiffHist = async (path, input) => {
         result = await repo.diff([pastHash, hash])    
     }
     catch(err){
-        result = await repo.diff(["4b825dc642cb6eb9a060e54bf8d69288fbee4904", hash])
+        result = await repo.diff(["4b825dc642cb6eb9a060e54bf8d69288fbee4904", hash]) // COMPARE TO HEAD OF TREE AS HEAD 
+                                                                                        // OF TREE IS 4b825dc642cb6eb9a060e54bf8d69288fbee4904 (constantly) IN GIT
     }
     return result
 }
@@ -447,6 +448,16 @@ export const helperGitRemoteName = (path) => {
 export const helperGitBranch = async (path) => {
     const repo = helperGitOpen(path)
     return await repo.branch();
+}
+
+export const helperGitBranchList = async (path) => {
+    const repo = helperGitOpen(path)
+    return await repo.branch()
+}
+
+export const helperGitBranchCheckout = async (path, branchName, commit) => {
+    const repo = helperGitOpen(path)
+    return await repo.checkoutBranch(branchName, commit)
 }
 
 

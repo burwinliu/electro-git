@@ -11,6 +11,9 @@ const SET_DIFFRECORD = 'stage/SET_DIFFRECORD'
 const SET_DIFFRECORDOBJ = 'stage/SET_DIFFRECORDOBJ'
 const CLEAR_DIFFRECORD = 'stage/CLEAR_DIFFRECORD'
 
+// BRANCH
+const SET_BRANCH_LIST = 'stage/SET_BRANCH_LIST'
+
 // HISTORY
 const SET_REPO_LOG = 'stage/SET_REPO_LOG'
 const CLEAR_REPO_LOG = 'stage/CLEAR_REPO_LOG'
@@ -33,6 +36,8 @@ const initState = {
 
   fileLog: {},
   fileHistDiff: {},
+
+  branchList: {},
 }
 
 export const stageReducer = (state = initState, action = {}) => {
@@ -72,6 +77,9 @@ export const stageReducer = (state = initState, action = {}) => {
       return {...state, fileLog: {}}
     case SET_FILE_HIST_DIFF:
       return {...state, fileHistDiff: action.payload}
+
+    case SET_BRANCH_LIST:
+      return {...state, branchList: action.payload}
 
     case RESET_STAGE:
       return {initState}
@@ -130,6 +138,10 @@ export const stageClearFileLog = () => {
 }
 export const stageSetFileHistDiff = (diff) => {
   return {type: SET_FILE_HIST_DIFF, payload: diff}
+}
+
+export const stageSetBranchList = (list) => {
+  return {type: SET_BRANCH_LIST, payload: list}
 }
 
 export const stageReset = () => {
