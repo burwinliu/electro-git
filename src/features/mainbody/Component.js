@@ -18,12 +18,12 @@ import {
 
 import {
     SidebarStyle, SidebarWrap,
-    SidebarMenuItems, SidebarMenuIcons, SidebarCheckbox
+    SidebarMenuItems, SidebarMenuIcons
 } from "../sidebar/SidebarStyle"
 
 import {
-    stageSetChecked
-} from '../../store/ducks'
+    BodyHistHeader
+} from "./BodyStyle"
 
 import {colors} from "../../styles/palette"
 
@@ -157,15 +157,39 @@ export const SidebarDiffRender = (props) => {
 }
 
 export const BodyHeaderHistoryFile = (props) => {
+    const logLine = useSelector(state=> state.appstore.currentLogLine)
+
     return(
-        <div>TEST</div>
+        <div style={{...BodyHistHeader}}>
+            <ListItem>
+                <ListItemText
+                    primary={logLine.message}
+                    secondary={
+                        logLine.author_email
+                    }
+                    style={{flexDirection: "column"}}
+                />
+            </ListItem>
+        </div>
 
     )
 }
 
 export const BodyHeaderHistoryRepo = (props) => {
+    const logLine = useSelector(state=> state.appstore.currentLogLine)
+    
     return(
-        <div>TEST</div>
+        <div style={{...BodyHistHeader}}>
+            <ListItem>
+                <ListItemText
+                    primary={logLine.message}
+                    secondary={
+                        logLine.author_email
+                    }
+                    style={{flexDirection: "column"}}
+                />
+            </ListItem>
+        </div>
 
     )
 }

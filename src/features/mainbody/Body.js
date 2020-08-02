@@ -81,7 +81,6 @@ export const Body = (props) => {
             )
         }
         else{
-            console.log("RESET ITEMS")
             return(
                 <GitDiffUndefined/>
             )
@@ -117,7 +116,7 @@ export const Body = (props) => {
             }
 
             return(
-                <div style={{flexDirection: "row", overflowY: "auto", flexGrow: "1"}}>
+                <div style={{flexDirection: "column", overflowY: "auto", flexGrow: "1"}}>
                     <BodyHeaderHistoryFile/>
                     {body}
                 </div>

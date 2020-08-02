@@ -11,10 +11,28 @@ export const BodyWrap = {
     flexDirection: "column",
     flexGrow: "1",
 
+    borderSpacing: "0",
+    borderStyle: "solid",
+    borderColor: colors.outline,
+    borderWidth: "1px",
+
     overflowY: "auto",
     maxHeight: "100vh"
 }
+//HEADER 
+export const BodyHistHeader = {
+    backgroundColor: colors.backgroundHeader,
+    flexDirection: "row",
+    flexGrow: "1",
 
+    minHeight: "50px",
+    maxHeight: "50px",
+
+    borderSpacing: "0",
+    borderStyle: "solid",
+    borderColor: colors.outline,
+    borderBottomWidth: "1px",
+}
 // BODY
 export const BodyContent = {
     flexDirection: "column",

@@ -27,6 +27,7 @@ import {
     stageSetFileHistDiff,
     stageSetRepoHistDiff,
     stageSetRepoHistStatus,
+    appstoreSetLogLine,
 } from '../../store/ducks'
 
 //styles
@@ -286,8 +287,9 @@ export const SidebarHistory = (props) => {
     }
     const handleConfirmModal = () => {
         const dirParsed = directory.replace(/\\/g,"\/");
-        const repoPathParsed = directory.replace(/\\/g,"\/");
+        const repoPathParsed = repoPath.replace(/\\/g,"\/");
         if(dirParsed.includes(repoPathParsed)){
+            console.log(dirParsed.replace(repoPathParsed, ""), dirParsed, repoPathParsed, "NEW HIST ITEM")
             dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
             dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
             props.refresh()
@@ -342,7 +344,7 @@ const SidebarHistItem = (props) => {
     }
 
     const handleClick = async (logLine) => {
-        console.log(logLine)
+        
         const diffHist = await helperGitDiffHist(filePath, logLine.hash)
         const diffHistRender = renderGitDiffInfo(diffHist)
         if(histControl === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
@@ -354,7 +356,7 @@ const SidebarHistItem = (props) => {
         else if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
             dispatch(stageSetFileHistDiff(diffHistRender))
         }
-        console.log(diffHistRender)
+        dispatch(appstoreSetLogLine(logLine))
     }
 
     return (

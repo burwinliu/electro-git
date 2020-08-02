@@ -25,7 +25,6 @@ if (process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development'
 // info: https://github.com/electron/electron/issues/9691
 if (process.platform === 'win32') {
   app.commandLine.appendSwitch('high-dpi-support', 'true')
-  app.commandLine.appendSwitch('force-device-scale-factor', '1')
 }
 
 function createWindow() {

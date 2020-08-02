@@ -2,7 +2,7 @@ import { CONTENT_CONTROL, DIFF_CONTROL, HISTORY_CONTROL } from "."
 
 // Selected file to view diff
 const SET_CURRENT_DIFF = "appstore/SET_CURRENT_DIFF"
-const SET_CURRENT_HISTDIFF = "appstore/SET_CURRENT_HISTDIFF"
+const SET_CURRENT_LOG_LINE = "appstore/SET_CURRENT_LOG_LINE"
 
 //SELECT history hash to be viewed
 const SET_CURRENT_HIST_REPO_FILE = "appstore/SET_CURRENT_HIST_REPO_FILE"
@@ -17,7 +17,8 @@ const SET_HIST_CONTROL = "appstore/SET_HIST_CONTROL"
 
 const initState={
   currentDiff: "",
-  currentHistDiff: "",
+
+  currentLogLine: {},
 
   currentHistRepoFile: "",
 
@@ -37,8 +38,8 @@ export const appstoreReducer = (state = initState, action = {}) => {
   switch(action.type){
     case SET_CURRENT_DIFF:
       return { ...state, currentDiff: action.payload };
-    case SET_CURRENT_HISTDIFF:
-      return {...state, currentHistDiff: action.payload };
+    case SET_CURRENT_LOG_LINE:
+      return {...state, currentLogLine: action.payload };
     case SET_CURRENT_HIST_REPO_FILE:
       return {...state, currentHistRepoFile: action.payload };
     case SET_CURRENT_HIST_FILE:
@@ -61,8 +62,8 @@ export const appstoreReducer = (state = initState, action = {}) => {
 export const appstoreSetCurrentDiff = (fileId) => {
   return { type: SET_CURRENT_DIFF, payload: fileId }
 }
-export const appstoreSetHistDiff = (fileId) => {
-  return { type: SET_CURRENT_HISTDIFF, payload: fileId }
+export const appstoreSetLogLine = (logLine) => {
+  return { type: SET_CURRENT_LOG_LINE, payload: logLine }
 }
 export const appstoreSetHistRepoFile = (hash) => {
   return { type: SET_CURRENT_HIST_REPO_FILE, payload: hash }
