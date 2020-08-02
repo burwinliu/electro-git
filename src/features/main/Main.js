@@ -57,6 +57,8 @@ export const MainPage = (props) => {
 
     const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
+
+    const [toWatch, setToWatch] = useState(false)
     
     //ROUTER HOOKS
     const history = useHistory();
@@ -64,13 +66,13 @@ export const MainPage = (props) => {
     useEffect(()=>{
         if(error) return;
         handleRefresh().then((isErr)=>{
-            if(!dirPath || dirPath === undefined || isErr || !loaded) {
+            if(!dirPath || dirPath === undefined || isErr ) {
                 setError(true)
                 return
             };
             try{
                 watch(dirPath, { recursive: true, delay: 300 }, async (evt, name) => {
-                    if(loaded){
+                    if(loaded && toWatch){
                         const splitPath = name.split(path.sep)
                         const gitDir = await helperGitDir(dirPath)
                         for (const i in splitPath){
@@ -95,7 +97,7 @@ export const MainPage = (props) => {
             }
         })
         
-            
+        setToWatch(true)
         return () => {
             dispatch(stageReset());
             setLoaded(false)
