@@ -15,6 +15,9 @@ const SET_CONTENT_CONTROL = "appstore/SET_CONTENT_CONTROL"
 const SET_DIFF_CONTROL = "appstore/SET_DIFF_CONTROL"
 const SET_HIST_CONTROL = "appstore/SET_HIST_CONTROL"
 
+// repo record
+const ADD_REPO_RECORD = "appstore/ADD_REPO_RECORD"
+
 const initState={
   currentDiff: "",
 
@@ -36,6 +39,11 @@ const initState={
 
 export const appstoreReducer = (state = initState, action = {}) => {
   switch(action.type){
+    case ADD_REPO_RECORD:
+      if (state.repoRecord.indexOf(action.payload) !== -1){
+        return {...state, repoRecord: state.repoRecord}
+      }
+      return { ...state, repoRecord: [...state.repoRecord, action.payload] };
     case SET_CURRENT_DIFF:
       return { ...state, currentDiff: action.payload };
     case SET_CURRENT_LOG_LINE:
@@ -57,6 +65,10 @@ export const appstoreReducer = (state = initState, action = {}) => {
     default: 
       return state
   }
+}
+
+export const appstoreAddRepoRecord = (repoPath) => {
+  return { type: ADD_REPO_RECORD, payload: repoPath}
 }
 
 export const appstoreSetCurrentDiff = (fileId) => {

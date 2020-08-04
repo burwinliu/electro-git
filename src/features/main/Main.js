@@ -21,7 +21,8 @@ import {
     stageSetFileLog,
     appstoreSetDiffControl,
     stageSetBranchList,
-    appstoreSetBranch
+    appstoreSetBranch,
+    appstoreAddRepoRecord
 } from '../../store/ducks'
 
 //Service helpers
@@ -50,11 +51,6 @@ export const MainPage = (props) => {
     const diffFile = useSelector( state=> state.appstore.currentHistFile)
     const dispatch = useDispatch()
 
-    // Control what to be shown in content -- difference or history
-    const contentControl = useSelector(state=>state.appstore.contentControl)
-
-    // Controls how the history should be viewed
-    const histControl = useSelector(state=>state.appstore.histControl)
     //Controls how the diff should be viewed
     const diffControl = useSelector(state=>state.appstore.diffControl)
 
@@ -101,6 +97,7 @@ export const MainPage = (props) => {
         })
         
         setToWatch(true)
+        dispatch(appstoreAddRepoRecord(dirPath))
         return () => {
             dispatch(stageReset());
             setLoaded(false)

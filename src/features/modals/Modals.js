@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core'
 import {CustomDirectoryField, CustomFileField} from '../CustomFields'
 import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
-import { helperGitRemoteName, helperGitTag, helperGitOpen } from '../../services';
+import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate } from '../../services';
 
 import {repoSetUrl} from '../../store/ducks'
 import { GitConstructError } from 'simple-git';
@@ -186,5 +186,41 @@ export const ModalFormFile = (props) => {
                 </Button>
             </DialogActions>
       </Dialog>
+    )
+}
+
+
+export const ModalBranchCreate = (props) => {
+    const repoPath = useSelector(state => state.repo.path)
+
+    const [branchName, setBranchName] = useState("")
+
+    const handleBranchChange = (evt) => {
+        setBranchName(evt.target.value)
+    }
+
+    const handleConfirm = () => {
+        helperGitBranchCreate(repoPath, branchName)
+        props.handleClose()
+    }
+
+    return(
+        <Dialog open={props.open} onClose={props.handleClose} fullWidth={true} maxWidth={'sm'}>
+                <DialogTitle id="form-dialog-title">New Branch</DialogTitle>
+                <DialogContent style={ModalInputWrapper}>
+                    <DialogContentText id="alert-dialog-description">
+                        Create a new Branch
+                    </DialogContentText>
+                    <TextField style={ModalInputElement} value={branchName} label="Branch Name" onChange={handleBranchChange}/>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={props.handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirm} color="primary">
+                        Create Branch and Checkout
+                    </Button>
+                </DialogActions>
+        </Dialog>
     )
 }

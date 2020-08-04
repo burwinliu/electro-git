@@ -455,9 +455,14 @@ export const helperGitBranchList = async (path) => {
     return await repo.branch()
 }
 
-export const helperGitBranchCheckout = async (path, branchName, commit) => {
+export const helperGitBranchCheckout = async (path, branchName) => {
     const repo = helperGitOpen(path)
-    return await repo.checkoutBranch(branchName, commit)
+    return await repo.checkout(branchName)
+}
+
+export const helperGitBranchCreate = async (path, branchName) => {
+    const repo = helperGitOpen(path)
+    return await repo.checkout(["-b", branchName])
 }
 
 
