@@ -51,9 +51,6 @@ export const MainPage = (props) => {
     const diffFile = useSelector( state=> state.appstore.currentHistFile)
     const dispatch = useDispatch()
 
-    //Controls how the diff should be viewed
-    const diffControl = useSelector(state=>state.appstore.diffControl)
-
     const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
 
@@ -177,20 +174,10 @@ export const MainPage = (props) => {
     const handleErr = (state) => {
         setError(state)
     }
-    
-    const handleDiffSwitch = () => {
-        if(diffControl === DIFF_CONTROL.MAIN_COMPRESSED_VIEW){
-            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW))
-        }
-        if(diffControl === DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW){
-            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW))
-        }
-    }
-
 
     return (
         <div style={MainWrapper}>
-            <Header refresh={handleRefresh} handleDiffSwitch={handleDiffSwitch}/>
+            <Header refresh={handleRefresh}/>
             {
                 error?
                 <div> CANNOT FIND {dirPath} </div>

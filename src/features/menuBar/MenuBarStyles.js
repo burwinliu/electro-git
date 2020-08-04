@@ -15,5 +15,7 @@ export const MenuBarWrapper = {
     backgroundColor: colors.menu,
 
     WebkitAppRegion: "drag",
-    WebkitUserSelect: "none"
+    WebkitUserSelect: "none",
+    boxSizing: "border-box",
+
 }

@@ -339,6 +339,11 @@ export const helperGitConfig = (path, name, email) => {
     })
 }
 
+export const helperGitFetch = async (path) => {
+    const repo = helperGitOpen(path)
+    repo.fetch()
+}
+
 export const helperGitAdd = async (path, fileNames) => {
     const repo = helperGitOpen(path)
     repo.add(fileNames)
