@@ -28,6 +28,7 @@ import {
     stageSetRepoHistDiff,
     stageSetRepoHistStatus,
     appstoreSetLogLine,
+    stageSetStatusSummary,
 } from '../../store/ducks'
 
 //styles
@@ -55,7 +56,8 @@ import {
     helperGitDiffHist,
     renderGitDiffInfo,
     helperGitShowHist,
-    renderGitStatusHist
+    renderGitStatusHist,
+    helperGitFetch
 } from "../../services"
 
 import {
@@ -130,37 +132,15 @@ export const SidebarChanges = (props) => {
             }
         }
         await helperGitAddCommit(filePath, toCommit ,commitMsg)
+        helperGitFetch(filePath).then((status) => {
+            dispatch(stageSetStatusSummary(status))
+        })
         setCommitMsg("")
         props.refresh()
     }
 
     const handleCommitMsg = (evt) => {
         setCommitMsg(evt.target.value)
-    }
-
-    const handlePush = (evt) => {
-        console.log("PUSHING")
-        helperGitPush(filePath)
-            .then((response) => {
-                if(loaded){
-                    console.log(response)
-                    setToastMsg("Push to " + response.repo + " successful.")
-                    setToast(true)
-                }
-                
-            })
-            .catch((err) => {
-                if(loaded){
-                    if (err instanceof GitError){
-                        console.log("CAUGHT")
-                        setToastMsg(" This Repository does not have a push destination configured. ")
-                        setToast(true)
-                    }
-                    else{
-                        throw err
-                    }
-                }
-            })
     }
 
     const handleToastClose = () => {
@@ -242,8 +222,7 @@ export const SidebarChanges = (props) => {
                 </div>
                 
                 <ButtonGroup style={SidebarCommitButtonGroups} disableElevation variant="contained" color="primary">
-                    <Button onClick={handleCommit} variant="outlined">Commit</Button>
-                    <Button onClick={handlePush} variant="outlined">Push</Button>
+                    <Button id="commit-btn" style={{width: "100%"}} onClick={handleCommit} variant="outlined">Commit</Button>
                 </ButtonGroup>
             </div>
             <Snackbar

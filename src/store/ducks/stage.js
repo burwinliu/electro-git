@@ -2,6 +2,9 @@
 
 
 // STATUS
+// FOR STATUS SUMMARY
+const SET_STATUSSUMMARY = 'stage/SET_STATUS_SUMMARY'
+// FOR PARSED STATUS
 const SET_STATUSRECORD = 'stage/SET_STATUSRECORD'
 const SET_STATUSRECORDOBJ = 'stage/SET_STATUSRECORDOBJ'
 const CLEAR_STATUSRECORD = 'stage/CLEAR_STATUSRECORD'
@@ -27,6 +30,8 @@ const SET_FILE_HIST_DIFF = 'stage/SET_FILE_DIFF'
 const RESET_STAGE = 'stage/RESET_STAGE'
 
 const initState = {
+  statusSummary: {},
+  // RENDERED VERSION OF STATUS SUMMARY OF THE FILES
   status: {},
   diff: {},
 
@@ -45,6 +50,8 @@ export const stageReducer = (state = initState, action = {}) => {
   const newDiff = state.diff
   
   switch(action.type){
+    case SET_STATUSSUMMARY:
+      return { ...state, statusSummary: action.payload}
     case SET_STATUSRECORD:
       newStatus[action.payload.id] = action.payload.value
       return { ...state, status: newStatus };
@@ -89,6 +96,10 @@ export const stageReducer = (state = initState, action = {}) => {
 }
 
 //action creators
+export const stageSetStatusSummary = (statusSummary) => {
+  return { type: SET_STATUSSUMMARY, payload: statusSummary}
+}
+
 export const stageSetStatus = (fileId, fileStatus) => {
   return { type: SET_STATUSRECORD, payload: {
       id: fileId, 

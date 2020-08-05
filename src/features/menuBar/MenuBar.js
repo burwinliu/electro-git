@@ -37,7 +37,7 @@ export const MenuBar = (props) => {
     const [isMaximized, setIsMaximized] = useState(false)
     const [anchorElFile, setAnchorElFile] = React.useState(null);
     const [anchorElView, setAnchorElView] = React.useState(null);
-    const [anchorElBranch, setAnchorElBranch] = React.useState(null);
+    // const [anchorElBranch, setAnchorElBranch] = React.useState(null);
 
     const diffControl = useSelector(state => state.appstore.diffControl)
 

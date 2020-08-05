@@ -5,10 +5,10 @@ import { Button } from '@material-ui/core'
 import {CustomDirectoryField, CustomFileField} from '../CustomFields'
 import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
-import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate } from '../../services';
+import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate, helperGitSetRemoteUrl } from '../../services';
 
 import {repoSetUrl} from '../../store/ducks'
-import { GitConstructError } from 'simple-git';
+import { GitConstructError, GitError } from 'simple-git';
 import { useHistory } from 'react-router-dom';
 
 export const ModalFormDirectory = (props) => {
@@ -121,14 +121,18 @@ export const ModalRepoSetting = (props) => {
             helperGitOpen(repoPath)
             helperGitRemoteName(repoPath).then((remoteURL)=> {
                 dispatch(repoSetUrl(remoteURL))
+            }).catch((err) => {
+                if (err instanceof GitError){
+                    setRepoField("")
+                }
             })
         }
         catch(err){
-            console.log(err)
             if (err instanceof GitConstructError){
                 console.log("CAUGHT")
                 return
             }
+            
         }
     }, [repoPath])
 
@@ -138,7 +142,7 @@ export const ModalRepoSetting = (props) => {
 
     const handleConfirm = () => {
         dispatch(repoSetUrl(repoField))
-
+        helperGitSetRemoteUrl(repoPath, repoField)
         props.handleClose()
     }
 

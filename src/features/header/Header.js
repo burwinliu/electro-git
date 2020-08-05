@@ -2,12 +2,15 @@ import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
+// Components
 import { 
     Button, ButtonGroup, Icon,
     Collapse, List, ListItem, ListItemText, ListItemIcon, Divider,
     withStyles,
     ClickAwayListener,
 } from '@material-ui/core';
+import { ModalRepoSetting, ModalBranchCreate } from '../modals/Modals';
+import { FecthOrPull } from "./HeaderHelper";
 
 import {
     ArrowDropDown as ArrowDropDownIcon,
@@ -27,10 +30,10 @@ import {
 } from "./HeaderStyles"
 
 import {
-    repoSetPath,
+    repoSetPath, stageSetStatusSummary,
 } from '../../store/ducks'
 import { colors } from '../../styles/palette';
-import { ModalRepoSetting, ModalBranchCreate } from '../modals/Modals';
+
 
 import {
     helperGitBranchCheckout,
@@ -147,11 +150,7 @@ export const Header = (props) => {
         history.push('/')
     }
 
-    const handleFetchAction =() => {
-        helperGitFetch(dirPath).then((temp) => {
-            console.log(temp)
-        })
-    }
+    
 
     return (
         <div style={HeaderWrap}>
@@ -258,13 +257,11 @@ export const Header = (props) => {
                     
                     </div>
                 </ClickAwayListener>
-                    
+                <FecthOrPull/>
                 <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.refresh}>
                     Refresh Repo
                 </Button>
-                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={handleFetchAction}>
-                    Fetch Remote
-                </Button>
+                
             </div>
             <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
                 Choose new Repo (For development)

@@ -36,9 +36,7 @@ import {
 import {
     repoSetPath,
     repoSetUrl,
-    stageSetDiffObj,
-    stageSetStatusObj,
-    stageReset,
+    stageReset
 } from '../../store/ducks'
 
 export const LobbyPage = () => {
@@ -60,13 +58,12 @@ export const LobbyPage = () => {
 
     //ROUTER HOOKS
     const history = useHistory();
-
-    console.log("LOBBY")
-
+    
     useEffect(()=>{
         if(dirPath !== "" && dirPath !== undefined){
             history.push('/main')
         }
+        dispatch(stageReset())
         return ()=>{
             setLoaded(false)
         }
@@ -93,7 +90,6 @@ export const LobbyPage = () => {
                     if(loaded){
                         console.log(rootDir)
                         dispatch(repoSetPath(rootDir))
-                        await handleRefresh()
                         history.push('/main')
                     }
                 }
@@ -135,7 +131,6 @@ export const LobbyPage = () => {
                 helperGitOpen(dir)
                 await helperGitInit(dir);
                 dispatch(repoSetPath(dir))
-                await handleRefresh()
                 history.push('/main')
                 return
             }
@@ -170,7 +165,6 @@ export const LobbyPage = () => {
                     console.log(temp, "DONE")
                     dispatch(repoSetPath(dir))
                     dispatch(repoSetUrl(dir))
-                    await handleRefresh()
                     
                     history.push('/main')
                     return
@@ -203,30 +197,6 @@ export const LobbyPage = () => {
         if(loaded){
             setUrl(evt.target.value)
         }
-    }
-
-    
-
-    const handleRefresh = () => {
-        const gitObject = helperGitOpen(dirPath)
-        dispatch(stageReset());
-
-        helperGitStatus(dirPath).then((statusObj) =>{
-            let storeStatus = {}
-            for (let index in statusObj){
-                storeStatus[statusObj[index].path] = statusObj[index]
-            }
-            dispatch(stageSetStatusObj(storeStatus))
-        })
-        
-        helperGitDiff(dirPath).then((statusDiff)=>{
-            const rendDiff = renderGitDiffInfo(statusDiff)
-            let storeDiff = {}
-            for (let index in rendDiff){
-                storeDiff[index] = rendDiff[index]
-            }
-            dispatch(stageSetDiffObj(storeDiff))
-        })
     }
 
     return (

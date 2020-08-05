@@ -175,7 +175,7 @@ export const BodyHeaderHistoryFile = (props) => {
     )
 }
 
-export const BodyHeaderHistoryRepo = (props) => {
+export const BodyHeaderHistoryRepo = () => {
     const logLine = useSelector(state=> state.appstore.currentLogLine)
     
     return(
@@ -188,6 +188,21 @@ export const BodyHeaderHistoryRepo = (props) => {
                     }
                     style={{flexDirection: "column"}}
                 />
+            </ListItem>
+        </div>
+
+    )
+}
+
+export const BodyHeaderHistoryRepoUndefined = (props) => {
+    const logLine = useSelector(state=> state.appstore.currentLogLine)
+    
+    return(
+        <div style={{...BodyHistHeader}}>
+            <ListItem>
+                <ListItemText
+                    primary="No Commit selected"
+                />"
             </ListItem>
         </div>
 

@@ -3,7 +3,7 @@
 // Imports
 // For git functionality
 import 'fs'
-import simpleGit from 'simple-git';
+import simpleGit, { GitError } from 'simple-git';
 
 // Render functions: Render information into better, understandable information to be loaded
 export const renderGitChunkTwoFileFormat = (chunk) => {
@@ -341,7 +341,14 @@ export const helperGitConfig = (path, name, email) => {
 
 export const helperGitFetch = async (path) => {
     const repo = helperGitOpen(path)
-    repo.fetch()
+    await repo.fetch()
+    return repo.status()
+}
+
+export const helperGitPull = async (path) => {
+    const repo = helperGitOpen(path)
+    return await repo.pull()
+
 }
 
 export const helperGitAdd = async (path, fileNames) => {
@@ -448,6 +455,17 @@ export const helperGitLogFile = (repoPath, filePath) => {
 export const helperGitRemoteName = (path) => {
     const repo = helperGitOpen(path)
     return repo.listRemote(['--get-url'])
+}
+
+export const helperGitSetRemoteUrl = async (path, url) => {
+    const repo = helperGitOpen(path)
+    console.log( "SETTING ORIGIN TO ", url)
+    repo.remote(['set-url', 'origin', url]).catch((err) => {
+        if (err instanceof GitError) {
+            repo.remote(['add', 'origin', url])
+            repo.push(['-u', 'origin', 'master'])
+        }
+    })
 }
 
 export const helperGitBranch = async (path) => {
