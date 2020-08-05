@@ -33,7 +33,8 @@ import { colors } from '../../styles/palette';
 import { ModalRepoSetting, ModalBranchCreate } from '../modals/Modals';
 
 import {
-    helperGitBranchCheckout
+    helperGitBranchCheckout,
+    helperGitFetch
 } from '../../services'
 
 export const Header = (props) => {
@@ -146,6 +147,12 @@ export const Header = (props) => {
         history.push('/')
     }
 
+    const handleFetchAction =() => {
+        helperGitFetch(dirPath).then((temp) => {
+            console.log(temp)
+        })
+    }
+
     return (
         <div style={HeaderWrap}>
             <div>
@@ -180,7 +187,8 @@ export const Header = (props) => {
                                 {
                                     Object.keys(repoRecord||{}).map((key) => {
                                         const pathSplit = repoRecord[key].split("/")
-                                        if (repoRecord[key] === dirPath) return
+                                        
+                                        if (repoRecord[key] === dirPath || repoRecord[key] === "") return 
                                         return(
                                             <ListItem style={{minHeight: "30px"}} button key={key} onClick={() => handleNewRepo(repoRecord[key])}>
                                                 <ListItemIcon>
@@ -252,10 +260,10 @@ export const Header = (props) => {
                 </ClickAwayListener>
                     
                 <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.refresh}>
-                    Fetch and Refresh
+                    Refresh Repo
                 </Button>
-                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={props.handleDiffSwitch}>
-                    Switch Diff Render (Development Only, to change to dropdown)
+                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={handleFetchAction}>
+                    Fetch Remote
                 </Button>
             </div>
             <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
