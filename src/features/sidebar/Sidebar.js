@@ -85,6 +85,7 @@ export const SidebarChanges = (props) => {
 
     const [loaded, setLoaded] = useState(true)
 
+
     useEffect( () => {
         props.refresh()
     }, [filePath])
@@ -107,8 +108,7 @@ export const SidebarChanges = (props) => {
     }, [])
 
     const handleIconClick = (id) => {
-        console.log(id)
-        dispatch(appstoreSetCurrentDiff(id))
+        dispatch(appstoreSetCurrentDiff(id.replace(/"/g, '')))
     }
 
     const handleRecord = (value) => {
@@ -159,7 +159,6 @@ export const SidebarChanges = (props) => {
     let toRender = {}
     
     if(fileStatus !== undefined){
-        console.log(filePath, "FILE PATH");
         toRender = fileStatus
     }
 
@@ -171,6 +170,8 @@ export const SidebarChanges = (props) => {
                     if(checkRecord[value] === undefined){
                         handleRecord(value)
                     }
+
+                    const parsedValue = value.replace(/"/g, "")
                     return (
                         <ListItem key={value} button onClick={(evt) => handleIconClick(value)} style={SidebarMenuItems}>
                             <ListItemIcon style={SidebarMenuIcons}>
@@ -183,7 +184,7 @@ export const SidebarChanges = (props) => {
                                     checked = {checkRecord[value]}
                                 />
                             </ListItemIcon>
-                            <ListItemText primary={`${value}`}/>
+                            <ListItemText primary={`${parsedValue}`}/>
                             {getSymbol(fileStatus[value].working_dir, fileStatus[value].index)}
                         </ListItem>
                     );
@@ -268,7 +269,6 @@ export const SidebarHistory = (props) => {
         const dirParsed = directory.replace(/\\/g,"\/");
         const repoPathParsed = repoPath.replace(/\\/g,"\/");
         if(dirParsed.includes(repoPathParsed)){
-            console.log(dirParsed.replace(repoPathParsed, ""), dirParsed, repoPathParsed, "NEW HIST ITEM")
             dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
             dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
             props.refresh()

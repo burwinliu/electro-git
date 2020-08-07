@@ -207,7 +207,7 @@ export const renderGitDiffInfo = (text) => {
     let result = {};
     let splitDiff = text.split("\n");
     
-    let headerReg = /diff --git a\/([^ ]*) b\/([^ ]*)/
+    let headerReg = /diff --git a\/(.*) b\/(.*)/
     let chunkHead = /\@\@ \-([0-9]*)\,?([0-9]*)? \+([0-9]*)\,?([0-9]*)? \@\@([ +\-\\])?(.*)?/
     let chunkLine = /([ +\-\\])(.*)/
 
@@ -357,7 +357,6 @@ export const helperGitAdd = async (path, fileNames) => {
 }
 
 export const helperGitAddCommit = async (path, fileNames, msg) => {
-    console.log(msg, "COMMIT MSG")
     const repo = helperGitOpen(path)
     await repo.add(fileNames)
     await repo.commit(msg, fileNames)
@@ -485,7 +484,19 @@ export const helperGitBranchCheckout = async (path, branchName) => {
 
 export const helperGitBranchCreate = async (path, branchName) => {
     const repo = helperGitOpen(path)
-    return await repo.checkout(["-b", branchName])
+    const result = await repo.checkout(["-b", branchName])
+    console.log("DONT BRANCHING")
+    return result
+}
+
+export const helperGitBranchPush = async (path, branchName) => {
+    const repo = helperGitOpen(path)
+    return await repo.push(['--set-upstream', 'origin', branchName])
+}
+
+export const helperGitCheckBranchRemote = async (path, branchName) => {
+    const repo = helperGitOpen(path)
+    return await repo.raw(['ls-remote', '--heads', 'origin', branchName])
 }
 
 

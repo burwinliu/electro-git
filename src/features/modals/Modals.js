@@ -129,7 +129,6 @@ export const ModalRepoSetting = (props) => {
         }
         catch(err){
             if (err instanceof GitConstructError){
-                console.log("CAUGHT")
                 return
             }
             
@@ -203,9 +202,13 @@ export const ModalBranchCreate = (props) => {
         setBranchName(evt.target.value)
     }
 
-    const handleConfirm = () => {
-        helperGitBranchCreate(repoPath, branchName)
-        props.handleClose()
+    const handleConfirm = async () => {
+        return helperGitBranchCreate(repoPath, branchName).then((response) => {
+            console.log(response, "RESPONSE")
+            props.refresh()
+            props.handleClose()
+        })
+        
     }
 
     return(

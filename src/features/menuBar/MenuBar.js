@@ -47,7 +47,6 @@ export const MenuBar = (props) => {
     useEffect(()=>{
 
         const handleMax = (e, isMax) => {
-            console.log(isMax, "MAX")
             setIsMaximized(isMax)
         }
         ipcRenderer.on('isMaximize', handleMax)

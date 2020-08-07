@@ -202,7 +202,7 @@ export const BodyHeaderHistoryRepoUndefined = (props) => {
             <ListItem>
                 <ListItemText
                     primary="No Commit selected"
-                />"
+                />
             </ListItem>
         </div>
 

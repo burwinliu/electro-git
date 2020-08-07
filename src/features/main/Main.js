@@ -7,6 +7,7 @@ import watch from 'node-watch'
 import {Header} from "../header"
 import {Sidebar} from '../sidebar'
 import {Body} from '../mainbody'
+import {Button} from "@material-ui/core"
 
 
 //Styles
@@ -22,7 +23,10 @@ import {
     appstoreSetDiffControl,
     stageSetBranchList,
     appstoreSetBranch,
-    appstoreAddRepoRecord
+    appstoreAddRepoRecord,
+    appstoreRemoveRepoRecord,
+    repoSetPath,
+    appstoreSetLogLine
 } from '../../store/ducks'
 
 //Service helpers
@@ -44,11 +48,13 @@ import {
     DIFF_CONTROL,
     HISTORY_CONTROL
 } from "../../store/ducks"
+import { ButtonGroup } from '@material-ui/core';
 
 
 export const MainPage = (props) => {
     const dirPath = useSelector(state => state.repo.path);
     const diffFile = useSelector( state=> state.appstore.currentHistFile)
+    const record = useSelector(state=> state.appstore.repoRecord)
     const dispatch = useDispatch()
 
     const [loaded, setLoaded] = useState(true)
@@ -78,7 +84,6 @@ export const MainPage = (props) => {
                             return;
                         
                         //TODO make sure any git folder or gitignored folder is ignored
-                        console.log(name)
                         if(evt === "update"){
                             await handleRefresh();
                         }
@@ -89,7 +94,6 @@ export const MainPage = (props) => {
                 })
             }
             catch(err){
-                console.log(err, "AT WATCH")
             }
         })
         
@@ -97,69 +101,77 @@ export const MainPage = (props) => {
         dispatch(appstoreAddRepoRecord(dirPath))
         return () => {
             dispatch(stageReset());
+            dispatch(appstoreSetLogLine({}))
             setLoaded(false)
         }
     }, [dirPath])
 
     const handleErrorCheck = async () => {
         try{
-            const isRepo = await helperGitOpen(dirPath).checkIsRepo('root')
+            const repoCheck = await helperGitOpen(dirPath)
+            const isRepo = repoCheck.checkIsRepo('root')
             if (isRepo){
-                console.log(isRepo, "IS REPO", dirPath)
                 return false
             }
+            return false
         }
         catch(err){
-            
+            console.log(err.message)
             handleErr(true)
             setLoaded(false)
-            console.log(err, error)
             return true
         }
         
     }
 
+    const handleRemoveRepo = () => {
+        dispatch(appstoreRemoveRepoRecord(dirPath))
+        if(record.length === 0){
+            dispatch(repoSetPath(""))
+            history.push("/")
+        }
+        dispatch(repoSetPath(record[0]))
+        history.push("/")
+        handleRefresh()
+    }
+
     const handleRefresh = async () => {
-        console.log(error)
         if(error) return;
-        console.log("REFRESH")
         if(await handleErrorCheck()) return;
-        
         dispatch(stageReset());
-        
+
+        const branchList = await helperGitBranchList(dirPath)
+
+
+        dispatch(stageSetBranchList(branchList.branches || {}))
+        dispatch(appstoreSetBranch(branchList.current))
 
         helperGitStatus(dirPath).then((statusObj) =>{
-            if(loaded){
-                let storeStatus = {}
-                for (let index in statusObj){
-                    storeStatus[statusObj[index].path] = statusObj[index]
-                }
-                dispatch(stageSetStatusObj(storeStatus))
+            let storeStatus = {}
+            for (let index in statusObj){
+                storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
             }
+            dispatch(stageSetStatusObj(storeStatus))
         })
         
         helperGitDiff(dirPath).then((statusDiff)=>{
-            if(loaded){
-                const rendDiff = renderGitDiffInfo(statusDiff)
-                let storeDiff = {}
-                for (let index in rendDiff){
-                    storeDiff[index] = rendDiff[index]
-                }
-                dispatch(stageSetDiffObj(storeDiff))
+            const rendDiff = renderGitDiffInfo(statusDiff)
+            let storeDiff = {}
+            for (let index in rendDiff){
+                storeDiff[index.replace(/"/g, "")] = rendDiff[index]
             }
+            dispatch(stageSetDiffObj(storeDiff))
         })
+
+        if(Object.keys(branchList.branches).length === 0){
+            dispatch(appstoreSetBranch("Master"))
+            return
+        }
 
         helperGitLog(dirPath).then((log)=>{
             if(loaded){
                 dispatch(stageSetRepoLog(log.all))
             }
-        })
-
-        helperGitBranchList(dirPath).then((branchList) => {
-            if(loaded){
-                dispatch(stageSetBranchList(branchList.branches))
-                dispatch(appstoreSetBranch(branchList.current))
-            }            
         })
 
         if(diffFile === "") return
@@ -180,7 +192,11 @@ export const MainPage = (props) => {
             <Header refresh={handleRefresh}/>
             {
                 error?
-                <div> CANNOT FIND {dirPath} </div>
+                <div> 
+                    CANNOT FIND {dirPath}. Would you like to remove?
+
+                    <Button onClick={handleRemoveRepo}>Remove</Button>
+                </div>
                 :
                 <div style={MainContent}>
                     <Sidebar 

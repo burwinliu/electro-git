@@ -192,7 +192,6 @@ export const GitDiffCompressed = (props) =>{
     const fileA = props.fileA
     const fileB = props.fileB
 
-    console.log(chunks)
     return (
         <div style={{flexDirection:"column", width: "100%"}}>
             <table style={BodyContentTable}> 

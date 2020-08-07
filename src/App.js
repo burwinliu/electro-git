@@ -23,7 +23,7 @@ const {store, persistor} = configureStore();
 export const App = () => {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<div>LOADING AT THE MOMENT</div>} persistor={persistor}>
         <div style={{flexDirection: "column"}}>
           <div style={{height: "1px", width:"100vw", backgroundColor: colors.menu}}/>
           <MenuBar/>

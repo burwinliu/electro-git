@@ -156,6 +156,5 @@ export const stageSetBranchList = (list) => {
 }
 
 export const stageReset = () => {
-  console.log("RESET STAGE")
   return { type: RESET_STAGE, payload: {}}
 }

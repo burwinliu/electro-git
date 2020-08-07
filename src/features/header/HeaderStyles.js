@@ -46,7 +46,9 @@ export const HeaderRepoSidebarDropdown ={
     zIndex: "1",
     backgroundColor: colors.backgroundColor,
     boxSizing: "border-box",
-    width: "100%"
+    width: "100%",
+
+    overflowY: "auto",
 }
 
 export const HeaderMenuSubText = {

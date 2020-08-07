@@ -27,7 +27,8 @@ import {
 import {
     SidebarDiffRender,
     BodyHeaderHistoryFile,
-    BodyHeaderHistoryRepo
+    BodyHeaderHistoryRepo,
+    BodyHeaderHistoryRepoUndefined
 } from './Component'
 
 
@@ -50,6 +51,8 @@ export const Body = (props) => {
     const repoHistStatus = useSelector(state => state.stage.repoHistStatus)
     
     const fileHistDiff = useSelector(state => state.stage.fileHistDiff)
+
+    const logLine = useSelector(state=>state.appstore.currentLogLine)
     
 
     const dispatch = useDispatch()
@@ -85,24 +88,29 @@ export const Body = (props) => {
                 <GitDiffUndefined/>
             )
         }
+        return null
     }
 
     const renderHistory = () => {
-        console.log("RENDERING HISTORY", histControl)
         
         const selectRepo = (id) => {
             dispatch(appstoreSetHistRepoFile(id))
         }
 
         if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
-            let body;
+            let body, header;
+
+            if ( !logLine || Object.keys(logLine).length === 0 ){
+                header = <BodyHeaderHistoryRepoUndefined/>
+            }
+            else{
+                header = <BodyHeaderHistoryFile/>
+            }
 
             if (fileHistDiff === undefined|| fileHistDiff[currHistFile] === undefined){
-                console.log(currHistFile, fileHistDiff)
                 body =  <GitDiffUndefined/>
             }
             else{
-                console.log(currHistFile, fileHistDiff)
                 const chunks = fileHistDiff[currHistFile].chunks
                 const fileA = currHistFile
                 const fileB = currHistFile
@@ -117,13 +125,21 @@ export const Body = (props) => {
 
             return(
                 <div style={{flexDirection: "column", overflowY: "auto", flexGrow: "1"}}>
-                    <BodyHeaderHistoryFile/>
+                    {header}
                     {body}
                 </div>
             )
         }
         if(histControl === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
-            let body;
+            let body, header;
+
+            if ( !logLine || Object.keys(logLine).length === 0 ){
+                header = <BodyHeaderHistoryRepoUndefined/>
+            }
+            else{
+                header= <BodyHeaderHistoryRepo/>
+            }
+
             if (repoHistDiff === undefined|| repoHistDiff[currRepoHistFile] === undefined){
                 body = <GitDiffUndefined/>
             }
@@ -140,7 +156,7 @@ export const Body = (props) => {
             }
             return (
                 <div style={{flexDirection: "column", flexGrow: "1"}}>
-                    <BodyHeaderHistoryRepo/>
+                    {header}
                     <div style={{flexDirection: "row", overflowY: "auto", flexGrow: "1"}}>
                         <SidebarDiffRender statusObj={repoHistStatus||{}} onSelect={selectRepo}/>
                         {body}
@@ -148,10 +164,10 @@ export const Body = (props) => {
                 </div>
             )
         }
+        return null
     }
 
     const renderContent = () => {
-        console.log(contentControl, "ITEMS")
         if(contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
             return renderDiff();
         }

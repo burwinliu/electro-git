@@ -85,10 +85,8 @@ export const LobbyPage = () => {
             try{
                 const gitObj = helperGitOpen(dir)
                 if(await gitObj.checkIsRepo()){
-                    console.log(gitObj, dir)
                     const rootDir = await gitObj.revparse({'--show-toplevel': null })
                     if(loaded){
-                        console.log(rootDir)
                         dispatch(repoSetPath(rootDir))
                         history.push('/main')
                     }
@@ -162,7 +160,6 @@ export const LobbyPage = () => {
         if (dir && url){
             try{
                 helperGitClone(dir, url).then(async (temp) => {
-                    console.log(temp, "DONE")
                     dispatch(repoSetPath(dir))
                     dispatch(repoSetUrl(dir))
                     

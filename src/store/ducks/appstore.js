@@ -17,6 +17,7 @@ const SET_HIST_CONTROL = "appstore/SET_HIST_CONTROL"
 
 // repo record
 const ADD_REPO_RECORD = "appstore/ADD_REPO_RECORD"
+const REMOVE_REPO_RECORD = "appstore/REMOVE_REPO_RECORD"
 
 const initState={
   currentDiff: "",
@@ -40,10 +41,24 @@ const initState={
 export const appstoreReducer = (state = initState, action = {}) => {
   switch(action.type){
     case ADD_REPO_RECORD:
-      if (state.repoRecord.indexOf(action.payload) !== -1){
+      if (action.payload === "" ){
+        return {...state}
+      }
+      if (state.repoRecord && state.repoRecord.indexOf(action.payload) !== -1){
         return {...state, repoRecord: state.repoRecord}
       }
-      return { ...state, repoRecord: [...state.repoRecord, action.payload] };
+      return { ...state, repoRecord: [...state.repoRecord || [], action.payload] };
+    case REMOVE_REPO_RECORD:
+      const newRecord = []
+      for(let i in state.repoRecord){
+        if(state.repoRecord[i] === action.payload){
+          continue
+        }
+        else{
+          newRecord.push(state.repoRecord[i])
+        }
+      }
+      return { ...state, repoRecord: newRecord}
     case SET_CURRENT_DIFF:
       return { ...state, currentDiff: action.payload };
     case SET_CURRENT_LOG_LINE:
@@ -69,6 +84,9 @@ export const appstoreReducer = (state = initState, action = {}) => {
 
 export const appstoreAddRepoRecord = (repoPath) => {
   return { type: ADD_REPO_RECORD, payload: repoPath}
+}
+export const appstoreRemoveRepoRecord = (repoPath) => {
+  return { type: REMOVE_REPO_RECORD, payload: repoPath}
 }
 
 export const appstoreSetCurrentDiff = (fileId) => {
