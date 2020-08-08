@@ -10,7 +10,7 @@ import {
     ClickAwayListener,
 } from '@material-ui/core';
 import { ModalRepoSetting, ModalBranchCreate } from '../modals/Modals';
-import { FetchOrPull, BranchDropdown } from "./HeaderHelper";
+import { FetchOrPull, BranchDropdown, ConflictsPops } from "./HeaderHelper";
 
 import {
     ArrowDropDown as ArrowDropDownIcon,
@@ -125,67 +125,71 @@ export const Header = (props) => {
     }
 
     return (
-        <div style={HeaderWrap}>
-            <div>
-                <ClickAwayListener onClickAway={handleClickAwayRepo}>
-                        <div style={{flexDirection: "column", height: "fit-content"}}>
-                            {repoNav? 
-                                <HeaderButton style={{...HeaderItem, ...HeaderSidebar, backgroundColor: colors.background, borderWidth: "0 1px 0 0"}} onClick={handleRepoClose}>
-                                    <div style={{flexDirection:  "column"}}>
-                                        <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
-                                        <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
-                                    </div>
-                                    <ArrowDropUpIcon fontSize="large"/>
-                                </HeaderButton> 
-                                :
-                                <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleRepoOpen}>
-                                    <div style={{flexDirection:  "column"}}>
-                                        <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
-                                        <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
-                                    </div>
-                                    <ArrowDropDownIcon fontSize="large"/>
-                                </HeaderButton> 
-                            }   
-                            <SidebarDropdown in={repoNav}>
-                                <List style={{...HeaderRepoSidebarDropdown}}>
-                                    <ListItem button onClick={handleRepoDialogOpen}>
-                                        <ListItemIcon>
-                                            <SettingsIcon />
-                                        </ListItemIcon>
-                                        <ListItemText primary="Repository Settings" />
-                                    </ListItem>
-                                    <Divider />
-                                    {
-                                        Object.keys(repoRecord||{}).map((key) => {
-                                            const pathSplit = repoRecord[key].split("/")
-                                            
-                                            if (repoRecord[key] === dirPath || repoRecord[key] === "") return 
-                                            return(
-                                                <ListItem style={{minHeight: "30px"}} button key={key} onClick={() => handleNewRepo(repoRecord[key])}>
-                                                    <ListItemIcon>
-                                                        <FolderIcon/>
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={pathSplit[pathSplit.length-1]}/>
-                                                </ListItem>
-                                            )
-                                        })
-                                    }
-                                </List>
-                            </SidebarDropdown>
-                        </div>
-                    </ClickAwayListener>
-                <BranchDropdown refresh={handleRefresh}/>
-                <FetchOrPull/>
-                <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={handleRefresh}>
-                    Refresh Repo
+        <div>
+            <div style={HeaderWrap}>
+                <div>
+                    <ClickAwayListener onClickAway={handleClickAwayRepo}>
+                            <div style={{flexDirection: "column", height: "fit-content"}}>
+                                {repoNav? 
+                                    <HeaderButton style={{...HeaderItem, ...HeaderSidebar, backgroundColor: colors.background, borderWidth: "0 1px 0 0"}} onClick={handleRepoClose}>
+                                        <div style={{flexDirection:  "column"}}>
+                                            <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
+                                            <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
+                                        </div>
+                                        <ArrowDropUpIcon fontSize="large"/>
+                                    </HeaderButton> 
+                                    :
+                                    <HeaderButton style={{...HeaderItem, ...HeaderSidebar, borderWidth: "0 1px 0 0"}} onClick={handleRepoOpen}>
+                                        <div style={{flexDirection:  "column"}}>
+                                            <div style={{...HeaderMenuSubText}}>{"Current Repository:"}</div>
+                                            <div style={{...HeaderMenuSubText, ...HeaderMenuMainText}}>{basePath}</div>
+                                        </div>
+                                        <ArrowDropDownIcon fontSize="large"/>
+                                    </HeaderButton> 
+                                }   
+                                <SidebarDropdown in={repoNav}>
+                                    <List style={{...HeaderRepoSidebarDropdown}}>
+                                        <ListItem button onClick={handleRepoDialogOpen}>
+                                            <ListItemIcon>
+                                                <SettingsIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Repository Settings" />
+                                        </ListItem>
+                                        <Divider />
+                                        {
+                                            Object.keys(repoRecord||{}).map((key) => {
+                                                const pathSplit = repoRecord[key].split(/[\/\\]/g)
+                                                
+                                                if (repoRecord[key] === dirPath || repoRecord[key] === "") return 
+                                                return(
+                                                    <ListItem style={{minHeight: "30px"}} button key={key} onClick={() => handleNewRepo(repoRecord[key])}>
+                                                        <ListItemIcon>
+                                                            <FolderIcon/>
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={pathSplit[pathSplit.length-1]}/>
+                                                    </ListItem>
+                                                )
+                                            })
+                                        }
+                                    </List>
+                                </SidebarDropdown>
+                            </div>
+                        </ClickAwayListener>
+                    <BranchDropdown refresh={handleRefresh}/>
+                    <FetchOrPull/>
+                    <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={handleRefresh}>
+                        Refresh Repo
+                    </Button>
+                    
+                </div>
+                <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
+                    Choose new Repo (For development)
                 </Button>
+                <ModalRepoSetting open={repoSettings} handleClose={handleRepoDialogClose}/>
                 
             </div>
-            <Button style={{...HeaderItem, borderWidth: "0 0 0 1px"}} onClick={handleReturn}>
-                Choose new Repo (For development)
-            </Button>
-            <ModalRepoSetting open={repoSettings} handleClose={handleRepoDialogClose}/>
-            
+            <ConflictsPops/>
         </div>
+            
     )
 }

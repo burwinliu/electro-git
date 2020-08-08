@@ -73,8 +73,10 @@ export const stageReducer = (state = initState, action = {}) => {
     case CLEAR_REPO_LOG:
       return {...state, repoLog: {}}
     case SET_REPO_HIST_STATUS:
+      console.log("HIST ", action.payload)
       return {...state, repoHistStatus: action.payload}
     case SET_REPO_HIST_DIFF:
+      console.log(action.payload, "SET REPO HIST")
       return {...state, repoHistDiff: action.payload}
 
 

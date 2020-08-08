@@ -27,7 +27,6 @@ import {
     helperGitOpen,
     helperGitInit,
     helperGitClone,
-    helperGitStatus,
     helperGitDiff,
     renderGitDiffInfo
 } from '../../services'

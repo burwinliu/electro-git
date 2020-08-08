@@ -172,6 +172,8 @@ export const SidebarChanges = (props) => {
                     }
 
                     const parsedValue = value.replace(/"/g, "")
+
+                    console.log(fileStatus[value], "SIDEBAR")
                     return (
                         <ListItem key={value} button onClick={(evt) => handleIconClick(value)} style={SidebarMenuItems}>
                             <ListItemIcon style={SidebarMenuIcons}>
@@ -285,7 +287,7 @@ export const SidebarHistory = (props) => {
 
     return ( 
         <div style={SidebarWrap}>
-            {<SidebarRenderHistList/>}
+            <SidebarRenderHistList/>
             <div style={{...SidebarCommitMenu}} >
             <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
                 <Button onClick={historyOverview}>See History Overview</Button>
@@ -331,11 +333,13 @@ const SidebarHistItem = (props) => {
             const renderStatusHist = renderGitStatusHist(statusHist)
             dispatch(stageSetRepoHistDiff(diffHistRender))
             dispatch(stageSetRepoHistStatus(renderStatusHist))
+            console.log(statusHist, renderStatusHist, "STATUS")
         }
         else if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
             dispatch(stageSetFileHistDiff(diffHistRender))
         }
         dispatch(appstoreSetLogLine(logLine))
+        console.log(diffHist, diffHistRender, histControl)
     }
 
     return (

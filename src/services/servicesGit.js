@@ -278,7 +278,7 @@ export const renderGitDiffInfo = (text) => {
 }
 
 export const renderGitStatusHist = (text) => {
-    const regexStatus = /([MADRC])[\W]([^\n\s]*)/
+    const regexStatus = /([MADRC])[\W]([^\n]*)/
     const splitDiff = text.split("\n");
     const result = {}
 
@@ -431,7 +431,7 @@ export const helperGitStatus = async (path, fileName) => {
     else{
         files = await repo.status();
     }
-    return files.files
+    return files
 }
 
 export const helperGitShowHist = async(path, commitCode) => {
@@ -458,7 +458,6 @@ export const helperGitRemoteName = (path) => {
 
 export const helperGitSetRemoteUrl = async (path, url) => {
     const repo = helperGitOpen(path)
-    console.log( "SETTING ORIGIN TO ", url)
     repo.remote(['set-url', 'origin', url]).catch((err) => {
         if (err instanceof GitError) {
             repo.remote(['add', 'origin', url])
@@ -495,8 +494,16 @@ export const helperGitBranchPush = async (path, branchName) => {
 }
 
 export const helperGitCheckBranchRemote = async (path, branchName) => {
+    /*
+        Check if a branch exists remotely, if so we make it the upstream
+    */
     const repo = helperGitOpen(path)
-    return await repo.raw(['ls-remote', '--heads', 'origin', branchName])
+    const matched = await repo.raw(['ls-remote', '--heads', 'origin', branchName])
+    if(matched.length !== 0) {
+        repo.raw(['branch', '--set-upstream-to', 'origin' + branchName])
+    }
+
+    return (matched.length !== 0)
 }
 
 

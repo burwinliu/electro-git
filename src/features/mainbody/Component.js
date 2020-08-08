@@ -49,6 +49,7 @@ export const SidebarDiffRender = (props) => {
         <div name="status" style={{...SidebarWrap}}>
             <List component="nav" aria-label="secondary mailbox folders" style={SidebarStyle}>
                 {Object.keys(statusObj).map((value) => {
+                    console.log(statusObj[value])
                     switch(statusObj[value].working_dir){
                         case "!":
                             statusIcon = (

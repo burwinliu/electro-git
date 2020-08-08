@@ -117,6 +117,11 @@ export const getSymbol = (working_dir, index) => {
                     <FileCopyOutlinedIcon/>
                 </ListItemIcon>
             )
-            
+        case "U":
+            return (
+                <ListItemIcon style={{...SidebarMenuIcons, color: colors.blue}} title="Copied">
+                    <MergeTypeIcon/>
+                </ListItemIcon>
+            )
     }
 }

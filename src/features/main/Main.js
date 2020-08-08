@@ -26,7 +26,8 @@ import {
     appstoreAddRepoRecord,
     appstoreRemoveRepoRecord,
     repoSetPath,
-    appstoreSetLogLine
+    appstoreSetLogLine,
+    stageSetStatusSummary
 } from '../../store/ducks'
 
 //Service helpers
@@ -146,12 +147,14 @@ export const MainPage = (props) => {
         dispatch(stageSetBranchList(branchList.branches || {}))
         dispatch(appstoreSetBranch(branchList.current))
 
-        helperGitStatus(dirPath).then((statusObj) =>{
+        helperGitStatus(dirPath).then((statusSummary) =>{
             let storeStatus = {}
+            const statusObj = statusSummary.files
             for (let index in statusObj){
                 storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
             }
             dispatch(stageSetStatusObj(storeStatus))
+            dispatch(stageSetStatusSummary(statusSummary))
         })
         
         helperGitDiff(dirPath).then((statusDiff)=>{

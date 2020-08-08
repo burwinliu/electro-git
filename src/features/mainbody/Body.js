@@ -96,7 +96,6 @@ export const Body = (props) => {
         const selectRepo = (id) => {
             dispatch(appstoreSetHistRepoFile(id))
         }
-
         if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
             let body, header;
 

@@ -10,6 +10,8 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions,
     List, ListItem, ListItemIcon, ListItemText,
     withStyles,
+    Snackbar,
+    DialogContentText,
 } from "@material-ui/core"
 
 import {
@@ -29,7 +31,8 @@ import {
     helperGitBranchCheckout,
     helperGitCheckBranchRemote,
     helperGitBranchPush,
-    helperGitRemoteName
+    helperGitRemoteName,
+    helperGitStatus
  } from "../../services"
 
 // Styles
@@ -64,9 +67,7 @@ export const FetchOrPull = () => {
             return
         }
         helperGitRemoteName(dirPath).then((result) => {
-            console.log(result)
             handleFetchAction().catch((err) => {
-                console.log(branch)
                 setErrMsg(err.message)
                 setErr(true)
             })
@@ -78,16 +79,15 @@ export const FetchOrPull = () => {
 
     useEffect( () => {
         if(branch === ""){
+            console.log(branchList)
             setIsPublished(false)
             return
         }
         helperGitRemoteName(dirPath).then((result) => {
-            console.log(result)
             helperGitCheckBranchRemote(dirPath, branch).then((isChecked) => {
-                console.log(isChecked,branchList)
-                setIsPublished(isChecked.length !== 0)
+                console.log(isChecked)
+                setIsPublished(isChecked)
             }).catch((err) => {
-                console.log(branch)
                 setErrMsg(err.message)
                 setErr(true)
             })
@@ -126,7 +126,6 @@ export const FetchOrPull = () => {
     const handlePullAction = () => {
 
         helperGitPull(dirPath).then((status) => {
-            console.log(status)
         }).catch((err) => {
             setErrMsg(err.message)
             setErr(true)
@@ -154,11 +153,10 @@ export const FetchOrPull = () => {
     }
 
     const handlePublishBranch = () => {
-        console.log(branchList)
         helperGitBranchPush(dirPath, branch).then( () => {
             helperGitCheckBranchRemote(dirPath, branch).then((isChecked) => {
-                console.log(isChecked, branch)
-                setIsPublished(isChecked.length !== 0)
+                console.log(isChecked)
+                setIsPublished(isChecked)
             })
         }).catch( (err) => {
             setErr(true)
@@ -182,7 +180,7 @@ export const FetchOrPull = () => {
                         primary={"Publish Branch"} 
                         secondary={
                             <span style={{fontSize: ".6rem"}}>
-                                Cannot publish unborn HEAD
+                                Cannot Publish
                             </span>
                         }
                         
@@ -206,6 +204,7 @@ export const FetchOrPull = () => {
             </div>
         )
     }
+
 
     if (statusSummary && statusSummary.behind > 0) {
         return (
@@ -314,7 +313,6 @@ export const BranchDropdown = (props) => {
     const handleCheckoutBranch = (branchName, commit) => {
         helperGitBranchCheckout(dirPath, branchName)
             .then((response) =>{
-                console.log(response, "CHECKOUT RESPONSE")
                 props.refresh()
             })
             .catch((err) =>{
@@ -380,7 +378,7 @@ export const BranchDropdown = (props) => {
                             </ListItem>
                             {
                                 Object.keys(branchList||{}).map((key) => {
-                                    const splitStr = branchList[key].name.split("/");
+                                    const splitStr = branchList[key].name.split(/[\/\\]/g);
                                     if(branchList[key].current === true || splitStr[splitStr.length-1] === curBranch || recordBranch[splitStr[splitStr.length-1]]){
                                         return
                                     }
@@ -423,5 +421,100 @@ export const BranchDropdown = (props) => {
                 </DialogActions>
             </Dialog>
         </div>
+    )
+}
+
+export const ConflictsPops = (props) => {
+    const statusSummary = useSelector(state=> state.stage.statusSummary)
+    const dirPath = useSelector(state => state.repo.path)
+
+    const [openMerge, setOpenMerge] = useState(false)
+    const [mergeMsg, setMergeMsg] = useState("")
+
+    const [show, setShow] = useState(false)
+    const [length, setLength] = useState(0)
+
+    const dispatch = useDispatch()
+
+    useEffect( () => {
+        helperGitStatus(dirPath).then((status) => {
+            dispatch(stageSetStatusSummary(status))
+            
+        })
+    }, [])
+
+    useEffect( () => {
+        if (statusSummary && statusSummary.conflicted.length !== 0){
+            console.log(statusSummary.conflicted.length, "LENGTH")
+
+            setOpenMerge(true)
+            setMergeMsg("Resolve conflicts before committing")
+            setLength(statusSummary.conflicted.length)
+            return
+        }
+        setLength(0)
+        setOpenMerge(false)
+    }, [statusSummary])
+
+    const handleShow = () => {
+        setOpenMerge(false)
+        setShow(true)
+    }
+
+    const handleClose = () => {
+        setOpenMerge(true)
+        setShow(false)
+    }
+
+    console.log(statusSummary, "SUMMARY")
+    
+
+    return (
+        <div>
+            <Snackbar
+                open={openMerge}
+                message={mergeMsg}
+                severity="error"
+                action={
+                    <Button variant="contained" onClick={handleShow}>
+                        View Conflicts
+                    </Button>
+                }
+            >
+            </Snackbar>
+
+            <Dialog  
+                open={show}
+                onClose={handleClose} 
+            >
+                <DialogTitle id="simple-dialog-title">Resolve these conflicts!</DialogTitle>
+                <DialogContent style={{flexDirection:"column"}}>
+                    <DialogContentText>{length} conflicted files:</DialogContentText>
+                    {
+                        statusSummary?
+                        <List>
+                            {
+                                statusSummary.conflicted.map((key) => {
+                                    console.log(key, "KEY")
+                                    return(
+                                        <ListItemText key={key} primary={key} />
+                                    )
+                                })
+                            }
+                        </List>
+                        
+                        :
+                        null
+                    }
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+
+        
     )
 }
