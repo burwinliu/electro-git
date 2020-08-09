@@ -12,6 +12,7 @@ import {
     withStyles,
     Snackbar,
     DialogContentText,
+    Divider,
 } from "@material-ui/core"
 
 import {
@@ -32,7 +33,11 @@ import {
     helperGitCheckBranchRemote,
     helperGitBranchPush,
     helperGitRemoteName,
-    helperGitStatus
+    helperGitStatus,
+    helperGitIsMerge, 
+    helperGitAdd,
+    helperGitAddCommit,
+    helperGitMergePull
  } from "../../services"
 
 // Styles
@@ -427,6 +432,7 @@ export const BranchDropdown = (props) => {
 export const ConflictsPops = (props) => {
     const statusSummary = useSelector(state=> state.stage.statusSummary)
     const dirPath = useSelector(state => state.repo.path)
+    const branch = useSelector(state => state.appstore.branch)
 
     const [openMerge, setOpenMerge] = useState(false)
     const [mergeMsg, setMergeMsg] = useState("")
@@ -445,15 +451,22 @@ export const ConflictsPops = (props) => {
 
     useEffect( () => {
         if (statusSummary && statusSummary.conflicted.length !== 0){
-            console.log(statusSummary.conflicted.length, "LENGTH")
-
-            setOpenMerge(true)
-            setMergeMsg("Resolve conflicts before committing")
-            setLength(statusSummary.conflicted.length)
-            return
+            
+            helperGitIsMerge(dirPath).then((resp) => {
+                console.log(resp)
+                if(resp){
+                    setMergeMsg("Merge In Process -- Please Resolve")
+                    setOpenMerge(true)
+                    setLength(statusSummary.conflicted.length)
+                    if(statusSummary.conflicted.length === 0) {
+                        setLength("RESOLVED")
+                    }
+                }
+                else{
+                    return
+                }
+            })
         }
-        setLength(0)
-        setOpenMerge(false)
     }, [statusSummary])
 
     const handleShow = () => {
@@ -464,6 +477,19 @@ export const ConflictsPops = (props) => {
     const handleClose = () => {
         setOpenMerge(true)
         setShow(false)
+    }
+
+    const handleAdd = (key) => {
+        helperGitAdd(dirPath, [key])
+        helperGitStatus(dirPath).then((status) => {
+            dispatch(stageSetStatusSummary(status))
+            if(status.conflicted.length === 0) {
+                setLength("RESOLVED")
+                setOpenMerge(false)
+                setShow(false)
+                helperGitMergePull(dirPath)
+            }
+        })
     }
 
     console.log(statusSummary, "SUMMARY")
@@ -486,9 +512,13 @@ export const ConflictsPops = (props) => {
             <Dialog  
                 open={show}
                 onClose={handleClose} 
+                fullWidth={true} 
+                maxWidth={'lg'}
+                style={{minWidth: "400px"}}
             >
                 <DialogTitle id="simple-dialog-title">Resolve these conflicts!</DialogTitle>
                 <DialogContent style={{flexDirection:"column"}}>
+                    <DialogContentText>Here, mark all files you have finished merging as done to "ADD" them to complete the merge</DialogContentText>
                     <DialogContentText>{length} conflicted files:</DialogContentText>
                     {
                         statusSummary?
@@ -497,12 +527,16 @@ export const ConflictsPops = (props) => {
                                 statusSummary.conflicted.map((key) => {
                                     console.log(key, "KEY")
                                     return(
-                                        <ListItemText key={key} primary={key} />
+                                        <ListItem key={key} >
+                                            <ListItemText primary={key} secondary={
+                                                <Button onClick={() => handleAdd(key)}>Resolve Merge</Button>   
+                                            }/>
+                                            
+                                        </ListItem>                                        
                                     )
                                 })
                             }
                         </List>
-                        
                         :
                         null
                     }

@@ -301,6 +301,16 @@ export const GitDiffUndefined = (props) => {
     )
 }
 
+export const GitDiffNoChange = (props) => {
+    const trackCurrent = props.handle
+    return(
+        <div style={BodyUntracked}>
+            <h1>No Changes Detected</h1>
+        </div>
+    )
+    
+}
+
 export const GitDiffUntracked = (props) => {
     const trackCurrent = props.handle
     return(

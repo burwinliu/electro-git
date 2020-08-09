@@ -506,4 +506,14 @@ export const helperGitCheckBranchRemote = async (path, branchName) => {
     return (matched.length !== 0)
 }
 
+export const helperGitIsMerge = async (pathName) => {
+    const repo = helperGitOpen(pathName)
+    return (await repo.raw(['rev-list', '-1', 'MERGE_HEAD'])).length !== 0
+}
+
+export const helperGitMergePull = async (pathName) => {
+    const repo = helperGitOpen(pathName)
+    return await repo.commit("Merging Conflicted Merge")
+}
+
 

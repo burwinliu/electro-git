@@ -14,7 +14,8 @@ import {
     GitDiffSideBySide, 
     GitDiffCompressed,
     GitDiffUntracked,
-    GitDiffUndefined
+    GitDiffUndefined,
+    GitDiffNoChange
 } from './Table';
 
 import {
@@ -79,9 +80,14 @@ export const Body = (props) => {
             
         }
         else if(fileStatus !== undefined && fileStatus[currDiffPath]){
-            return (
-                <GitDiffUntracked handle={trackCurrentFile}/>
-            )
+            if (fileStatus[currDiffPath].index === '?' || fileStatus[currDiffPath].working_dir === '?')
+                return (
+                    <GitDiffUntracked handle={trackCurrentFile}/>
+                )
+            else
+                return (
+                    <GitDiffNoChange/>
+                )
         }
         else{
             return(
