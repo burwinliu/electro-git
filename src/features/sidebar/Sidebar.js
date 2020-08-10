@@ -18,6 +18,10 @@ import {
 } from '@material-ui/icons'
 
 import {
+    colors
+} from "../../styles/palette"
+
+import {
     appstoreSetCurrentDiff, 
     
     stageSetRepoLog,
@@ -244,13 +248,27 @@ export const SidebarChanges = (props) => {
 }
 
 export const SidebarHistory = (props) => {
-    const repoLog = useSelector(state => state.repo.path);
     const repoPath = useSelector(state=>state.repo.path)
+    const histControl = useSelector(state => state.appstore.histControl)
+
+    const [overviewStyle, setOverviewStyle] = useState({})
+    const [fileStyle, setFileStyle] = useState({})
 
     const [openFileModal, setOpenFileModal] = useState(false)
     const [directory, setDirectory] = useState("")
 
     const dispatch = useDispatch()
+
+    useEffect( () => {
+        if(histControl === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
+            setOverviewStyle({color: colors.purpleLight, borderColor: colors.purpleLight, backgroundColor: colors.offWhite})
+            setFileStyle({})
+        } 
+        else if (histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
+            setOverviewStyle({})
+            setFileStyle({color: colors.purpleLight, borderColor: colors.purpleLight, backgroundColor: colors.offWhite})
+        } 
+    }, [histControl])
 
     const historyOverview = () => {
         dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW))
@@ -288,11 +306,11 @@ export const SidebarHistory = (props) => {
     return ( 
         <div style={SidebarWrap}>
             <SidebarRenderHistList/>
-            <div style={{...SidebarCommitMenu}} >
-            <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
-                <Button onClick={historyOverview}>See History Overview</Button>
-                <Button onClick={historyFile}>See History of File</Button>
-            </ButtonGroup>
+            <div style={{...SidebarCommitMenu, minHeight: null}} >
+                <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
+                    <Button style={{...overviewStyle}} onClick={historyOverview}>See History Overview</Button>
+                    <Button style={{...fileStyle}} onClick={historyFile}>See History of File</Button>
+                </ButtonGroup>
             </div>
             <ModalFormFile 
                 open={openFileModal} 
@@ -387,6 +405,19 @@ export const Sidebar = (props) => {
     const contentControl = useSelector( state => state.appstore.contentControl)
     const dispatch = useDispatch()
 
+    const [historyStyle, setHistoryStyle] = useState({})
+    const [changesStyle, setChangesStyle] = useState({})
+
+    useEffect( () => {
+        if(contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
+            setHistoryStyle({color: colors.purpleLight, borderColor: colors.purpleLight, backgroundColor: colors.offWhite})
+            setChangesStyle({})
+        } 
+        else if (contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
+            setHistoryStyle({})
+            setChangesStyle({color: colors.purpleLight, borderColor: colors.purpleLight, backgroundColor: colors.offWhite})
+        } 
+    }, [contentControl])
 
     const renderContent = () => {
         if(contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
@@ -411,8 +442,8 @@ export const Sidebar = (props) => {
     return (
         <div style={{flexDirection: "column"}}>
             <ButtonGroup color="primary" aria-label="outlined primary button group" style={{width: "100%"}}>
-                <Button style={{...SidebarHistButtons}} onClick={handleChange}>Changes</Button>
-                <Button style={{...SidebarHistButtons}} onClick={handleHist}>History</Button>
+                <Button style={{...SidebarHistButtons, ...changesStyle }} onClick={handleChange}>Changes</Button>
+                <Button style={{...SidebarHistButtons, ...historyStyle }} onClick={handleHist}>History</Button>
             </ButtonGroup>
             {
                 renderContent()

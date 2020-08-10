@@ -35,7 +35,7 @@ const initState={
 
   contentControl: 0,
   diffControl: 0,
-  histControl: 0,
+  histControl: 0
 }
 
 export const appstoreReducer = (state = initState, action = {}) => {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
-import watch from 'node-watch'
+import chokidar from 'chokidar'
 
 import {Header} from "../header"
 import {Sidebar} from '../sidebar'
@@ -60,45 +60,36 @@ export const MainPage = (props) => {
 
     const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
-
-    const [toWatch, setToWatch] = useState(false)
     
     //ROUTER HOOKS
     const history = useHistory();
+    
 
     useEffect(()=>{
         if(error) return;
         handleRefresh().then((isErr)=>{
-            if(!dirPath || dirPath === undefined || isErr ) {
+            if(!dirPath || dirPath === undefined || isErr ) { 
                 setError(true)
                 return
             };
-            try{
-                watch(dirPath, { recursive: true, delay: 300 }, async (evt, name) => {
-                    if(loaded && toWatch){
-                        const splitPath = name.split(path.sep)
-                        const gitDir = await helperGitDir(dirPath)
-                        for (const i in splitPath){
-                            if(splitPath[i] === gitDir) return
-                        }
-                        if(await (helperGitCheckIgnore(dirPath, name)))
-                            return;
-                        
-                        //TODO make sure any git folder or gitignored folder is ignored
-                        if(evt === "update"){
-                            await handleRefresh();
-                        }
-                        else if(evt == "remove"){
-                            await handleRefresh();
-                        }
-                    }
-                })
-            }
-            catch(err){
-            }
+            // helperGitDir(dirPath).then((gitDir) => {
+            //     // DOESNT WORK FOR SOME REASON? INVESTIGATE
+            //     const watcher = chokidar.watch(dirPath, {
+            //         usePolling: true,
+            //         persistent: true,
+            //         ignoreInitial: true,
+            //         ignored: "**/" + gitDir + "/**"
+            //     })
+            //     console.log(watcher)
+            //     watcher.on('all', (evt, name) => {
+            //         helperGitCheckIgnore(dirPath, name).then( (ignored) => {
+            //             if(ignored)
+            //                 return
+            //             handleRefresh();
+            //         })
+            //     })
+            // })
         })
-        
-        setToWatch(true)
         dispatch(appstoreAddRepoRecord(dirPath))
         return () => {
             dispatch(stageReset());

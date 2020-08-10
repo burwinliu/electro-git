@@ -17,7 +17,7 @@ export const colors = {
     blueLight: "#bbdefb",
     blueSub: "#192129",
     blueSubLight: "#506273",
-    purpleLight: "#f9ecff",
+    purpleLight: "#5c38ad",
     red: "#f44336",
     redLightHover: "#ffc3c3",
     redLight: "#ffcdd2",
