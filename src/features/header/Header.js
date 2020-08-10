@@ -29,7 +29,7 @@ import {
 } from "./HeaderStyles"
 
 import {
-    repoSetPath,
+    repoSetPath, appstoreSetHistControl, HISTORY_CONTROL, appstoreSetContentControl, CONTENT_CONTROL,
 } from '../../store/ducks'
 
 import { colors } from '../../styles/palette';
@@ -114,6 +114,7 @@ export const Header = (props) => {
    
     const handleNewRepo = (newPath) => {
         dispatch(repoSetPath(newPath))
+        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
         history.push('/')
     }
 
@@ -162,7 +163,13 @@ export const Header = (props) => {
                                                 
                                                 if (repoRecord[key] === dirPath || repoRecord[key] === "") return 
                                                 return(
-                                                    <ListItem style={{minHeight: "30px"}} button key={key} onClick={() => handleNewRepo(repoRecord[key])}>
+                                                    <ListItem
+                                                        style={{minHeight: "30px"}} 
+                                                        button 
+                                                        key={key} 
+                                                        title={repoRecord[key]} 
+                                                        onClick={() => handleNewRepo(repoRecord[key])}
+                                                    >
                                                         <ListItemIcon>
                                                             <FolderIcon/>
                                                         </ListItemIcon>
