@@ -12,7 +12,6 @@ import {
     withStyles,
     Snackbar,
     DialogContentText,
-    Divider,
 } from "@material-ui/core"
 
 import {
@@ -36,7 +35,6 @@ import {
     helperGitStatus,
     helperGitIsMerge, 
     helperGitAdd,
-    helperGitAddCommit,
     helperGitMergePull
  } from "../../services"
 
@@ -69,35 +67,16 @@ export const FetchOrPull = () => {
 
     useEffect( () => {
         if(branch === ""){
-            return
-        }
-        helperGitRemoteName(dirPath).then((result) => {
-            handleFetchAction().catch((err) => {
-                setErrMsg(err.message)
-                setErr(true)
-            })
-        }).catch((err) => {
-            console.log(err.message)
-        })
-        
-    }, [])
-
-    useEffect( () => {
-        if(branch === ""){
             console.log(branchList)
             setIsPublished(false)
             return
         }
-        helperGitRemoteName(dirPath).then((result) => {
-            helperGitCheckBranchRemote(dirPath, branch).then((isChecked) => {
-                console.log(isChecked)
-                setIsPublished(isChecked)
-            }).catch((err) => {
-                setErrMsg(err.message)
-                setErr(true)
-            })
+        helperGitCheckBranchRemote(dirPath, branch).then((isChecked) => {
+            console.log(isChecked)
+            setIsPublished(isChecked)
         }).catch((err) => {
-            console.log(err.message)
+            setErrMsg(err.message)
+            setErr(true)
         })
     }, [branch, dirPath])
 
@@ -107,7 +86,7 @@ export const FetchOrPull = () => {
                 open={err}
                 onClose={handleErrClose} 
             >
-                <DialogTitle id="simple-dialog-title">Error</DialogTitle>
+                <DialogTitle id="simple-dialog-title">Git Message</DialogTitle>
                 <DialogContent>
                     <div>
                         <pre style={{whiteSpace: "pre-wrap"}}><code>{errMsg}</code></pre>
@@ -441,13 +420,6 @@ export const ConflictsPops = (props) => {
     const [length, setLength] = useState(0)
 
     const dispatch = useDispatch()
-
-    useEffect( () => {
-        helperGitStatus(dirPath).then((status) => {
-            dispatch(stageSetStatusSummary(status))
-            
-        })
-    }, [])
 
     useEffect( () => {
         if (statusSummary && statusSummary.conflicted.length !== 0){

@@ -72,6 +72,13 @@ export const MainPage = (props) => {
                 setError(true)
                 return
             };
+            try{
+                helperGitOpen(dirPath)
+            }
+            catch(err) {
+                setError(true)
+                return
+            }
             // helperGitDir(dirPath).then((gitDir) => {
             //     // DOESNT WORK FOR SOME REASON? INVESTIGATE
             //     const watcher = chokidar.watch(dirPath, {
@@ -180,6 +187,8 @@ export const MainPage = (props) => {
     const handleErr = (state) => {
         setError(state)
     }
+
+    console.log(error, "ERROR")
 
     return (
         <div style={MainWrapper}>

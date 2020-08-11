@@ -120,6 +120,7 @@ export const ModalRepoSetting = (props) => {
         try{
             helperGitOpen(repoPath)
             helperGitRemoteName(repoPath).then((remoteURL)=> {
+                console.log(remoteURL, "URL")
                 dispatch(repoSetUrl(remoteURL))
             }).catch((err) => {
                 if (err instanceof GitError){
