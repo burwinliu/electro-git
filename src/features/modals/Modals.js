@@ -1,15 +1,235 @@
 import React, {useState, useEffect} from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TextField, Input } from '@material-ui/core';
+import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, TextField, Input, Snackbar } from '@material-ui/core';
 import { Button } from '@material-ui/core'
 
 import {CustomDirectoryField, CustomFileField} from '../CustomFields'
 import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
-import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate, helperGitSetRemoteUrl } from '../../services';
+import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate, helperGitSetRemoteUrl, helperGitClone, helperGitInit } from '../../services';
 
-import {repoSetUrl} from '../../store/ducks'
+import {repoSetUrl, repoSetPath} from '../../store/ducks'
 import { GitConstructError, GitError } from 'simple-git';
 import { useHistory } from 'react-router-dom';
+
+export const ModalRepoOpen = (props) => {
+    const [dir, setDir] = useState("")
+
+    const [errMsg, setErrMsg] = useState("FAILED")
+    const [errOpen, setErrOpen] = useState(false)
+
+    const dispatch = useDispatch();
+
+    //ROUTER HOOKS
+    const history = useHistory();
+
+    const handleConfirm = async () => {
+        if (dir){
+            try{
+                const gitObj = helperGitOpen(dir)
+                if(await gitObj.checkIsRepo()){
+                    const rootDir = await gitObj.revparse({'--show-toplevel': null })
+                    dispatch(repoSetPath(rootDir))
+                    props.handleClose()
+
+                    history.push('/main')
+                }
+                else{
+                    setErrMsg("Open Failed -- Directory provided is not a repo. Did you mean to init?")
+                    setErrOpen(true)
+                }
+                
+                return
+            }
+            catch(err){
+                console.log(err)
+
+                setErrMsg("Open Failed -- Directory provided was unable to be opened")
+                setErrOpen(true)
+                return
+            }
+        }
+        setErrMsg("Open Failed -- No directory provided")
+        setErrOpen(true)
+    }
+
+    const changeDir = (input) => {
+        setDir(input)
+    }
+    const changeDirEvent = (evt) => {
+        setDir(evt.target.value)
+    }
+    const handleErrClose = () => {
+        setErrOpen(false)
+    }
+
+    return(
+        <div>
+            <ModalFormDirectory 
+                title="Open Repository" 
+                confirmText = "Open"
+                open={props.open} 
+                directory={dir||""}
+                
+                handleClose={props.handleClose}
+                handleConfirm={handleConfirm}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
+            />
+
+            <Snackbar
+                open={errOpen}
+                onClose={handleErrClose}
+                message={errMsg}
+                autoHideDuration={6000}
+                severity="error"
+            />
+        </div>
+    )
+}
+
+export const ModalRepoClone = (props) => {
+    const [dir, setDir] = useState("")
+    const [url, setUrl] = useState("")
+
+    const [errMsg, setErrMsg] = useState("FAILED")
+    const [errOpen, setErrOpen] = useState(false)
+
+    const dispatch = useDispatch();
+
+    //ROUTER HOOKS
+    const history = useHistory();
+
+    const handleConfirm = async () => {
+        if (dir && url){
+            try{
+                helperGitClone(dir, url).then(async (temp) => {
+                    dispatch(repoSetPath(dir))
+                    dispatch(repoSetUrl(dir))
+                    props.handleClose()
+                    history.push('/main')
+                    return
+                });
+                
+            }
+            catch(err){
+                setErrMsg("Clone Failed " + err.message)
+                setErrOpen(true)
+                return
+            }
+        }
+        setErrMsg("Open Failed -- No directory provided")
+        setErrOpen(true)
+    }
+
+    const changeDir = (input) => {
+        setDir(input)
+    }
+    const changeDirEvent = (evt) => {
+        setDir(evt.target.value)
+    }
+    const changeUrl = (evt) => {
+        setUrl(evt.target.value)
+    }
+
+    const handleErrClose = () => {
+        setErrOpen(false)
+    }
+
+    return(
+        <div>
+            <ModalFormDirectoryAndUrl 
+                title="Clone Repository"
+                confirmText="Clone" 
+                open={props.open}
+                directory={dir||""}
+                url={url}
+
+                handleClose={props.handleClose}
+                handleConfirm={handleConfirm}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
+                handleUrlChange={changeUrl}
+            />
+
+            <Snackbar
+                open={errOpen}
+                onClose={handleErrClose}
+                message={errMsg}
+                autoHideDuration={6000}
+                severity="error"
+            />
+        </div>
+    )
+}
+
+export const ModalRepoCreate = (props) => {
+    const [dir, setDir] = useState("")
+
+    const [errMsg, setErrMsg] = useState("FAILED")
+    const [errOpen, setErrOpen] = useState(false)
+
+    const dispatch = useDispatch();
+
+    //ROUTER HOOKS
+    const history = useHistory();
+
+    const handleConfirm = async () => {
+        if (dir){
+            try{
+                helperGitOpen(dir)
+                await helperGitInit(dir);
+                dispatch(repoSetPath(dir))
+                props.handleClose()
+
+                history.push('/main')
+                return
+            }
+            catch(err){
+                console.log(err)
+
+                setErrMsg("Open Failed -- Directory provided was unable to be Created")
+                setErrOpen(true)
+                return
+            }
+        }
+        setErrMsg("Open Failed -- No directory provided")
+        setErrOpen(true)
+    }
+
+    const changeDir = (input) => {
+        setDir(input)
+    }
+    const changeDirEvent = (evt) => {
+        setDir(evt.target.value)
+    }
+
+    const handleErrClose = () => {
+        setErrOpen(false)
+    }
+    return(
+        <div>
+            <ModalFormDirectory     
+                title="Create Repository" 
+                confirmText="Create"
+                open={props.open} 
+                directory={dir||""}
+
+                handleClose={props.handleClose}
+                handleConfirm={handleConfirm}
+                handleDirectoryChange={changeDirEvent}
+                handleDirectory = {changeDir}
+            />
+
+            <Snackbar
+                open={errOpen}
+                onClose={handleErrClose}
+                message={errMsg}
+                autoHideDuration={6000}
+                severity="error"
+            />
+        </div>
+    )
+}
 
 export const ModalFormDirectory = (props) => {
     /*
@@ -192,7 +412,6 @@ export const ModalFormFile = (props) => {
       </Dialog>
     )
 }
-
 
 export const ModalBranchCreate = (props) => {
     const repoPath = useSelector(state => state.repo.path)

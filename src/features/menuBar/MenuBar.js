@@ -22,6 +22,7 @@ import {
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { appstoreSetDiffControl, DIFF_CONTROL } from '../../store/ducks';
+import { ModalRepoOpen, ModalRepoClone, ModalRepoCreate } from '../modals';
 
 const RestoreIcon = (props) => {
     return (
@@ -38,6 +39,10 @@ export const MenuBar = (props) => {
     const [anchorElFile, setAnchorElFile] = React.useState(null);
     const [anchorElView, setAnchorElView] = React.useState(null);
     // const [anchorElBranch, setAnchorElBranch] = React.useState(null);
+
+    const [openOpen, setOpenOpen] = useState(false);
+    const [openCreate, setOpenCreate] = useState(false);
+    const [openClone, setOpenClone] = useState(false);
 
     const diffControl = useSelector(state => state.appstore.diffControl)
 
@@ -102,6 +107,33 @@ export const MenuBar = (props) => {
         ipcRenderer.send('closeWindow');
     }
 
+    const handleClickOpenOpen = () => {
+        setOpenOpen(true);
+        
+    };
+    const handleCloseOpen = () => {
+        setOpenOpen(false);
+    }; 
+    
+    //Create Events
+    const handleClickOpenCreate = () => {
+        setOpenCreate(true);
+       
+    };
+    const handleCloseCreate = () => {
+        setOpenCreate(false);
+        
+    }; 
+    
+    // Clone Events
+    const handleClickOpenClone = () => {
+        setOpenClone(true);
+        
+    };
+    const handleCloseClone = () => {
+        setOpenClone(false);
+    }; 
+
     return (
         <div style = {MenuBarWrapper}>
             <div name="main-controls" style={{...WindowControlsWrapper}}>
@@ -144,13 +176,13 @@ export const MenuBar = (props) => {
                 }}
             >
                 <List>
-                    <ListItem button onClick={handleToggleDiffView}>
+                    <ListItem button onClick={handleClickOpenOpen}>
+                        Open Repo
+                    </ListItem>
+                    <ListItem button onClick={handleClickOpenCreate}>
                         Create New Repo
                     </ListItem>
-                    <ListItem button onClick={handleToggleDiffView}>
-                        Add New Repo
-                    </ListItem>
-                    <ListItem button onClick={handleToggleDiffView}>
+                    <ListItem button onClick={handleClickOpenClone}>
                         Clone New Repo
                     </ListItem>
                 </List>
@@ -175,7 +207,19 @@ export const MenuBar = (props) => {
                     </ListItem>
                 </List>
             </Popover>
-            
+            {/* Modal Forms */}
+            <ModalRepoOpen 
+                open={openOpen} 
+                handleClose={handleCloseOpen}
+            />
+            <ModalRepoCreate 
+                open={openCreate} 
+                handleClose={handleCloseCreate}
+            />
+            <ModalRepoClone 
+                open={openClone}
+                handleClose={handleCloseClone}
+            />
         </div>
     )
 }

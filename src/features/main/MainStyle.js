@@ -1,5 +1,12 @@
 import { headerHeight, menuHeight} from "../../styles/constants"
 
+export const MainCenter = {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+
+    flexGrow: "1",
+}
 
 export const MainWrapper = {
     flexDirection: "column",

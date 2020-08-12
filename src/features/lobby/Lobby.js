@@ -19,7 +19,10 @@ import {
 // Modals (Forms/Dialogs)
 import {
     ModalFormDirectory,
-    ModalFormDirectoryAndUrl
+    ModalFormDirectoryAndUrl,
+    ModalRepoClone,
+    ModalRepoOpen,
+    ModalRepoCreate
 } from '../modals'
 
 // GIT HELPER
@@ -43,14 +46,6 @@ export const LobbyPage = () => {
     const [openCreate, setOpenCreate] = useState(false);
     const [openClone, setOpenClone] = useState(false);
 
-    const [dir, setDir] = useState("")
-    const [url, setUrl] = useState("")
-
-    const [errMsg, setErrMsg] = useState("FAILED")
-    const [errOpen, setErrOpen] = useState(false)
-
-    const [loaded, setLoaded] = useState(true)
-
     //REDUX HOOKS
     const dirPath = useSelector(state => state.repo.path);
     const dispatch = useDispatch();
@@ -63,137 +58,34 @@ export const LobbyPage = () => {
             history.push('/main')
         }
         dispatch(stageReset())
-        return ()=>{
-            setLoaded(false)
-        }
     }, [])
 
     const handleClickOpenOpen = () => {
-        if(loaded){
-            setOpenOpen(true);
-        }
+        setOpenOpen(true);
         
     };
     const handleCloseOpen = () => {
-        if(loaded){
-            setOpenOpen(false);
-        }
+        setOpenOpen(false);
     }; 
-    const handleConfirmOpen = async () => {
-        if (dir){
-            try{
-                const gitObj = helperGitOpen(dir)
-                if(await gitObj.checkIsRepo()){
-                    const rootDir = await gitObj.revparse({'--show-toplevel': null })
-                    if(loaded){
-                        dispatch(repoSetPath(rootDir))
-                        history.push('/main')
-                    }
-                }
-                else{
-                    setErrMsg("Open Failed -- Directory provided is not a repo. Did you mean to init?")
-                    setErrOpen(true)
-                }
-                
-                return
-            }
-            catch(err){
-                console.log(err)
-
-                setErrMsg("Open Failed -- Directory provided was unable to be opened")
-                setErrOpen(true)
-                return
-            }
-        }
-        setErrMsg("Open Failed -- No directory provided")
-        setErrOpen(true)
-    }; 
-
+    
     //Create Events
     const handleClickOpenCreate = () => {
-        if(loaded){
-            setOpenCreate(true);
-        }
+        setOpenCreate(true);
        
     };
     const handleCloseCreate = () => {
-        if(loaded){
-            setOpenCreate(false);
-        }
+        setOpenCreate(false);
         
-    }; 
-    const handleConfirmCreate = async () => {
-        if (dir){
-            try{
-                helperGitOpen(dir)
-                await helperGitInit(dir);
-                dispatch(repoSetPath(dir))
-                history.push('/main')
-                return
-            }
-            catch(err){
-                console.log(err)
-
-                setErrMsg("Open Failed -- Directory provided was unable to be Created")
-                setErrOpen(true)
-                return
-            }
-        }
-        setErrMsg("Open Failed -- No directory provided")
-        setErrOpen(true)
     }; 
     
     // Clone Events
     const handleClickOpenClone = () => {
-        if(loaded){
-            setOpenClone(true);
-        }
+        setOpenClone(true);
         
     };
     const handleCloseClone = () => {
-        if(loaded){
-            setOpenClone(false);
-        }
+        setOpenClone(false);
     }; 
-    const handleConfirmClone = async () => {
-        if (dir && url){
-            try{
-                helperGitClone(dir, url).then(async (temp) => {
-                    dispatch(repoSetPath(dir))
-                    dispatch(repoSetUrl(dir))
-                    
-                    history.push('/main')
-                    return
-                });
-                
-            }
-            catch(err){
-                console.log(err);
-            }
-        }
-    }; 
-
-    const handleErrClose = () => {
-        if(loaded){
-            setErrOpen(false)
-        }
-    }
-
-    const changeDir = (input) => {
-        if(loaded){
-            setDir(input)
-        }
-    }
-    const changeDirEvent = (evt) => {
-        if(loaded){
-            setDir(evt.target.value)
-        }
-    }
-    const changeUrl = (evt) => {
-        if(loaded){
-            setUrl(evt.target.value)
-        }
-    }
 
     return (
         <div style={LobbyContent}>
@@ -215,48 +107,17 @@ export const LobbyPage = () => {
             </ButtonGroup>
 
             {/* Modal Forms */}
-            <ModalFormDirectory 
-                title="Open Repository" 
-                confirmText = "Open"
+            <ModalRepoOpen 
                 open={openOpen} 
-                directory={dir||""}
-                
                 handleClose={handleCloseOpen}
-                handleConfirm={handleConfirmOpen}
-                handleDirectoryChange={changeDirEvent}
-                handleDirectory = {changeDir}
             />
-            <ModalFormDirectory     
-                title="Create Repository" 
-                confirmText="Create"
+            <ModalRepoCreate 
                 open={openCreate} 
-                directory={dir||""}
-
                 handleClose={handleCloseCreate}
-                handleConfirm={handleConfirmCreate}
-                handleDirectoryChange={changeDirEvent}
-                handleDirectory = {changeDir}
             />
-            <ModalFormDirectoryAndUrl 
-                title="Clone Repository"
-                confirmText="Clone" 
+            <ModalRepoClone 
                 open={openClone}
-                directory={dir||""}
-                url={url}
-
                 handleClose={handleCloseClone}
-                handleConfirm={handleConfirmClone}
-                handleDirectoryChange={changeDirEvent}
-                handleDirectory = {changeDir}
-                handleUrlChange={changeUrl}
-            />
-
-            <Snackbar
-                open={errOpen}
-                onClose={handleErrClose}
-                message={errMsg}
-                autoHideDuration={6000}
-                severity="error"
             />
         </div>
     )

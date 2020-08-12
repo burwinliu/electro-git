@@ -11,7 +11,7 @@ import {Button} from "@material-ui/core"
 
 
 //Styles
-import {MainWrapper, MainContent} from './MainStyle'
+import {MainWrapper, MainContent, MainCenter} from './MainStyle'
 
 //REDUX store
 import {
@@ -188,19 +188,25 @@ export const MainPage = (props) => {
         setError(state)
     }
 
-    console.log(error, "ERROR")
-
-    return (
-        <div style={MainWrapper}>
-            <Header refresh={handleRefresh}/>
-            {
-                error?
-                <div> 
-                    CANNOT FIND {dirPath}. Would you like to remove?
+    const RenderContent = () => {
+        if(!dirPath || dirPath === "" ){
+            return (
+                <div style={MainCenter}> 
+                    <h1>No Repo Selected</h1>
+                </div>
+            )
+        }
+        if(error) {
+            return (
+                <div style={MainCenter}> 
+                    <h1>CANNOT FIND {dirPath}. Would you like to remove?</h1>
 
                     <Button onClick={handleRemoveRepo}>Remove</Button>
                 </div>
-                :
+            )
+        }
+        else{
+            return (
                 <div style={MainContent}>
                     <Sidebar 
                         refresh={handleRefresh}
@@ -209,8 +215,14 @@ export const MainPage = (props) => {
                         refresh={handleRefresh} 
                     />
                 </div>
-                
-            }
+            )
+        }
+    }
+
+    return (
+        <div style={MainWrapper}>
+            <Header refresh={handleRefresh}/>
+            <RenderContent/>
         </div>
     )
 }
