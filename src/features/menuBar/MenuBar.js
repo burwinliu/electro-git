@@ -135,60 +135,61 @@ export const MenuBar = (props) => {
     }; 
 
     return (
-        <div style = {MenuBarWrapper}>
-            <div name="main-controls" style={{...WindowControlsWrapper}}>
-                <IconButton onClick={handleGithubClick}>
-                    <GithubIcon fontSize="small" />
-                </IconButton>
-                <Button aria-controls="view-repo-control" aria-haspopup="true" onClick={handleClickFile}>
-                    File
+        <div>
+            <div style = {MenuBarWrapper}>
+                <div name="main-controls" style={{...WindowControlsWrapper}}>
+                    <IconButton onClick={handleGithubClick}>
+                        <GithubIcon fontSize="small" />
+                    </IconButton>
+                    <Button aria-controls="view-repo-control" aria-haspopup="true" onClick={handleClickFile}>
+                        File
+                    </Button>
+                    <Button aria-controls="view-menu-control" aria-haspopup="true" onClick={handleClickView}>
+                    View
                 </Button>
-                <Button aria-controls="view-menu-control" aria-haspopup="true" onClick={handleClickView}>
-                View
-            </Button>
 
-           
             
-            </div>
-            <div name="window-controls" style={{...WindowControlsWrapper}}>
-                <IconButton aria-label="minimize" onClick={handleMin}>
-                    <RemoveIcon fontSize="small" />
-                </IconButton>
-                <IconButton aria-label="toggleMax" onClick={handleToggleMaximize}>
-                    {isMaximized? <RestoreIcon fontSize="small"/> : <MaxIcon fontSize="small"/> }
-                </IconButton>
-                <IconButton aria-label="close" onClick={handleClose}>
-                    <CloseIcon fontSize="small" />
-                </IconButton>
-            </div>
-            {/* File Menu */}
-            <Popover
-                open={Boolean(anchorElFile)}
-                anchorEl={anchorElFile}
-                onClose={handleCloseFile}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                <List>
-                    <ListItem button onClick={handleClickOpenOpen}>
-                        Open Repo
-                    </ListItem>
-                    <ListItem button onClick={handleClickOpenCreate}>
-                        Create New Repo
-                    </ListItem>
-                    <ListItem button onClick={handleClickOpenClone}>
-                        Clone New Repo
-                    </ListItem>
-                </List>
-            </Popover>
-            {/* View Menu */}
-            <Popover
+                
+                </div>
+                <div name="window-controls" style={{...WindowControlsWrapper}}>
+                    <IconButton aria-label="minimize" onClick={handleMin}>
+                        <RemoveIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton aria-label="toggleMax" onClick={handleToggleMaximize}>
+                        {isMaximized? <RestoreIcon fontSize="small"/> : <MaxIcon fontSize="small"/> }
+                    </IconButton>
+                    <IconButton aria-label="close" onClick={handleClose}>
+                        <CloseIcon fontSize="small" />
+                    </IconButton>
+                </div>
+                {/* File Menu */}
+                <Popover
+                    open={Boolean(anchorElFile)}
+                    anchorEl={anchorElFile}
+                    onClose={handleCloseFile}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <List>
+                        <ListItem button onClick={handleClickOpenOpen}>
+                            Open Repo
+                        </ListItem>
+                        <ListItem button onClick={handleClickOpenCreate}>
+                            Create New Repo
+                        </ListItem>
+                        <ListItem button onClick={handleClickOpenClone}>
+                            Clone New Repo
+                        </ListItem>
+                    </List>
+                </Popover>
+                {/* View Menu */}
+                <Popover
                 open={Boolean(anchorElView)}
                 anchorEl={anchorElView}
                 onClose={handleCloseView}
@@ -207,6 +208,7 @@ export const MenuBar = (props) => {
                     </ListItem>
                 </List>
             </Popover>
+            </div>
             {/* Modal Forms */}
             <ModalRepoOpen 
                 open={openOpen} 
