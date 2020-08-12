@@ -351,13 +351,11 @@ const SidebarHistItem = (props) => {
             const renderStatusHist = renderGitStatusHist(statusHist)
             dispatch(stageSetRepoHistDiff(diffHistRender))
             dispatch(stageSetRepoHistStatus(renderStatusHist))
-            console.log(statusHist, renderStatusHist, "STATUS")
         }
         else if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
             dispatch(stageSetFileHistDiff(diffHistRender))
         }
         dispatch(appstoreSetLogLine(logLine))
-        console.log(diffHist, diffHistRender, histControl)
     }
 
     return (

@@ -41,7 +41,6 @@ function createWindow() {
       nodeIntegration: true
     }
   })
-  mainWindow.unmaximize()
 
   // and load the index.html of the app.
   let indexPath
@@ -66,6 +65,7 @@ function createWindow() {
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.unmaximize()
     mainWindow.webContents.openDevTools()
     // Open the DevTools automatically if developing
     if (dev) {
