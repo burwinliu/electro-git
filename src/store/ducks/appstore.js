@@ -83,7 +83,8 @@ export const appstoreReducer = (state = initState, action = {}) => {
 }
 
 export const appstoreAddRepoRecord = (repoPath) => {
-  return { type: ADD_REPO_RECORD, payload: repoPath}
+  const parsedPath = repoPath.replace(/\\/g,"\/");
+  return { type: ADD_REPO_RECORD, payload: parsedPath}
 }
 export const appstoreRemoveRepoRecord = (repoPath) => {
   return { type: REMOVE_REPO_RECORD, payload: repoPath}

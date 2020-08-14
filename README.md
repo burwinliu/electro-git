@@ -4,7 +4,7 @@
 
 A GIT GUI built with [electron.JS](https://electron.atom.io) and [React.js](https://facebook.github.io/react/).
 
-![ElectroGit screenshot - Windows](./docs/readmeImg/MainPage.png)
+![ElectroGit screenshot - Windows](./docs/static/MainPage.png)
 
 ## Install/Getting Started
 
@@ -16,6 +16,9 @@ and run "yarn" (if not installed visit https://classic.yarnpkg.com/en/docs/insta
 
 ## Features
 Included within this is all of GIT's basic functions and a custom git diff rendering
+
+## Documentation
+This is currently under construction. Navigation can be found [here](docs/index.md)
 
 ## License
 
