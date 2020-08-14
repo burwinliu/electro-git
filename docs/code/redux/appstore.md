@@ -1,4 +1,4 @@
-# ~/appstore.md
+# ~/ducks/appstore.js
 
 ## export const appstoreAddRepoRecord = (repoPath) 
 ## export const appstoreRemoveRepoRecord = (repoPath) 
