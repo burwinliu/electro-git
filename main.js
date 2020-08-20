@@ -1,7 +1,8 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem } = require('electron')
+const { renderTemplateChangeItem } = require('./electronHelper/template')
 const path = require('path')
 const url = require('url')
 
@@ -150,4 +151,3 @@ ipcMain.on('selectFileCustomField', async function(e) {
   e.reply('selectFileCustomField', dir)
 
 });
-

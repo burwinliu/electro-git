@@ -10,7 +10,9 @@ import {
  } from '@material-ui/icons';
 
  import {
-     ListItemIcon
+     Menu, 
+     MenuItem,
+     ListItemIcon,
  } from '@material-ui/core'
 
  import React from 'react'
@@ -124,4 +126,37 @@ export const getSymbol = (working_dir, index) => {
                 </ListItemIcon>
             )
     }
+}
+
+export const MenuSidebarChangesItem = (props) => {
+    const state = props.state
+    const setState = props.setState
+
+    const initialState = {
+        mouseX: null,
+        mouseY: null,
+        value: null,
+    };
+
+    const handleClose = (event, reason) => {
+        console.log(event, reason)
+        setState(initialState);
+    }
+
+    return (
+        <Menu
+            keepMounted
+            open={state.mouseY !== null}
+            onClose={handleClose}
+            anchorReference="anchorPosition"
+            anchorPosition={
+                state.mouseY !== null && state.mouseX !== null
+                    ? { top: state.mouseY, left: state.mouseX }
+                    : undefined
+            }
+        >
+            <MenuItem onClick={handleClose}>Add to .gitignore</MenuItem>
+            <MenuItem onClick={handleClose}>Open in Explorer</MenuItem>
+        </Menu>
+    )
 }

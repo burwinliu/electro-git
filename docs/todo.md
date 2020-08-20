@@ -9,14 +9,15 @@
  
 * Make so updates only render diif of files specifically, not all files at once to save on efficiency
 
-* Look into security of git clone/push -- ssh, can establish own protocols -- just depends on how you connect to server (wireshark: tcp.port == 22)
 
-* extensions -- DOABLE, not sure how to add to the items since cmd line args arent executed
+8/19
 
-* ALl communication is encyrypted or none -- no half and half. Look through packets between git 
+* Aggregating data --view, do not change. Push only to clients, but to remain unchanged.  -- biderctional.
 
-* How to change/setup github secure communication certificates (X509?) Custom certificates? see what hits I get. *How to secure github communications*
+    * Permissions and authorize users
+* cvss vulnerabilities ** RESEARCH
+* white list I want these files to go out/ not go out white/blacklist 
+    * limit files by size
 
-* What things can be customized by GIT
+* Check privlidge needed on PC with GIT -- set up and access (transfer data ) /operate (and manage users) (manually/handle keys)
 
-* Git vulnerabilities? What aare they, possible attacks

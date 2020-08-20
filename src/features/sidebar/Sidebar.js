@@ -46,7 +46,8 @@ import {
 } from './SidebarStyle'
 
 import {
-    getSymbol
+    getSymbol,
+    MenuSidebarChangesItem
 } from './SidebarHelper'
 
 // Helpers/Services
@@ -70,7 +71,7 @@ import {
     HISTORY_CONTROL
 } from "../../store/ducks"
 
-import { GitError } from 'simple-git';
+import { ipcRenderer } from 'electron';
 
 
 export const SidebarChanges = (props) => {
@@ -88,6 +89,12 @@ export const SidebarChanges = (props) => {
     const [modalTagOpen, setModalTagOpen] = useState(false)
 
     const [loaded, setLoaded] = useState(true)
+
+    const [state, setState] = useState({
+        mouseX: null,
+        mouseY: null,
+        value: null,
+    })
 
 
     useEffect( () => {
@@ -157,6 +164,38 @@ export const SidebarChanges = (props) => {
     const handleTagClose = () => {
         setModalTagOpen(false)
     }
+
+    const handleContextChangeItem = (event, val) => {
+        const value = "TEST"
+        const parent = document.getElementById('sidebar-changes').getBoundingClientRect()
+        event.preventDefault();
+        
+
+        console.log(event.target, val)
+
+        if(event.clientX < parent.left || event.clientX > parent.right || event.clientY < parent.top || event.clienY > parent.bottom ){
+            setState({
+                mouseX: null,
+                mouseY: null,
+                value: null
+            })
+        }
+        else{
+            setState({
+                mouseX: event.clientX - 2,
+                mouseY: event.clientY - 4,
+                value: value
+            });
+        }
+    }
+
+    const handleResetContext = () => {
+        setState({
+            mouseX: null,
+            mouseY: null,
+            value: null
+        })
+    }
     
     // Local items to make sure rendering goes well, and we aren't rendering null things. statusIcon is just
     // an icon to be set and changed for inner rendering of the component
@@ -169,7 +208,7 @@ export const SidebarChanges = (props) => {
     return (
         <div style={SidebarWrap}>
             
-            <List component="nav" aria-label="secondary mailbox folders" style={SidebarStyle}>
+            <List id={"sidebar-changes"} component="nav" aria-label="secondary mailbox folders" style={SidebarStyle} onMouseDown={handleResetContext}>
                 {Object.keys(toRender).map((value) => {
                     if(checkRecord[value] === undefined){
                         handleRecord(value)
@@ -179,7 +218,13 @@ export const SidebarChanges = (props) => {
 
                     console.log(fileStatus[value], "SIDEBAR")
                     return (
-                        <ListItem key={value} button onClick={(evt) => handleIconClick(value)} style={SidebarMenuItems}>
+                        <ListItem 
+                            key={value}
+                            button 
+                            onClick={(evt) => handleIconClick(value)} 
+                            style={SidebarMenuItems}
+                            onContextMenu={(evt) => handleContextChangeItem(evt, value)}
+                        >
                             <ListItemIcon style={SidebarMenuIcons}>
                                 <Checkbox
                                     edge="start"
@@ -195,6 +240,10 @@ export const SidebarChanges = (props) => {
                         </ListItem>
                     );
                 })}
+                <MenuSidebarChangesItem
+                    state={state}
+                    setState={setState}
+                />
             </List>
             <div style={{...SidebarCommitMenu}} >
                 <div style={{flexDirection: "column", margin: "0 10px"}}>
@@ -242,6 +291,7 @@ export const SidebarChanges = (props) => {
                 open={modalTagOpen}
                 handleClose={handleTagClose}
             />
+            
             
         </div>
     )
