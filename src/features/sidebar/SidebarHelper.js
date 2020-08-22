@@ -15,7 +15,7 @@ import {
      ListItemIcon,
  } from '@material-ui/core'
 
- import React from 'react'
+ import React, { useEffect } from 'react'
 
  import {
      SidebarMenuIcons
@@ -24,6 +24,9 @@ import {
  import {
      colors
  } from "../../styles/palette"
+import { helperGitIgnore } from '../../services';
+import { useSelector } from 'react-redux';
+import { ipcRenderer } from 'electron';
 
 export const getSymbol = (working_dir, index) => {
     switch(working_dir){
@@ -129,8 +132,11 @@ export const getSymbol = (working_dir, index) => {
 }
 
 export const MenuSidebarChangesItem = (props) => {
-    const state = props.state
+    const repoPath = useSelector(state=>state.repo.path)
+
+    let state = props.state
     const setState = props.setState
+    const refresh = props.refresh
 
     const initialState = {
         mouseX: null,
@@ -138,8 +144,32 @@ export const MenuSidebarChangesItem = (props) => {
         value: null,
     };
 
-    const handleClose = (event, reason) => {
-        console.log(event, reason)
+    useEffect( () => {
+        state = props.state
+    }, [state])
+
+    const handleIgnore = () => {
+        if(state.value){
+            console.log(state.value)
+            ipcRenderer.send('addToGitIgnore', repoPath, state.value )
+            refresh();
+        }
+        handleClose();
+    }
+
+    const handleOpenExplore = () => {
+        let path;
+        if (repoPath.slice(-1) != "/"){
+            path = repoPath + "/" + state.value
+        }
+        else{
+            path = repoPath + state.value
+        }
+        ipcRenderer.send('openInFileExplorer', path )
+        handleClose();
+    }
+
+    const handleClose = () => {
         setState(initialState);
     }
 
@@ -155,8 +185,8 @@ export const MenuSidebarChangesItem = (props) => {
                     : undefined
             }
         >
-            <MenuItem onClick={handleClose}>Add to .gitignore</MenuItem>
-            <MenuItem onClick={handleClose}>Open in Explorer</MenuItem>
+            <MenuItem onClick={handleIgnore}>Add to .gitignore</MenuItem>
+            <MenuItem onClick={handleOpenExplore}>Open in Explorer</MenuItem>
         </Menu>
     )
 }

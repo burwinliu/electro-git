@@ -1,10 +1,10 @@
 'use strict'
 
 // Import parts of electron to use
-const { app, BrowserWindow, ipcMain, dialog, Menu, MenuItem } = require('electron')
-const { renderTemplateChangeItem } = require('./electronHelper/template')
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
 const path = require('path')
 const url = require('url')
+const fs = require('fs');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -151,3 +151,34 @@ ipcMain.on('selectFileCustomField', async function(e) {
   e.reply('selectFileCustomField', dir)
 
 });
+
+ipcMain.on('openInFileExplorer', (e, path) => {
+  e.preventDefault();
+  const replaceSlash = /\//g
+  let parsed
+
+  if (process.platform === 'win32') parsed = path.replace(replaceSlash, "\\")
+  else parsed = path
+
+  shell.showItemInFolder(parsed);
+})
+
+ipcMain.on('addToGitIgnore', async (e, repoPath, payload) => {
+  e.preventDefault();
+  const replaceSlash = /\//g
+  let path
+  if (repoPath.slice(-1) != "/"){
+    path = repoPath + "/"
+  }
+  else{
+    path = repoPath
+  }
+  let parsed
+
+  if (process.platform === 'win32') parsed = path.replace(replaceSlash, "\\")
+  else parsed = path
+  fs.appendFile(parsed + ".gitignore", "\n" + payload, (err) =>{
+    console.log(err)
+    return;
+  }); 
+})

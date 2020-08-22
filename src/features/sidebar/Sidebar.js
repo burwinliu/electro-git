@@ -166,25 +166,21 @@ export const SidebarChanges = (props) => {
     }
 
     const handleContextChangeItem = (event, val) => {
-        const value = "TEST"
         const parent = document.getElementById('sidebar-changes').getBoundingClientRect()
         event.preventDefault();
-        
-
-        console.log(event.target, val)
 
         if(event.clientX < parent.left || event.clientX > parent.right || event.clientY < parent.top || event.clienY > parent.bottom ){
             setState({
                 mouseX: null,
                 mouseY: null,
-                value: null
+                ...state,
             })
         }
         else{
             setState({
                 mouseX: event.clientX - 2,
                 mouseY: event.clientY - 4,
-                value: value
+                value: val,
             });
         }
     }
@@ -193,7 +189,7 @@ export const SidebarChanges = (props) => {
         setState({
             mouseX: null,
             mouseY: null,
-            value: null
+            value: state.value
         })
     }
     
@@ -216,7 +212,6 @@ export const SidebarChanges = (props) => {
 
                     const parsedValue = value.replace(/"/g, "")
 
-                    console.log(fileStatus[value], "SIDEBAR")
                     return (
                         <ListItem 
                             key={value}
@@ -243,6 +238,7 @@ export const SidebarChanges = (props) => {
                 <MenuSidebarChangesItem
                     state={state}
                     setState={setState}
+                    refresh={props.refresh}
                 />
             </List>
             <div style={{...SidebarCommitMenu}} >

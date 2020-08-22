@@ -515,5 +515,3 @@ export const helperGitMergePull = async (pathName) => {
     const repo = helperGitOpen(pathName)
     return await repo.commit("Merging Conflicted Merge")
 }
-
-

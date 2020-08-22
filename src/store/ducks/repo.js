@@ -22,7 +22,9 @@ export const repoReducer = (state = initState, action = {}) => {
 }
 
 export const repoSetPath = (path) => {
-  return { type: SET_PATH, payload: path }
+  const replaceSlash = /\\/g
+  const parsed = path.replace(replaceSlash, "/")
+  return { type: SET_PATH, payload: parsed }
 }
 export const repoSetUrl = (url) => {
   return { type: SET_URL, payload: url }
