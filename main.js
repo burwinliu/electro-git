@@ -178,7 +178,9 @@ ipcMain.on('addToGitIgnore', async (e, repoPath, payload) => {
   if (process.platform === 'win32') parsed = path.replace(replaceSlash, "\\")
   else parsed = path
   fs.appendFile(parsed + ".gitignore", "\n" + payload, (err) =>{
-    console.log(err)
+    if(err) {
+      console.log(err)
+    }
     return;
   }); 
 })

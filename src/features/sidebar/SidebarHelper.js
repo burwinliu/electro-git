@@ -24,7 +24,7 @@ import {
  import {
      colors
  } from "../../styles/palette"
-import { helperGitIgnore } from '../../services';
+import { helperGitIgnore, helperGitCheckIgnore } from '../../services';
 import { useSelector } from 'react-redux';
 import { ipcRenderer } from 'electron';
 
@@ -149,7 +149,7 @@ export const MenuSidebarChangesItem = (props) => {
     }, [state])
 
     const handleIgnore = () => {
-        if(state.value){
+        if(state.value && helperGitCheckIgnore(repoPath, state.value)){
             console.log(state.value)
             ipcRenderer.send('addToGitIgnore', repoPath, state.value )
             refresh();
