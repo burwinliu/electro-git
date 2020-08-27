@@ -100,11 +100,6 @@ export const Header = (props) => {
         handleRepoClose()
     }
 
-
-
-
-    
-
     const handleRepoDialogOpen = () => {
         setRepoSettings(true)
     }

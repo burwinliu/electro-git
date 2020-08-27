@@ -1,3 +1,4 @@
+// TODO Split up Control, diff and loading info into different files
 import { CONTENT_CONTROL, DIFF_CONTROL, HISTORY_CONTROL } from "."
 
 // Selected file to view diff
@@ -31,11 +32,15 @@ const initState={
 
   branch: "" ,
   repoRecord: [],
+
+
   sidebarWidth: "300px",
+  loadingMain: false,
+  loadingFetch: false,
 
   contentControl: 0,
   diffControl: 0,
-  histControl: 0
+  histControl: 0,
 }
 
 export const appstoreReducer = (state = initState, action = {}) => {
