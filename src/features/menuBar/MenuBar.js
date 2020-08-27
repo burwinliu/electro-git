@@ -21,7 +21,7 @@ import {
     GitHub as GithubIcon,
 } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { appstoreSetDiffControl, DIFF_CONTROL } from '../../store/ducks';
+import { controlSetDiffControl, DIFF_CONTROL } from '../../store/ducks';
 import { ModalRepoOpen, ModalRepoClone, ModalRepoCreate } from '../modals';
 
 const RestoreIcon = (props) => {
@@ -44,7 +44,7 @@ export const MenuBar = (props) => {
     const [openCreate, setOpenCreate] = useState(false);
     const [openClone, setOpenClone] = useState(false);
 
-    const diffControl = useSelector(state => state.appstore.diffControl)
+    const diffControl = useSelector(state => state.control.diffControl)
 
     const dispatch = useDispatch();
 
@@ -88,10 +88,10 @@ export const MenuBar = (props) => {
 
     const handleToggleDiffView = () => {
         if (diffControl === DIFF_CONTROL.MAIN_COMPRESSED_VIEW){
-            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW))
+            dispatch(controlSetDiffControl(DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW))
         }
         else if (diffControl === DIFF_CONTROL.MAIN_SIDE_BY_SIDE_VIEW){
-            dispatch(appstoreSetDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW))
+            dispatch(controlSetDiffControl(DIFF_CONTROL.MAIN_COMPRESSED_VIEW))
         }
     }
 

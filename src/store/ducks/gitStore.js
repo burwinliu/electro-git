@@ -22,10 +22,10 @@ const CLEAR_DIFFRECORD = 'git/CLEAR_DIFFRECORD'
 const SET_BRANCH_LIST = 'git/SET_BRANCH_LIST'
 
 // HISTORY
-const SET_GITSTORE_LOG = 'git/SET_git_LOG'
-const CLEAR_GITSTORE_LOG = 'git/CLEAR_git_LOG'
-const SET_GITSTORE_HIST_STATUS = 'git/SET_git_STATUS'
-const SET_GITSTORE_HIST_DIFF = 'git/SET_git_DIFF'
+const SET_GITSTORE_LOG = 'git/SET_GITSTORE_LOG'
+const CLEAR_GITSTORE_LOG = 'git/CLEAR_GITSTORE_LOG'
+const SET_GITSTORE_HIST_STATUS = 'git/SET_GITSTORE_STATUS'
+const SET_GITSTORE_HIST_DIFF = 'git/SET_GITSTORE_DIFF'
 
 const SET_FILE_LOG = 'git/SET_FILE_LOG'
 const CLEAR_FILE_LOG = 'git/CLEAR_FILE_LOG'
@@ -41,9 +41,9 @@ const initState = {
   status: {},
   diff: {},
 
-  gitLog: {},
-  gitHistStatus: {},
-  gitHistDiff: {},
+  repoLog: {},
+  repoHistStatus: {},
+  repoHistDiff: {},
 
   fileLog: {},
   fileHistDiff: {},
@@ -83,15 +83,15 @@ export const gitReducer = (state = initState, action = {}) => {
       return { ...state, diff: {} };
 
     case SET_GITSTORE_LOG:
-      return {...state, gitLog: action.payload}
+      return {...state, repoLog: action.payload}
     case CLEAR_GITSTORE_LOG:
-      return {...state, gitLog: {}}
+      return {...state, repoLog: {}}
     case SET_GITSTORE_HIST_STATUS:
       console.log("HIST ", action.payload)
-      return {...state, gitHistStatus: action.payload}
-    case SET_GISTORE_HIST_DIFF:
+      return {...state, repoHistStatus: action.payload}
+    case SET_GITSTORE_HIST_DIFF:
       console.log(action.payload, "SET git HIST")
-      return {...state, gitHistDiff: action.payload}
+      return {...state, repoHistDiff: action.payload}
 
 
     case SET_FILE_LOG:
@@ -147,16 +147,16 @@ export const gitClearDiff = () => {
   return { type: CLEAR_DIFFRECORD, payload: {} }
 }
 
-export const gitSetgitLog = (log) => {
-  return {type: SET_git_LOG, payload: log}
+export const gitSetRepoLog = (log) => {
+  return {type: SET_GITSTORE_LOG, payload: log}
 }
-export const gitCleargitLog = () => {
-  return {type: CLEAR_gitLOG, payload: {}}
+export const gitClearRepoLog = () => {
+  return {type: CLEAR_GITSTORE_LOG, payload: {}}
 }
-export const gitSetgitHistStatus = (status) => {
-  return {type: SET_git_HIST_STATUS, payload: status}
+export const gitSetRepoHistStatus = (status) => {
+  return {type: SET_GITSTORE_HIST_STATUS, payload: status}
 }
-export const gitSetgitHistDiff = (diff) => {
+export const gitSetRepoHistDiff = (diff) => {
   return {type: SET_GITSTORE_HIST_DIFF, payload: diff}
 }
 

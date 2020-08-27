@@ -7,7 +7,7 @@ import { ModalInputWrapper, ModalInputElement } from './ModalStyles'
 import { useSelector, useDispatch } from 'react-redux';
 import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate, helperGitSetRemoteUrl, helperGitClone, helperGitInit } from '../../services';
 
-import {repoSetUrl, repoSetPath} from '../../store/ducks'
+import {gitSetUrl, gitSetPath} from '../../store/ducks'
 import { GitConstructError, GitError } from 'simple-git';
 import { useHistory } from 'react-router-dom';
 
@@ -28,7 +28,7 @@ export const ModalRepoOpen = (props) => {
                 const gitObj = helperGitOpen(dir)
                 if(await gitObj.checkIsRepo()){
                     const rootDir = await gitObj.revparse({'--show-toplevel': null })
-                    dispatch(repoSetPath(rootDir))
+                    dispatch(gitSetPath(rootDir))
                     props.handleClose()
 
                     history.push('/main')
@@ -103,8 +103,8 @@ export const ModalRepoClone = (props) => {
         if (dir && url){
             try{
                 helperGitClone(dir, url).then(async (temp) => {
-                    dispatch(repoSetPath(dir))
-                    dispatch(repoSetUrl(dir))
+                    dispatch(gitSetPath(dir))
+                    dispatch(gitSetUrl(dir))
                     props.handleClose()
                     history.push('/main')
                     return
@@ -178,7 +178,7 @@ export const ModalRepoCreate = (props) => {
             try{
                 helperGitOpen(dir)
                 await helperGitInit(dir);
-                dispatch(repoSetPath(dir))
+                dispatch(gitSetPath(dir))
                 props.handleClose()
 
                 history.push('/main')
@@ -285,7 +285,7 @@ export const ModalFormDirectoryAndUrl = (props) => {
 }
 
 export const ModalFormTag = (props) => {
-    const repoPath = useSelector(state => state.repo.path)
+    const repoPath = useSelector(state => state.git.path)
 
     const [tag, setTag] = useState("")
     const [msg, setMsg] = useState("")
@@ -329,8 +329,8 @@ export const ModalFormTag = (props) => {
 }
 
 export const ModalRepoSetting = (props) => {
-    const repoURL = useSelector(state => state.repo.url)
-    const repoPath = useSelector(state => state.repo.path)
+    const repoURL = useSelector(state => state.git.url)
+    const repoPath = useSelector(state => state.git.path)
 
     const [repoField, setRepoField] = useState(repoURL)
     const dispatch = useDispatch();
@@ -341,7 +341,7 @@ export const ModalRepoSetting = (props) => {
             helperGitOpen(repoPath)
             helperGitRemoteName(repoPath).then((remoteURL)=> {
                 console.log(remoteURL, "URL")
-                dispatch(repoSetUrl(remoteURL))
+                dispatch(gitSetUrl(remoteURL))
             }).catch((err) => {
                 if (err instanceof GitError){
                     setRepoField("")
@@ -361,7 +361,7 @@ export const ModalRepoSetting = (props) => {
     }
 
     const handleConfirm = () => {
-        dispatch(repoSetUrl(repoField))
+        dispatch(gitSetUrl(repoField))
         helperGitSetRemoteUrl(repoPath, repoField)
         props.handleClose()
     }
@@ -414,7 +414,7 @@ export const ModalFormFile = (props) => {
 }
 
 export const ModalBranchCreate = (props) => {
-    const repoPath = useSelector(state => state.repo.path)
+    const repoPath = useSelector(state => state.git.path)
 
     const [branchName, setBranchName] = useState("")
 

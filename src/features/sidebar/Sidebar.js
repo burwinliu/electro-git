@@ -22,17 +22,17 @@ import {
 } from "../../styles/palette"
 
 import {
-    appstoreSetCurrentDiff, 
+    displayStateSetCurrentDiff, 
     
-    stageSetRepoLog,
-    appstoreSetCurrentHistFile,
-    appstoreSetContentControl,
-    appstoreSetHistControl,
-    stageSetFileHistDiff,
-    stageSetRepoHistDiff,
-    stageSetRepoHistStatus,
-    appstoreSetLogLine,
-    stageSetStatusSummary,
+    gitSetRepoLog,
+    displayStateSetCurrentHistFile,
+    controlSetContentControl,
+    controlSetHistControl,
+    gitSetFileHistDiff,
+    gitSetRepoHistDiff,
+    gitSetRepoHistStatus,
+    displayStateSetLogLine,
+    gitSetStatusSummary,
 } from '../../store/ducks'
 
 //styles
@@ -75,8 +75,8 @@ import { ipcRenderer } from 'electron';
 
 
 export const SidebarChanges = (props) => {
-    const filePath = useSelector(state => state.repo.path);
-    const fileStatus = useSelector(state => state.stage.status);
+    const filePath = useSelector(state => state.git.path);
+    const fileStatus = useSelector(state => state.git.status);
 
     const dispatch = useDispatch()
 
@@ -119,7 +119,7 @@ export const SidebarChanges = (props) => {
     }, [])
 
     const handleIconClick = (id) => {
-        dispatch(appstoreSetCurrentDiff(id.replace(/"/g, '')))
+        dispatch(displayStateSetCurrentDiff(id.replace(/"/g, '')))
     }
 
     const handleRecord = (value) => {
@@ -144,7 +144,7 @@ export const SidebarChanges = (props) => {
         }
         await helperGitAddCommit(filePath, toCommit ,commitMsg)
         helperGitFetch(filePath).then((status) => {
-            dispatch(stageSetStatusSummary(status))
+            dispatch(gitSetStatusSummary(status))
         })
         setCommitMsg("")
         props.refresh()
@@ -294,8 +294,8 @@ export const SidebarChanges = (props) => {
 }
 
 export const SidebarHistory = (props) => {
-    const repoPath = useSelector(state=>state.repo.path)
-    const histControl = useSelector(state => state.appstore.histControl)
+    const repoPath = useSelector(state=>state.git.path)
+    const histControl = useSelector(state => state.control.histControl)
 
     const [overviewStyle, setOverviewStyle] = useState({})
     const [fileStyle, setFileStyle] = useState({})
@@ -317,7 +317,7 @@ export const SidebarHistory = (props) => {
     }, [histControl])
 
     const historyOverview = () => {
-        dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW))
+        dispatch(controlSetHistControl(HISTORY_CONTROL.MAIN_OVERVIEW_VIEW))
     }
 
     const historyFile = () => {
@@ -335,8 +335,8 @@ export const SidebarHistory = (props) => {
         const dirParsed = directory.replace(/\\/g,"\/");
         const repoPathParsed = repoPath.replace(/\\/g,"\/");
         if(dirParsed.includes(repoPathParsed)){
-            dispatch(appstoreSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
-            dispatch(appstoreSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
+            dispatch(displayStateSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
+            dispatch(controlSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
             props.refresh()
             setOpenFileModal(false)
         }
@@ -374,8 +374,8 @@ export const SidebarHistory = (props) => {
 const SidebarHistItem = (props) => {
     const regexTag = /(tag: ([^\n]*?)\, )|(tag: ([^\n]*))/
     const tagText = regexTag.exec(props.toRender.refs)
-    const filePath = useSelector(state => state.repo.path);
-    const histControl = useSelector(state => state.appstore.histControl)
+    const filePath = useSelector(state => state.git.path);
+    const histControl = useSelector(state => state.control.histControl)
     
     const dispatch = useDispatch();
     let tagItem;
@@ -395,13 +395,13 @@ const SidebarHistItem = (props) => {
         if(histControl === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
             const statusHist = await helperGitShowHist(filePath, logLine.hash)
             const renderStatusHist = renderGitStatusHist(statusHist)
-            dispatch(stageSetRepoHistDiff(diffHistRender))
-            dispatch(stageSetRepoHistStatus(renderStatusHist))
+            dispatch(gitSetRepoHistDiff(diffHistRender))
+            dispatch(gitSetRepoHistStatus(renderStatusHist))
         }
         else if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
-            dispatch(stageSetFileHistDiff(diffHistRender))
+            dispatch(gitSetFileHistDiff(diffHistRender))
         }
-        dispatch(appstoreSetLogLine(logLine))
+        dispatch(displayStateSetLogLine(logLine))
     }
 
     return (
@@ -413,9 +413,9 @@ const SidebarHistItem = (props) => {
 }
 
 const SidebarRenderHistList = (props) => {
-    const repoHistory = useSelector(state => state.stage.repoLog);
-    const fileHistory = useSelector(state => state.stage.fileLog)
-    const hist = useSelector(state => state.appstore.histControl)
+    const repoHistory = useSelector(state => state.git.repoLog);
+    const fileHistory = useSelector(state => state.git.fileLog)
+    const hist = useSelector(state => state.control.histControl)
 
     if(hist === HISTORY_CONTROL.MAIN_OVERVIEW_VIEW){
         return (
@@ -446,7 +446,7 @@ const SidebarRenderHistList = (props) => {
 
 
 export const Sidebar = (props) => {
-    const contentControl = useSelector( state => state.appstore.contentControl)
+    const contentControl = useSelector( state => state.control.contentControl)
     const dispatch = useDispatch()
 
     const [historyStyle, setHistoryStyle] = useState({})
@@ -477,11 +477,11 @@ export const Sidebar = (props) => {
     }
 
     const handleHist = () => {
-        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_HISTORY_VIEW))
+        dispatch(controlSetContentControl(CONTENT_CONTROL.MAIN_HISTORY_VIEW))
     }
 
     const handleChange = () => {
-        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
+        dispatch(controlSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
     }
     return (
         <div style={{flexDirection: "column"}}>

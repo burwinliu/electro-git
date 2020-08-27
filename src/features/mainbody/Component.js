@@ -158,7 +158,7 @@ export const SidebarDiffRender = (props) => {
 }
 
 export const BodyHeaderHistoryFile = (props) => {
-    const logLine = useSelector(state=> state.appstore.currentLogLine)
+    const logLine = useSelector(state=> state.displayState.currentLogLine)
 
     return(
         <div style={{...BodyHistHeader}}>
@@ -177,7 +177,7 @@ export const BodyHeaderHistoryFile = (props) => {
 }
 
 export const BodyHeaderHistoryRepo = () => {
-    const logLine = useSelector(state=> state.appstore.currentLogLine)
+    const logLine = useSelector(state=> state.displayState.currentLogLine)
     
     return(
         <div style={{...BodyHistHeader}}>
@@ -196,7 +196,7 @@ export const BodyHeaderHistoryRepo = () => {
 }
 
 export const BodyHeaderHistoryRepoUndefined = (props) => {
-    const logLine = useSelector(state=> state.appstore.currentLogLine)
+    const logLine = useSelector(state=> state.displayState.currentLogLine)
     
     return(
         <div style={{...BodyHistHeader}}>

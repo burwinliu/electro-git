@@ -32,7 +32,7 @@ export const configSetEmail = (email) => {
   return { type: SET_EMAIL, payload: email }
 }
 export const configSetKey = (path) => {
-  return {type: SET_FILE_KEY, payload: email}
+  return {type: SET_FILE_KEY, payload: path}
 }
 export const configReset = () => {
   return { type: RESET_USER, payload: {} }

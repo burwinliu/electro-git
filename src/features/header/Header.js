@@ -29,7 +29,7 @@ import {
 } from "./HeaderStyles"
 
 import {
-    repoSetPath, appstoreSetHistControl, HISTORY_CONTROL, appstoreSetContentControl, CONTENT_CONTROL,
+    gitSetPath, controlSetHistControl, HISTORY_CONTROL, controlSetContentControl, CONTENT_CONTROL,
 } from '../../store/ducks'
 
 import { colors } from '../../styles/palette';
@@ -38,8 +38,8 @@ import { colors } from '../../styles/palette';
 
 
 export const Header = (props) => {
-    const dirPath = useSelector(state => state.repo.path);
-    const repoRecord = useSelector(state=>state.appstore.repoRecord)
+    const dirPath = useSelector(state => state.git.path);
+    const repoRecord = useSelector(state=>state.displayState.repoRecord)
     const dispatch = useDispatch();
 
     //ROUTER HOOKS
@@ -85,7 +85,7 @@ export const Header = (props) => {
     
 
     const handleReturn = () => {
-        dispatch(repoSetPath(""))
+        dispatch(gitSetPath(""))
         history.push('/')
     }
 
@@ -108,8 +108,8 @@ export const Header = (props) => {
     }
    
     const handleNewRepo = (newPath) => {
-        dispatch(repoSetPath(newPath))
-        dispatch(appstoreSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
+        dispatch(gitSetPath(newPath))
+        dispatch(controlSetContentControl(CONTENT_CONTROL.MAIN_DIFF_VIEW))
         history.push('/')
     }
 
@@ -119,6 +119,8 @@ export const Header = (props) => {
         await props.refresh()
         setRender(false)
     }
+
+    console.log(repoRecord, "IS NULL?")
 
     return (
         <div>

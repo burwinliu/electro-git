@@ -36,9 +36,9 @@ import {
 
 //REDUX
 import {
-    repoSetPath,
-    repoSetUrl,
-    stageReset
+    gitSetPath,
+    gitSetUrl,
+    gitReset
 } from '../../store/ducks'
 
 export const LobbyPage = () => {
@@ -47,7 +47,7 @@ export const LobbyPage = () => {
     const [openClone, setOpenClone] = useState(false);
 
     //REDUX HOOKS
-    const dirPath = useSelector(state => state.repo.path);
+    const dirPath = useSelector(state => state.git.path);
     const dispatch = useDispatch();
 
     //ROUTER HOOKS
@@ -57,7 +57,7 @@ export const LobbyPage = () => {
         if(dirPath !== "" && dirPath !== undefined){
             history.push('/main')
         }
-        dispatch(stageReset())
+        dispatch(gitReset())
     }, [])
 
     const handleClickOpenOpen = () => {

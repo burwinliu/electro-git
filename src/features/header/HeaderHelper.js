@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react"
 
 // REDUX
 import { useSelector, useDispatch } from "react-redux"
-import { stageSetStatusSummary } from "../../store/ducks"
+import { gitSetStatusSummary } from "../../store/ducks"
 
 //Components
 import { 
@@ -53,10 +53,10 @@ import { colors } from '../../styles/palette';
 
 
 export const FetchOrPull = () => {
-    const dirPath = useSelector(state => state.repo.path);
-    const statusSummary = useSelector(state=> state.stage.statusSummary)
-    const branch = useSelector(state => state.appstore.branch)
-    const branchList = useSelector(state => state.stage.branchList)
+    const dirPath = useSelector(state => state.git.path);
+    const statusSummary = useSelector(state=> state.git.statusSummary)
+    const branch = useSelector(state => state.displayState.branch)
+    const branchList = useSelector(state => state.git.branchList)
 
     const [isPublished, setIsPublished] = useState(true)
 
@@ -103,7 +103,7 @@ export const FetchOrPull = () => {
 
     const handleFetchAction =() => {
         return helperGitFetch(dirPath).then((status) => {
-            dispatch(stageSetStatusSummary(status))
+            dispatch(gitSetStatusSummary(status))
         })
     }
     
@@ -239,9 +239,9 @@ export const FetchOrPull = () => {
 }
 
 export const BranchDropdown = (props) => {
-    const branchList = useSelector(state=>state.stage.branchList)
-    const curBranch = useSelector(state => state.appstore.branch)
-    const dirPath = useSelector(state => state.repo.path)
+    const branchList = useSelector(state=>state.git.branchList)
+    const curBranch = useSelector(state => state.displayState.branch)
+    const dirPath = useSelector(state => state.git.path)
 
     const [branchNav, setBranchNav] = useState(false)
     const [branchCreate, setBranchCreate] = useState(false)
@@ -409,9 +409,9 @@ export const BranchDropdown = (props) => {
 }
 
 export const ConflictsPops = (props) => {
-    const statusSummary = useSelector(state=> state.stage.statusSummary)
-    const dirPath = useSelector(state => state.repo.path)
-    const branch = useSelector(state => state.appstore.branch)
+    const statusSummary = useSelector(state=> state.git.statusSummary)
+    const dirPath = useSelector(state => state.git.path)
+    const branch = useSelector(state => state.displayState.branch)
 
     const [openMerge, setOpenMerge] = useState(false)
     const [mergeMsg, setMergeMsg] = useState("")
@@ -422,7 +422,7 @@ export const ConflictsPops = (props) => {
     const dispatch = useDispatch()
 
     useEffect( () => {
-        if (statusSummary && statusSummary.conflicted.length !== 0){
+        if (statusSummary && statusSummary.conflicted && statusSummary.conflicted.length !== 0){
             
             helperGitIsMerge(dirPath).then((resp) => {
                 console.log(resp)
@@ -454,7 +454,7 @@ export const ConflictsPops = (props) => {
     const handleAdd = (key) => {
         helperGitAdd(dirPath, [key])
         helperGitStatus(dirPath).then((status) => {
-            dispatch(stageSetStatusSummary(status))
+            dispatch(gitSetStatusSummary(status))
             if(status.conflicted.length === 0) {
                 setLength("RESOLVED")
                 setOpenMerge(false)
@@ -493,7 +493,7 @@ export const ConflictsPops = (props) => {
                     <DialogContentText>Here, mark all files you have finished merging as done to "ADD" them to complete the merge</DialogContentText>
                     <DialogContentText>{length} conflicted files:</DialogContentText>
                     {
-                        statusSummary?
+                        statusSummary&&statusSummary.conflicted?
                         <List>
                             {
                                 statusSummary.conflicted.map((key) => {

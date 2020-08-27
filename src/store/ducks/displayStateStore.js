@@ -1,17 +1,17 @@
 // Selected file to view diff
-const SET_CURRENT_DIFF = "display/SET_CURRENT_DIFF"
-const SET_CURRENT_LOG_LINE = "display/SET_CURRENT_LOG_LINE"
+const SET_CURRENT_DIFF = "displayState/SET_CURRENT_DIFF"
+const SET_CURRENT_LOG_LINE = "displayState/SET_CURRENT_LOG_LINE"
 
 //SELECT history hash to be viewed
-const SET_CURRENT_HIST_REPO_FILE = "display/SET_CURRENT_HIST_REPO_FILE"
+const SET_CURRENT_HIST_REPO_FILE = "displayState/SET_CURRENT_HIST_REPO_FILE"
 // SELECT file to be viewed
-const SET_CURRENT_HIST_FILE = "display/SET_CURRENT_HIST_FILE"
-const SET_CURRENT_BRANCH = "display/SET_CURRENT_BRANCHNAME"
-const RESET_DISPLAY = "display/RESET_DISPLAYSTORE"
+const SET_CURRENT_HIST_FILE = "displayState/SET_CURRENT_HIST_FILE"
+const SET_CURRENT_BRANCH = "displayState/SET_CURRENT_BRANCHNAME"
+const RESET_DISPLAY = "displayState/RESET_DISPLAYSTORE"
 
 // repo record
-const ADD_REPO_RECORD = "display/ADD_REPO_RECORD"
-const REMOVE_REPO_RECORD = "display/REMOVE_REPO_RECORD"
+const ADD_REPO_RECORD = "displayState/ADD_REPO_RECORD"
+const REMOVE_REPO_RECORD = "displayState/REMOVE_REPO_RECORD"
 
 
 const initState={
@@ -29,7 +29,7 @@ const initState={
 
 }
 
-export const displayReducer = (state = initState, action = {}) => {
+export const displayStateReducer = (state = initState, action = {}) => {
   switch(action.type){
     case ADD_REPO_RECORD:
       if (action.payload === "" ){
@@ -67,30 +67,30 @@ export const displayReducer = (state = initState, action = {}) => {
   }
 }
 
-export const displayAddRepoRecord = (repoPath) => {
+export const displayStateAddRepoRecord = (repoPath) => {
   const parsedPath = repoPath.replace(/\\/g,"\/");
   return { type: ADD_REPO_RECORD, payload: parsedPath}
 }
-export const displayRemoveRepoRecord = (repoPath) => {
+export const displayStateRemoveRepoRecord = (repoPath) => {
   return { type: REMOVE_REPO_RECORD, payload: repoPath}
 }
 
-export const displaySetCurrentDiff = (fileId) => {
+export const displayStateSetCurrentDiff = (fileId) => {
   return { type: SET_CURRENT_DIFF, payload: fileId }
 }
-export const displaySetLogLine = (logLine) => {
+export const displayStateSetLogLine = (logLine) => {
   return { type: SET_CURRENT_LOG_LINE, payload: logLine }
 }
-export const displaySetHistRepoFile = (hash) => {
+export const displayStateSetHistRepoFile = (hash) => {
   return { type: SET_CURRENT_HIST_REPO_FILE, payload: hash }
 }
-export const displaySetCurrentHistFile = (file) => {
+export const displayStateSetCurrentHistFile = (file) => {
   return { type: SET_CURRENT_HIST_FILE, payload: file }
 }
-export const displaySetBranch = (branchName) => {
+export const displayStateSetBranch = (branchName) => {
   return {type: SET_CURRENT_BRANCH, payload:branchName}
 }
 
-export const displayReset = () => {
+export const displayStateReset = () => {
   return { type: RESET_DISPLAY, payload: {} }
 }

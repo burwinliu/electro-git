@@ -15,19 +15,19 @@ import {MainWrapper, MainContent, MainCenter} from './MainStyle'
 
 //REDUX store
 import {
-    stageSetStatusObj,
-    stageSetDiffObj,
-    stageReset,
-    stageSetRepoLog,
-    stageSetFileLog,
-    appstoreSetDiffControl,
-    stageSetBranchList,
-    appstoreSetBranch,
-    appstoreAddRepoRecord,
-    appstoreRemoveRepoRecord,
-    repoSetPath,
-    appstoreSetLogLine,
-    stageSetStatusSummary
+    gitSetStatusObj,
+    gitSetDiffObj,
+    gitReset,
+    gitSetRepoLog,
+    gitSetFileLog,
+    controlSetDiffControl,
+    gitSetBranchList,
+    displayStateSetBranch,
+    displayStateAddRepoRecord,
+    displayStateRemoveRepoRecord,
+    gitSetPath,
+    displayStateSetLogLine,
+    gitSetStatusSummary
 } from '../../store/ducks'
 
 //Service helpers
@@ -53,9 +53,9 @@ import { ButtonGroup } from '@material-ui/core';
 
 
 export const MainPage = (props) => {
-    const dirPath = useSelector(state => state.repo.path);
-    const diffFile = useSelector( state=> state.appstore.currentHistFile)
-    const record = useSelector(state=> state.appstore.repoRecord)
+    const dirPath = useSelector(state => state.git.path);
+    const diffFile = useSelector( state=> state.displayState.currentHistFile)
+    const record = useSelector(state=> state.displayState.repoRecord)
     const dispatch = useDispatch()
 
     const [loaded, setLoaded] = useState(true)
@@ -97,10 +97,10 @@ export const MainPage = (props) => {
             //     })
             // })
         })
-        dispatch(appstoreAddRepoRecord(dirPath))
+        dispatch(displayStateAddRepoRecord(dirPath))
         return () => {
-            dispatch(stageReset());
-            dispatch(appstoreSetLogLine({}))
+            dispatch(gitReset());
+            dispatch(displayStateSetLogLine({}))
             setLoaded(false)
         }
     }, [dirPath])
@@ -124,12 +124,12 @@ export const MainPage = (props) => {
     }
 
     const handleRemoveRepo = () => {
-        dispatch(appstoreRemoveRepoRecord(dirPath))
+        dispatch(displayStateRemoveRepoRecord(dirPath))
         if(record.length === 0){
-            dispatch(repoSetPath(""))
+            dispatch(gitSetPath(""))
             history.push("/")
         }
-        dispatch(repoSetPath(record[0]))
+        dispatch(gitSetPath(record[0]))
         history.push("/")
         handleRefresh()
     }
@@ -137,13 +137,13 @@ export const MainPage = (props) => {
     const handleRefresh = async () => {
         if(error) return;
         if(await handleErrorCheck()) return;
-        dispatch(stageReset());
+        dispatch(gitReset());
 
         const branchList = await helperGitBranchList(dirPath)
 
 
-        dispatch(stageSetBranchList(branchList.branches || {}))
-        dispatch(appstoreSetBranch(branchList.current))
+        dispatch(gitSetBranchList(branchList.branches || {}))
+        dispatch(displayStateSetBranch(branchList.current))
 
         helperGitStatus(dirPath).then((statusSummary) =>{
             let storeStatus = {}
@@ -151,8 +151,8 @@ export const MainPage = (props) => {
             for (let index in statusObj){
                 storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
             }
-            dispatch(stageSetStatusObj(storeStatus))
-            dispatch(stageSetStatusSummary(statusSummary))
+            dispatch(gitSetStatusObj(storeStatus))
+            dispatch(gitSetStatusSummary(statusSummary))
         })
         
         helperGitDiff(dirPath).then((statusDiff)=>{
@@ -161,17 +161,17 @@ export const MainPage = (props) => {
             for (let index in rendDiff){
                 storeDiff[index.replace(/"/g, "")] = rendDiff[index]
             }
-            dispatch(stageSetDiffObj(storeDiff))
+            dispatch(gitSetDiffObj(storeDiff))
         })
 
         if(Object.keys(branchList.branches).length === 0){
-            dispatch(appstoreSetBranch("Master"))
+            dispatch(displayStateSetBranch("Master"))
             return
         }
 
         helperGitLog(dirPath).then((log)=>{
             if(loaded){
-                dispatch(stageSetRepoLog(log.all))
+                dispatch(gitSetRepoLog(log.all))
             }
         })
 
@@ -179,7 +179,7 @@ export const MainPage = (props) => {
 
         helperGitLogFile(dirPath, diffFile).then((log)=>{
             if(loaded){
-                dispatch(stageSetFileLog(log.all))
+                dispatch(gitSetFileLog(log.all))
             }
         })
     }

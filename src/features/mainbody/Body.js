@@ -22,7 +22,7 @@ import {
     CONTENT_CONTROL,
     DIFF_CONTROL,
     HISTORY_CONTROL,
-    appstoreSetHistRepoFile
+    displayStateSetHistRepoFile
 } from "../../store/ducks"
 
 import {
@@ -34,26 +34,26 @@ import {
 
 
 export const Body = (props) => {
-    const currDiffPath = useSelector(state => state.appstore.currentDiff);
-    const dir = useSelector(state => state.repo.path)
+    const currDiffPath = useSelector(state => state.displayState.currentDiff);
+    const dir = useSelector(state => state.git.path)
 
-    const fileDiff = useSelector(state => state.stage.diff);
-    const fileStatus = useSelector(state => state.stage.status);
+    const fileDiff = useSelector(state => state.git.diff);
+    const fileStatus = useSelector(state => state.git.status);
 
-    const contentControl = useSelector(state => state.appstore.contentControl)
+    const contentControl = useSelector(state => state.control.contentControl)
 
-    const diffControl = useSelector(state => state.appstore.diffControl)
-    const histControl = useSelector(state => state.appstore.histControl)
+    const diffControl = useSelector(state => state.control.diffControl)
+    const histControl = useSelector(state => state.control.histControl)
 
-    const currHistFile = useSelector(state => state.appstore.currentHistFile)
-    const currRepoHistFile = useSelector(state=> state.appstore.currentHistRepoFile)
+    const currHistFile = useSelector(state => state.displayState.currentHistFile)
+    const currRepoHistFile = useSelector(state=> state.displayState.currentHistRepoFile)
 
-    const repoHistDiff = useSelector(state => state.stage.repoHistDiff)
-    const repoHistStatus = useSelector(state => state.stage.repoHistStatus)
+    const repoHistDiff = useSelector(state => state.git.repoHistDiff)
+    const repoHistStatus = useSelector(state => state.git.repoHistStatus)
     
-    const fileHistDiff = useSelector(state => state.stage.fileHistDiff)
+    const fileHistDiff = useSelector(state => state.git.fileHistDiff)
 
-    const logLine = useSelector(state=>state.appstore.currentLogLine)
+    const logLine = useSelector(state=>state.displayState.currentLogLine)
     
 
     const dispatch = useDispatch()
@@ -100,7 +100,7 @@ export const Body = (props) => {
     const renderHistory = () => {
         
         const selectRepo = (id) => {
-            dispatch(appstoreSetHistRepoFile(id))
+            dispatch(displayStateSetHistRepoFile(id))
         }
         if(histControl === HISTORY_CONTROL.MAIN_FILE_VIEW){
             let body, header;

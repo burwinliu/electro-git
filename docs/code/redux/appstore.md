@@ -1,15 +1,15 @@
 # ~/ducks/appstore.js
 
-## export const appstoreAddRepoRecord = (repoPath) 
-## export const appstoreRemoveRepoRecord = (repoPath) 
-## export const appstoreSetCurrentDiff = (fileId) 
-## export const appstoreSetLogLine = (logLine) 
-## export const appstoreSetHistRepoFile = (hash) 
-## export const appstoreSetCurrentHistFile = (file)
-## export const appstoreSetBranch = (branchName) 
+## export const displayStateAddRepoRecord = (repoPath) 
+## export const displayStateRemoveRepoRecord = (repoPath) 
+## export const displayStateSetCurrentDiff = (fileId) 
+## export const displayStateSetLogLine = (logLine) 
+## export const displayStateSetHistRepoFile = (hash) 
+## export const displayStateSetCurrentHistFile = (file)
+## export const displayStateSetBranch = (branchName) 
 
-## export const appstoreSetHistControl = (control) 
-## export const appstoreSetContentControl = (control) 
-## export const appstoreSetDiffControl =  (control) 
+## export const controlSetHistControl = (control) 
+## export const controlSetContentControl = (control) 
+## export const controlSetDiffControl =  (control) 
 
 ## export const appstoreReset = () 

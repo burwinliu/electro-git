@@ -132,7 +132,7 @@ export const getSymbol = (working_dir, index) => {
 }
 
 export const MenuSidebarChangesItem = (props) => {
-    const repoPath = useSelector(state=>state.repo.path)
+    const repoPath = useSelector(state=>state.git.path)
 
     let state = props.state
     const setState = props.setState

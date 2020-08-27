@@ -18,9 +18,16 @@
 * Aggregating data --view, do not change. Push only to clients, but to remain unchanged.  -- biderctional.
     * Permissions and authorize users
         * Results -- requires a more advanced server, try gitlab?
-* cvss vulnerabilities ** RESEARCH
 * white list I want these files to go out/ not go out white/blacklist 
     * limit files by size
         * RESULTS: Can blacklist and whitelist via GITIGNORE -- we can chose to blacklist everything and let some things through -- or vice versa. Becomes annoying, good convention is blacklist ONLY what is unnecessary, whether that be paths or otherwise
 * Check privlidge needed on PC with GIT -- set up and access (transfer data ) /operate (and manage users) (manually/handle keys)
 
+
+8/26 
+
+* cvss vulnerabilities ** Guide -- Read more 
+* Git options
+    * Settings, apis wtv. 
+    * Report of what is included in git (git diff, log?)
+* 
