@@ -1,4 +1,4 @@
-# ~/ducks/appstore.js
+# ~/ducks/displayStateStore.js
 
 ## export const displayStateAddRepoRecord = (repoPath) 
 ## export const displayStateRemoveRepoRecord = (repoPath) 
@@ -8,8 +8,6 @@
 ## export const displayStateSetCurrentHistFile = (file)
 ## export const displayStateSetBranch = (branchName) 
 
-## export const controlSetHistControl = (control) 
-## export const controlSetContentControl = (control) 
-## export const controlSetDiffControl =  (control) 
 
-## export const appstoreReset = () 
+
+## export const displayStateReset = () 

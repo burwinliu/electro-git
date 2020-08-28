@@ -10,6 +10,8 @@ const RESET_CONTROL = "control/RESET_CONTROL"
 const initState={
 
   sidebarWidth: "300px",
+
+  loading: false,
   loadingMain: false,
   loadingFetch: false,
 

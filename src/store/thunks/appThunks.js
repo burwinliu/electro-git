@@ -1,16 +1,16 @@
 import {
-    appstoreReset,
-    repoReset,
-    stageReset,
-    userReset
+    configReset,
+    controlReset,
+    displayStateReset,
+    gitReset
 } from "../ducks"
 
 // Thunks
 export const resetApp = () => {
     return (dispatch) => {
-        dispatch(appstoreReset())
-        dispatch(repoReset())
-        dispatch(stageReset())
-        dispatch(userReset())
+        dispatch(configReset())
+        dispatch(controlReset())
+        dispatch(displayStateReset())
+        dispatch(gitReset())
     }
 }
