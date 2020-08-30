@@ -31,6 +31,7 @@ import {
     BodyHeaderHistoryRepo,
     BodyHeaderHistoryRepoUndefined
 } from './Component'
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 
 export const Body = (props) => {
@@ -61,7 +62,7 @@ export const Body = (props) => {
 
     const trackCurrentFile = async () => {
         await helperGitAdd(dir, [currDiffPath]);
-        await props.refresh()
+        await dispatch(gitRefresh())
     }
 
     const renderDiff = () => {

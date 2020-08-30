@@ -33,6 +33,7 @@ import {
 } from '../../store/ducks'
 
 import { colors } from '../../styles/palette';
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 
 
@@ -116,7 +117,7 @@ export const Header = (props) => {
     const handleRefresh = async  () => {
         console.log("REFRESHING")
         setRender(true)
-        await props.refresh()
+        dispatch(gitRefresh())
         setRender(false)
     }
 

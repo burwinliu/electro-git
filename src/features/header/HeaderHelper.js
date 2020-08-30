@@ -49,6 +49,7 @@ import {
 import { GitError } from "simple-git"
 
 import { colors } from '../../styles/palette';
+import { gitRefresh } from "../../store/thunks/gitThunks";
 
 
 
@@ -297,7 +298,7 @@ export const BranchDropdown = (props) => {
     const handleCheckoutBranch = (branchName, commit) => {
         helperGitBranchCheckout(dirPath, branchName)
             .then((response) =>{
-                props.refresh()
+                dispatch(gitRefresh())
             })
             .catch((err) =>{
                 setBranchCreate(false)
@@ -387,7 +388,7 @@ export const BranchDropdown = (props) => {
                 
                 </div>
             </ClickAwayListener>
-            <ModalBranchCreate open={branchCreate} handleClose={handleBranchDialogClose} refresh={props.refresh}/>
+            <ModalBranchCreate open={branchCreate} handleClose={handleBranchDialogClose}/>
             <Dialog  
                 open={err}
                 onClose={handleErrClose} 

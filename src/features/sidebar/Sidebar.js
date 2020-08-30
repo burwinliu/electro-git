@@ -72,6 +72,7 @@ import {
 } from "../../store/ducks"
 
 import { ipcRenderer } from 'electron';
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 
 export const SidebarChanges = (props) => {
@@ -98,7 +99,7 @@ export const SidebarChanges = (props) => {
 
 
     useEffect( () => {
-        props.refresh()
+        dispatch(gitRefresh())
     }, [filePath])
     
     useEffect(() => {
@@ -147,7 +148,7 @@ export const SidebarChanges = (props) => {
             dispatch(gitSetStatusSummary(status))
         })
         setCommitMsg("")
-        props.refresh()
+        dispatch(gitRefresh())
     }
 
     const handleCommitMsg = (evt) => {
@@ -238,7 +239,6 @@ export const SidebarChanges = (props) => {
                 <MenuSidebarChangesItem
                     state={state}
                     setState={setState}
-                    refresh={props.refresh}
                 />
             </List>
             <div style={{...SidebarCommitMenu}} >
@@ -337,7 +337,7 @@ export const SidebarHistory = (props) => {
         if(dirParsed.includes(repoPathParsed)){
             dispatch(displayStateSetCurrentHistFile(dirParsed.replace(repoPathParsed + "/", "")))
             dispatch(controlSetHistControl(HISTORY_CONTROL.MAIN_FILE_VIEW))
-            props.refresh()
+            dispatch(gitRefresh())
             setOpenFileModal(false)
         }
         else{
@@ -466,12 +466,12 @@ export const Sidebar = (props) => {
     const renderContent = () => {
         if(contentControl === CONTENT_CONTROL.MAIN_HISTORY_VIEW){
             return(
-                <SidebarHistory refresh={props.refresh}/> 
+                <SidebarHistory/> 
             )
         } 
         else if (contentControl === CONTENT_CONTROL.MAIN_DIFF_VIEW){
             return(
-                <SidebarChanges refresh={props.refresh}/> 
+                <SidebarChanges/> 
             )
         } 
     }

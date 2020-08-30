@@ -1,61 +1,84 @@
 import { useSelector, useDispatch } from "react-redux";
 
 
-import { gitReset } from "../ducks";
+import { 
+    // gitStore
+    gitReset,
+    gitSetBranchList,
+    gitSetStatusObj,
+    gitSetStatusSummary,
+    gitSetDiffObj,
+    gitSetRepoLog,
+    gitSetFileLog,
+
+    // displayStateStore
+    displayStateSetBranch,
+
+} from "../ducks";
+
+import {
+    helperGitBranchList,
+    helperGitStatus,
+    helperGitDiff,
+    helperGitLog,
+    helperGitLogFile,
+
+    renderGitDiffInfo,
+} from "../../services";
 
 // Thunks
 export const gitRefresh = () => {
-    const gitLocalPath = useSelector(state => state.git.path);
+    return async (dispatch, getState) =>{
+        const gitLocalPath = getState().git.path;
+        const diffFile = getState().displayState.currentHistFile
 
-    const loading = useSelector(state => state.control.loading);
+        const loading = getState().control.loading
 
-    const branchList = await helperGitBranchList(dirPath)
+        if(loading) return;
 
-    if(loading) return;
+        const branchList = await helperGitBranchList(gitLocalPath)
+        
+        const currStatus = await helperGitStatus(gitLocalPath)
+        const currDiff = await helperGitDiff(gitLocalPath)
+        const currLog = await helperGitLog(gitLocalPath)
 
-    return (dispatch) =>{
+        let currLogFile
+        if (diffFile != ""){
+            currLogFile =  helperGitLogFile(gitLocalPath, diffFile)
+        }
+
+        let storeStatus = {}
+        let storeDiff = {}
+
+        const statusObj = currStatus.files
+        for (let index in statusObj){
+            storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
+        }
+
+        const rendDiff = renderGitDiffInfo(currDiff)
+        for (let index in rendDiff){
+            storeDiff[index.replace(/"/g, "")] = rendDiff[index]
+        }
         dispatch(gitReset());
 
-        dispatch(gitSetBranchList(branchList.branches || {}))
-        dispatch(displayStateSetBranch(branchList.current))
+        if (branchList){
+            dispatch(gitSetBranchList(branchList.branches || {}))
+            dispatch(displayStateSetBranch(branchList.current))
+        }
 
-        helperGitStatus(dirPath).then((statusSummary) =>{
-            let storeStatus = {}
-            const statusObj = statusSummary.files
-            for (let index in statusObj){
-                storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
-            }
-            dispatch(gitSetStatusObj(storeStatus))
-            dispatch(gitSetStatusSummary(statusSummary))
-        })
-        
-        helperGitDiff(dirPath).then((statusDiff)=>{
-            const rendDiff = renderGitDiffInfo(statusDiff)
-            let storeDiff = {}
-            for (let index in rendDiff){
-                storeDiff[index.replace(/"/g, "")] = rendDiff[index]
-            }
-            dispatch(gitSetDiffObj(storeDiff))
-        })
+        dispatch(gitSetStatusObj(storeStatus))
+        dispatch(gitSetStatusSummary(currStatus))
+        dispatch(gitSetDiffObj(storeDiff))
 
         if(Object.keys(branchList.branches).length === 0){
             dispatch(displayStateSetBranch("Master"))
             return
         }
 
-        helperGitLog(dirPath).then((log)=>{
-            if(loaded){
-                dispatch(gitSetRepoLog(log.all))
-            }
-        })
+        dispatch(gitSetRepoLog(currLog.all))
 
         if(diffFile === "") return
-
-        helperGitLogFile(dirPath, diffFile).then((log)=>{
-            if(loaded){
-                dispatch(gitSetFileLog(log.all))
-            }
-        })
+        dispatch(gitSetFileLog(currLogFile.all))
     }
     
 }

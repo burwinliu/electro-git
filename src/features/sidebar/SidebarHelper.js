@@ -27,6 +27,7 @@ import {
 import { helperGitIgnore, helperGitCheckIgnore } from '../../services';
 import { useSelector } from 'react-redux';
 import { ipcRenderer } from 'electron';
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 export const getSymbol = (working_dir, index) => {
     switch(working_dir){
@@ -136,7 +137,6 @@ export const MenuSidebarChangesItem = (props) => {
 
     let state = props.state
     const setState = props.setState
-    const refresh = props.refresh
 
     const initialState = {
         mouseX: null,
@@ -152,7 +152,7 @@ export const MenuSidebarChangesItem = (props) => {
         if(state.value && helperGitCheckIgnore(repoPath, state.value)){
             console.log(state.value)
             ipcRenderer.send('addToGitIgnore', repoPath, state.value )
-            refresh();
+            dispatch(gitRefresh());
         }
         handleClose();
     }

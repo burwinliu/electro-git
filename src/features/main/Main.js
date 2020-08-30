@@ -50,6 +50,7 @@ import {
     HISTORY_CONTROL
 } from "../../store/ducks"
 import { ButtonGroup } from '@material-ui/core';
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 
 export const MainPage = (props) => {
@@ -67,36 +68,35 @@ export const MainPage = (props) => {
 
     useEffect(()=>{
         if(error) return;
-        handleRefresh().then((isErr)=>{
-            if(!dirPath || dirPath === undefined || isErr ) { 
-                setError(true)
-                return
-            };
-            try{
-                helperGitOpen(dirPath)
-            }
-            catch(err) {
-                setError(true)
-                return
-            }
-            // helperGitDir(dirPath).then((gitDir) => {
-            //     // DOESNT WORK FOR SOME REASON? INVESTIGATE
-            //     const watcher = chokidar.watch(dirPath, {
-            //         usePolling: true,
-            //         persistent: true,
-            //         ignoreInitial: true,
-            //         ignored: "**/" + gitDir + "/**"
-            //     })
-            //     console.log(watcher)
-            //     watcher.on('all', (evt, name) => {
-            //         helperGitCheckIgnore(dirPath, name).then( (ignored) => {
-            //             if(ignored)
-            //                 return
-            //             handleRefresh();
-            //         })
-            //     })
-            // })
-        })
+        dispatch(gitRefresh())
+        if(!dirPath || dirPath === undefined ) { 
+            setError(true)
+            return
+        };
+        try{
+            helperGitOpen(dirPath)
+        }
+        catch(err) {
+            setError(true)
+            return
+        }
+        // helperGitDir(dirPath).then((gitDir) => {
+        //     // DOESNT WORK FOR SOME REASON? INVESTIGATE
+        //     const watcher = chokidar.watch(dirPath, {
+        //         usePolling: true,
+        //         persistent: true,
+        //         ignoreInitial: true,
+        //         ignored: "**/" + gitDir + "/**"
+        //     })
+        //     console.log(watcher)
+        //     watcher.on('all', (evt, name) => {
+        //         helperGitCheckIgnore(dirPath, name).then( (ignored) => {
+        //             if(ignored)
+        //                 return
+        //             handleRefresh();
+        //         })
+        //     })
+        // })
         dispatch(displayStateAddRepoRecord(dirPath))
         return () => {
             dispatch(gitReset());
@@ -131,57 +131,7 @@ export const MainPage = (props) => {
         }
         dispatch(gitSetPath(record[0]))
         history.push("/")
-        handleRefresh()
-    }
-
-    const handleRefresh = async () => {
-        if(error) return;
-        if(await handleErrorCheck()) return;
-        dispatch(gitReset());
-
-        const branchList = await helperGitBranchList(dirPath)
-
-
-        dispatch(gitSetBranchList(branchList.branches || {}))
-        dispatch(displayStateSetBranch(branchList.current))
-
-        helperGitStatus(dirPath).then((statusSummary) =>{
-            let storeStatus = {}
-            const statusObj = statusSummary.files
-            for (let index in statusObj){
-                storeStatus[statusObj[index].path.replace(/"/g, "")] = statusObj[index]
-            }
-            dispatch(gitSetStatusObj(storeStatus))
-            dispatch(gitSetStatusSummary(statusSummary))
-        })
-        
-        helperGitDiff(dirPath).then((statusDiff)=>{
-            const rendDiff = renderGitDiffInfo(statusDiff)
-            let storeDiff = {}
-            for (let index in rendDiff){
-                storeDiff[index.replace(/"/g, "")] = rendDiff[index]
-            }
-            dispatch(gitSetDiffObj(storeDiff))
-        })
-
-        if(Object.keys(branchList.branches).length === 0){
-            dispatch(displayStateSetBranch("Master"))
-            return
-        }
-
-        helperGitLog(dirPath).then((log)=>{
-            if(loaded){
-                dispatch(gitSetRepoLog(log.all))
-            }
-        })
-
-        if(diffFile === "") return
-
-        helperGitLogFile(dirPath, diffFile).then((log)=>{
-            if(loaded){
-                dispatch(gitSetFileLog(log.all))
-            }
-        })
+        dispatch(gitRefresh())
     }
 
     const handleErr = (state) => {
@@ -208,11 +158,8 @@ export const MainPage = (props) => {
         else{
             return (
                 <div style={MainContent}>
-                    <Sidebar 
-                        refresh={handleRefresh}
-                    />
+                    <Sidebar/>
                     <Body 
-                        refresh={handleRefresh} 
                     />
                 </div>
             )
@@ -221,7 +168,7 @@ export const MainPage = (props) => {
 
     return (
         <div style={MainWrapper}>
-            <Header refresh={handleRefresh}/>
+            <Header/>
             <RenderContent/>
         </div>
     )

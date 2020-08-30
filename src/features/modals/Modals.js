@@ -10,6 +10,7 @@ import { helperGitRemoteName, helperGitTag, helperGitOpen, helperGitBranchCreate
 import {gitSetUrl, gitSetPath} from '../../store/ducks'
 import { GitConstructError, GitError } from 'simple-git';
 import { useHistory } from 'react-router-dom';
+import { gitRefresh } from '../../store/thunks/gitThunks';
 
 export const ModalRepoOpen = (props) => {
     const [dir, setDir] = useState("")
@@ -425,7 +426,7 @@ export const ModalBranchCreate = (props) => {
     const handleConfirm = async () => {
         return helperGitBranchCreate(repoPath, branchName).then((response) => {
             console.log(response, "RESPONSE")
-            props.refresh()
+            dispatch(gitRefresh())
             props.handleClose()
         })
         
