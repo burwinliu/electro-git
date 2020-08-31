@@ -26,8 +26,8 @@
 
 8/26 
 
-* cvss vulnerabilities ** Guide -- Read more 
+* cvss vulnerabilities ** Guide -- Read more in manual
 * Git options
     * Settings, apis wtv. 
-    * Report of what is included in git (git diff, log?)
-* 
+    * Report of what is included in git (git diff, log?) how to see the report of file?
+        * git ls-tree --full-tree -r --name-only HEAD

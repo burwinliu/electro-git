@@ -15,51 +15,20 @@ import {MainWrapper, MainContent, MainCenter} from './MainStyle'
 
 //REDUX store
 import {
-    gitSetStatusObj,
-    gitSetDiffObj,
     gitReset,
-    gitSetRepoLog,
-    gitSetFileLog,
-    controlSetDiffControl,
-    gitSetBranchList,
-    displayStateSetBranch,
     displayStateAddRepoRecord,
     displayStateRemoveRepoRecord,
     gitSetPath,
     displayStateSetLogLine,
-    gitSetStatusSummary
 } from '../../store/ducks'
 
-//Service helpers
-import {
-    helperGitOpen, helperGitStatus, helperGitDiff,
-    renderGitDiffInfo,
-    generateSshGit,
-    helperGitLog,
-    helperGitDir,
-    helperGitCheckIgnore,
-    helperGitLogFile,
-    helperGitBranchList
-} from "../../services"
-
-import * as path from 'path';
-
-import {
-    CONTENT_CONTROL,
-    DIFF_CONTROL,
-    HISTORY_CONTROL
-} from "../../store/ducks"
-import { ButtonGroup } from '@material-ui/core';
 import { gitRefresh } from '../../store/thunks/gitThunks';
 
 
 export const MainPage = (props) => {
     const dirPath = useSelector(state => state.git.path);
-    const diffFile = useSelector( state=> state.displayState.currentHistFile)
     const record = useSelector(state=> state.displayState.repoRecord)
     const dispatch = useDispatch()
-
-    const [loaded, setLoaded] = useState(true)
     const [error, setError] = useState(false)
     
     //ROUTER HOOKS
@@ -73,13 +42,6 @@ export const MainPage = (props) => {
             setError(true)
             return
         };
-        try{
-            helperGitOpen(dirPath)
-        }
-        catch(err) {
-            setError(true)
-            return
-        }
         // helperGitDir(dirPath).then((gitDir) => {
         //     // DOESNT WORK FOR SOME REASON? INVESTIGATE
         //     const watcher = chokidar.watch(dirPath, {
@@ -101,27 +63,8 @@ export const MainPage = (props) => {
         return () => {
             dispatch(gitReset());
             dispatch(displayStateSetLogLine({}))
-            setLoaded(false)
         }
     }, [dirPath])
-
-    const handleErrorCheck = async () => {
-        try{
-            const repoCheck = await helperGitOpen(dirPath)
-            const isRepo = repoCheck.checkIsRepo('root')
-            if (isRepo){
-                return false
-            }
-            return false
-        }
-        catch(err){
-            console.log(err.message)
-            handleErr(true)
-            setLoaded(false)
-            return true
-        }
-        
-    }
 
     const handleRemoveRepo = () => {
         dispatch(displayStateRemoveRepoRecord(dirPath))
@@ -132,10 +75,6 @@ export const MainPage = (props) => {
         dispatch(gitSetPath(record[0]))
         history.push("/")
         dispatch(gitRefresh())
-    }
-
-    const handleErr = (state) => {
-        setError(state)
     }
 
     const RenderContent = () => {

@@ -73,6 +73,7 @@ import {
 
 import { ipcRenderer } from 'electron';
 import { gitRefresh } from '../../store/thunks/gitThunks';
+import { selectGitDiffDiff } from '../../store/thunks/appThunks';
 
 
 export const SidebarChanges = (props) => {
@@ -120,7 +121,7 @@ export const SidebarChanges = (props) => {
     }, [])
 
     const handleIconClick = (id) => {
-        dispatch(displayStateSetCurrentDiff(id.replace(/"/g, '')))
+        dispatch(selectGitDiffDiff(id.replace(/"/g, '')))
     }
 
     const handleRecord = (value) => {
