@@ -9,6 +9,11 @@ import {
     withStyles,
     ClickAwayListener,
 } from '@material-ui/core';
+import {
+    CSSTransition 
+} from "react-transition-group"
+
+
 import { ModalRepoSetting, ModalBranchCreate } from '../modals/Modals';
 import { FetchOrPull, BranchDropdown, ConflictsPops } from "./HeaderHelper";
 
@@ -17,6 +22,7 @@ import {
     ArrowDropUp as ArrowDropUpIcon,
     Settings as SettingsIcon,
     Folder as FolderIcon,
+    Autorenew as AutoRenewIcon,
 } from '@material-ui/icons';
 
 import * as path from 'path';
@@ -41,6 +47,8 @@ import { gitRefresh } from '../../store/thunks/gitThunks';
 export const Header = (props) => {
     const dirPath = useSelector(state => state.git.path);
     const repoRecord = useSelector(state=>state.displayState.repoRecord)
+    const mainLoading = useSelector(state => state.control.loadingMain)
+
     const dispatch = useDispatch();
 
     //ROUTER HOOKS
@@ -49,7 +57,6 @@ export const Header = (props) => {
     
 
     const [repoSettings, setRepoSettings] = useState(false)
-    const [render, setRender] = useState(false)
     
     
 
@@ -115,13 +122,8 @@ export const Header = (props) => {
     }
 
     const handleRefresh = async  () => {
-        console.log("REFRESHING")
-        setRender(true)
         dispatch(gitRefresh())
-        setRender(false)
     }
-
-    console.log(repoRecord, "IS NULL?")
 
     return (
         <div>
@@ -182,7 +184,17 @@ export const Header = (props) => {
                         </ClickAwayListener>
                     <BranchDropdown refresh={handleRefresh}/>
                     <FetchOrPull/>
-                    <Button style={{...HeaderItem, borderWidth: "0 1px 0 0"}} onClick={handleRefresh}>
+                    <Button 
+                        style={{...HeaderItem, borderWidth: "0 1px 0 0"}} 
+                        onClick={handleRefresh}
+                        startIcon={
+                            <AutoRenewIcon 
+                                className = {
+                                    mainLoading ?"rotate":""
+                                }
+                            />
+                        }
+                    >
                         Refresh Repo
                     </Button>
                     

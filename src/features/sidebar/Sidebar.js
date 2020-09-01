@@ -21,9 +21,7 @@ import {
     colors
 } from "../../styles/palette"
 
-import {
-    displayStateSetCurrentDiff, 
-    
+import {    
     gitSetRepoLog,
     displayStateSetCurrentHistFile,
     controlSetContentControl,

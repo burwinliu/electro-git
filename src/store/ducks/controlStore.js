@@ -1,6 +1,10 @@
 // TODO Split up Control, diff and loading info into different files
 import { CONTENT_CONTROL, DIFF_CONTROL, HISTORY_CONTROL } from "."
 
+const SET_LOADING = "control/SET_LOADING"
+const SET_LOADING_MAIN = "control/SET_LOADING_MAIN"
+const SET_LOADING_GIT = "control/SET_LOADING_GIT"
+
 const SET_CONTENT_CONTROL = "control/SET_CONTENT_CONTROL"
 const SET_DIFF_CONTROL = "control/SET_DIFF_CONTROL"
 const SET_HIST_CONTROL = "control/SET_HIST_CONTROL"
@@ -13,7 +17,7 @@ const initState={
 
   loading: false,
   loadingMain: false,
-  loadingFetch: false,
+  loadingGit: false,
 
   contentControl: 0,
   diffControl: 0,
@@ -22,6 +26,12 @@ const initState={
 
 export const controlReducer = (state = initState, action = {}) => {
     switch(action.type){
+        case SET_LOADING: 
+            return {...state, loading: action.payload}
+        case SET_LOADING_MAIN: 
+            return {...state, loadingMain: action.payload}
+        case SET_LOADING_GIT: 
+            return {...state, loadingGit: action.payload}  
         case SET_CONTENT_CONTROL: 
             return {...state, contentControl: action.payload}
         case SET_DIFF_CONTROL: 
@@ -33,6 +43,16 @@ export const controlReducer = (state = initState, action = {}) => {
         default: 
             return state
     }
+}
+
+export const controlSetLoading = (control) => {
+    return {type: SET_LOADING, payload: control}
+}
+export const controlSetLoadingMain = (control) => {
+    return {type: SET_LOADING_MAIN, payload: control}
+}
+export const controlSetLoadingGit =  (control) => {
+    return {type: SET_LOADING_GIT, payload: control}
 }
 
 export const controlSetHistControl = (control) => {

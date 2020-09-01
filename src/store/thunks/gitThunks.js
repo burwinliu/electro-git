@@ -14,6 +14,9 @@ import {
     // displayStateStore
     displayStateSetBranch,
 
+    // controlStore
+    controlSetLoadingMain,
+
 } from "../ducks";
 
 import {
@@ -29,13 +32,18 @@ import {
 // Thunks
 export const gitRefresh = () => {
     return async (dispatch, getState) =>{
-        const gitLocalPath = getState().git.path;
-        const diffFile = getState().displayState.currentHistFile
-
         const loading = getState().control.loading
 
         if(loading) return;
 
+        dispatch(controlSetLoadingMain(true));
+
+
+        const gitLocalPath = getState().git.path;
+        const diffFile = getState().displayState.currentHistFile
+
+        
+        
         const branchList = await helperGitBranchList(gitLocalPath)
         
         const currStatus = await helperGitStatus(gitLocalPath)
@@ -72,13 +80,19 @@ export const gitRefresh = () => {
 
         if(Object.keys(branchList.branches).length === 0){
             dispatch(displayStateSetBranch("Master"))
+            dispatch(controlSetLoadingMain(false));
             return
         }
 
         dispatch(gitSetRepoLog(currLog.all))
 
-        if(diffFile === "") return
+        if(diffFile === "") {
+            dispatch(controlSetLoadingMain(false));
+            return
+        }
         dispatch(gitSetFileLog(currLogFile.all))
+
+        dispatch(controlSetLoadingMain(false));
     }
     
 }
