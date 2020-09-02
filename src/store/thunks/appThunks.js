@@ -6,6 +6,12 @@ import {
     displayStateSetCurrentDiff
 } from "../ducks"
 
+export const switchGitDir = (newGitDir) => {
+    return (dispatch) => {
+        
+    }
+}
+
 // Thunks
 export const selectGitDiffDiff = (toRenderPath) => {
     return (dispatch) => {
