@@ -5,6 +5,7 @@
 import 'fs'
 import simpleGit, { GitError } from 'simple-git';
 
+
 // Render functions: Render information into better, understandable information to be loaded
 export const renderGitChunkTwoFileFormat = (chunk) => {
     /*

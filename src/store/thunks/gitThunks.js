@@ -42,7 +42,7 @@ export const gitRefresh = () => {
         const gitLocalPath = getState().git.path;
         const diffFile = getState().displayState.currentHistFile
 
-        
+        console.log("ENTER")
         
         const branchList = await helperGitBranchList(gitLocalPath)
         
@@ -54,6 +54,8 @@ export const gitRefresh = () => {
         if (diffFile != ""){
             currLogFile =  helperGitLogFile(gitLocalPath, diffFile)
         }
+
+        console.log("EXIT")
 
         let storeStatus = {}
         let storeDiff = {}
