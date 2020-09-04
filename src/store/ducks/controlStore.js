@@ -4,6 +4,7 @@ import { CONTENT_CONTROL, DIFF_CONTROL, HISTORY_CONTROL } from "."
 const SET_LOADING = "control/SET_LOADING"
 const SET_LOADING_MAIN = "control/SET_LOADING_MAIN"
 const SET_LOADING_GIT = "control/SET_LOADING_GIT"
+const SET_LOADING_FETCH = "control/SET_LOADING_FETCH"
 
 const SET_CONTENT_CONTROL = "control/SET_CONTENT_CONTROL"
 const SET_DIFF_CONTROL = "control/SET_DIFF_CONTROL"
@@ -18,6 +19,7 @@ const initState={
   loading: false,
   loadingMain: false,
   loadingGit: false,
+  loadingFetch: false,
 
   contentControl: 0,
   diffControl: 0,
@@ -32,6 +34,8 @@ export const controlReducer = (state = initState, action = {}) => {
             return {...state, loadingMain: action.payload}
         case SET_LOADING_GIT: 
             return {...state, loadingGit: action.payload}  
+        case SET_LOADING_FETCH:
+            return {...state, loadingFetch: action.payload}
         case SET_CONTENT_CONTROL: 
             return {...state, contentControl: action.payload}
         case SET_DIFF_CONTROL: 
@@ -53,6 +57,9 @@ export const controlSetLoadingMain = (control) => {
 }
 export const controlSetLoadingGit =  (control) => {
     return {type: SET_LOADING_GIT, payload: control}
+}
+export const controlSetLoadingFetch = (control) => {
+    return {type: SET_LOADING_FETCH, payload:control}
 }
 
 export const controlSetHistControl = (control) => {

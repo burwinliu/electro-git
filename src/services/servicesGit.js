@@ -474,7 +474,8 @@ export const helperGitBranch = async (path) => {
 
 export const helperGitBranchList = async (path) => {
     const repo = helperGitOpen(path)
-    return await repo.branch()
+    const branch = await repo.branch()
+    return branch
 }
 
 export const helperGitBranchCheckout = async (path, branchName) => {

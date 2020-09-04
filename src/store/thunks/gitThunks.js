@@ -25,6 +25,7 @@ import {
     helperGitDiff,
     helperGitLog,
     helperGitLogFile,
+    helperGitFetch,
 
     renderGitDiffInfo,
 } from "../../services";
@@ -32,9 +33,8 @@ import {
 // Thunks
 export const gitRefresh = () => {
     return async (dispatch, getState) =>{
-        const loading = getState().control.loading
-
-        if(loading) return;
+        const loading = getState().control.loadingMain
+        // if(loading) return;
 
         dispatch(controlSetLoadingMain(true));
 
@@ -42,20 +42,49 @@ export const gitRefresh = () => {
         const gitLocalPath = getState().git.path;
         const diffFile = getState().displayState.currentHistFile
 
-        console.log("ENTER")
-        
+        // let branchList, currStatus, currDiff, currLog, currLogFile;
+
+        // helperGitBranchList(gitLocalPath).then((tBranch) => {
+        //     branchList = tBranch
+        //     console.log(tBranch, 1)
+        //     console.log(helperGitStatus(gitLocalPath))
+        //     return helperGitStatus(gitLocalPath)
+        // }).then((tStatus) => {
+        //     console.log(tStatus, 2)
+
+        //     currStatus = tStatus
+        //     console.log(currStatus, 2)
+
+        //     console.log(helperGitDiff(gitLocalPath))
+        //     return helperGitDiff(gitLocalPath)
+        // }).then((tDiff) => {
+        //     console.log(tDiff, 3)
+
+        //     currDiff = tDiff
+
+        //     return helperGitLog(gitLocalPath)
+        // }).then((tLog) => {
+        //     console.log(tLog, 4)
+
+        //     currLog = tLog
+
+        //     if (diffFile != ""){
+        //         currLogFile =  helperGitLogFile(gitLocalPath, diffFile)
+        //     }
+        //     console.log(branchList, currStatus, currDiff, currLog, currLogFile)
+
+
+        //     dispatch(controlSetLoadingMain(false));
+        // })
+
         const branchList = await helperGitBranchList(gitLocalPath)
-        
         const currStatus = await helperGitStatus(gitLocalPath)
         const currDiff = await helperGitDiff(gitLocalPath)
         const currLog = await helperGitLog(gitLocalPath)
-
-        let currLogFile
+        
         if (diffFile != ""){
             currLogFile =  helperGitLogFile(gitLocalPath, diffFile)
         }
-
-        console.log("EXIT")
 
         let storeStatus = {}
         let storeDiff = {}
@@ -93,10 +122,19 @@ export const gitRefresh = () => {
             return
         }
         dispatch(gitSetFileLog(currLogFile.all))
-
         dispatch(controlSetLoadingMain(false));
+
+        
     }
     
+}
+
+export const gitFetch = () => {
+    return async (dispatch) => {
+        dispatch(controlSetLoadingFetch(true))
+        const fetchedStatus = await helperGitFetch(dirPath)
+        dispatch(gitSetStatusSummary(status))
+    } 
 }
 
 export const gitCommit = () => {
