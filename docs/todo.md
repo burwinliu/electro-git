@@ -27,7 +27,11 @@
 8/26 
 
 * cvss vulnerabilities ** Guide -- Read more in manual
+    *
 * Git options
     * Settings, apis wtv. 
     * Report of what is included in git (git diff, log?) how to see the report of file?
         * git ls-tree --full-tree -r --name-only HEAD
+
+9/4 
+* Migrate to nodegit and utilize main process to execute git actions -- loading hanging is unacceptable, may be due to being in the renderer process. warrants investigation

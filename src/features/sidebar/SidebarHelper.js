@@ -25,7 +25,7 @@ import {
      colors
  } from "../../styles/palette"
 import { helperGitIgnore, helperGitCheckIgnore } from '../../services';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { gitRefresh } from '../../store/thunks/gitThunks';
 
@@ -134,6 +134,7 @@ export const getSymbol = (working_dir, index) => {
 
 export const MenuSidebarChangesItem = (props) => {
     const repoPath = useSelector(state=>state.git.path)
+    const dispatch = useDispatch();
 
     let state = props.state
     const setState = props.setState
@@ -150,7 +151,6 @@ export const MenuSidebarChangesItem = (props) => {
 
     const handleIgnore = () => {
         if(state.value && helperGitCheckIgnore(repoPath, state.value)){
-            console.log(state.value)
             ipcRenderer.send('addToGitIgnore', repoPath, state.value )
             dispatch(gitRefresh());
         }
