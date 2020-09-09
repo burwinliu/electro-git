@@ -188,30 +188,30 @@ ipcMain.on('addToGitIgnore', async (e, repoPath, payload) => {
   }); 
 })
 
-ipcMain.on('gitInitRepo', (e, repoPath) => {
-  e.preventDefault();
-  gitObj.setRepoPath(repoPath)
-  gitObj.openRepo()
-})
+// ipcMain.on('gitInitRepo', (e, repoPath) => {
+//   e.preventDefault();
+//   gitObj.setRepoPath(repoPath)
+//   gitObj.openRepo()
+// })
 
-ipcMain.on('gitCreateRepo', (e, repoPath) => {
-  e.preventDefault();
-  gitObj.setRepoPath(repoPath)
-  gitObj.initRepo()
-})
+// ipcMain.on('gitCreateRepo', (e, repoPath) => {
+//   e.preventDefault();
+//   gitObj.setRepoPath(repoPath)
+//   gitObj.initRepo()
+// })
 
-ipcMain.on('gitCloneRepo', (e, repoPath, url) => {
-  e.preventDefault();
-  gitObj.setRepoPath(repoPath)
-  gitObj.cloneRepo(url)
-})
+// ipcMain.on('gitCloneRepo', (e, repoPath, url) => {
+//   e.preventDefault();
+//   gitObj.setRepoPath(repoPath)
+//   gitObj.cloneRepo(url)
+// })
 
-ipcMain.on('gitFetch', (e) =>{
-  e.preventDefault();
-  gitObj.fetch();
-})
+// ipcMain.on('gitFetch', (e) =>{
+//   e.preventDefault();
+//   gitObj.fetch();
+// })
 
-ipcMain.on('gitStatus', (e) => {
-  const status = gitObj.getStatus()
-  e.reply('gitStatus', status)
-})
+// ipcMain.on('gitStatus', (e) => {
+//   const status = gitObj.getStatus()
+//   e.reply('gitStatus', status)
+// })
