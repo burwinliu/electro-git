@@ -2,6 +2,7 @@
 
 // Import parts of electron to use
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
+const { GitHelper } = require('./services/gitServices')
 const path = require('path')
 const url = require('url')
 const fs = require('fs');
@@ -9,10 +10,10 @@ const fs = require('fs');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 // Test conflict
-let mainWindow 
+let mainWindow, gitObj;
 
 // Keep a reference for dev mode
-let dev = false
+let dev = false;
 
 // Broken:
 // if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
@@ -42,6 +43,8 @@ function createWindow() {
       nodeIntegration: true
     }
   })
+
+  gitObj = new GitHelper();
 
   // and load the index.html of the app.
   let indexPath
@@ -183,4 +186,32 @@ ipcMain.on('addToGitIgnore', async (e, repoPath, payload) => {
     }
     return;
   }); 
+})
+
+ipcMain.on('gitInitRepo', (e, repoPath) => {
+  e.preventDefault();
+  gitObj.setRepoPath(repoPath)
+  gitObj.openRepo()
+})
+
+ipcMain.on('gitCreateRepo', (e, repoPath) => {
+  e.preventDefault();
+  gitObj.setRepoPath(repoPath)
+  gitObj.initRepo()
+})
+
+ipcMain.on('gitCloneRepo', (e, repoPath, url) => {
+  e.preventDefault();
+  gitObj.setRepoPath(repoPath)
+  gitObj.cloneRepo(url)
+})
+
+ipcMain.on('gitFetch', (e) =>{
+  e.preventDefault();
+  gitObj.fetch();
+})
+
+ipcMain.on('gitStatus', (e) => {
+  const status = gitObj.getStatus()
+  e.reply('gitStatus', status)
 })

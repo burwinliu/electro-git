@@ -1,12 +1,12 @@
 var Git = require("nodegit")
 
-class gitHelper{
-    constructor(path){
-        this.path = path
+class GitHelper{
+    constructor(){
+        this.path = ""
         this.gitRepo = null
     }
     
-    async setRepoPath(path){
+    setRepoPath(path){
         this.path = path
     }
 
@@ -29,8 +29,13 @@ class gitHelper{
         this.setGitRepo(gitRepo)
     }
 
+    async fetch(){
+        this.gitRepo.fetch("origin")
+    }
     
 }
+
+exports.GitHelper = GitHelper;
 
 
 // const initRepo = async (path) => {
