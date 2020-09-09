@@ -32,21 +32,17 @@ class GitHelper{
     async fetch(){
         this.gitRepo.fetch("origin")
     }
+
+    async diff(sha){
+        if (sha === ""){
+            return await Git.Diff.indexToWorkdir(repo);
+        }
+        else{
+            const commit = await repo.getCommit(sha);
+            return await commit.getDiff();
+        }
+    }
     
 }
 
 exports.GitHelper = GitHelper;
-
-
-// const initRepo = async (path) => {
-//     return await Git.Repository.open(path)
-// }
-
-
-// initRepo("C:\\Users\\burwi\\Notebook").then(async (repo) => {
-//     repo.getStatus().then(function(statuses) {
-//         console.log(statuses)
-//     });
-// })
-
-// exports.initRepo = initRepo
