@@ -68,7 +68,7 @@
     "babel-minify": "^0.5.1",
     "cross-env": "^7.0.2",
     "css-loader": "^4.0.0",
-    "electron": "^9.0.0",
+    "electron": "^9.3.1",
     "electron-devtools-installer": "^3.0.0",
     "electron-packager": "^15.0.0",
     "electron-rebuild": "^2.0.2",
